@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="debug"><source path="/home/zpauly/桌面/JXNUmarket/jxnuMarket/jxnuMarket/weiboSDK/build/intermediates/bundles/debug/assets"/></dataSet><dataSet config="main"><source path="/home/zpauly/桌面/JXNUmarket/jxnuMarket/jxnuMarket/weiboSDK/src/androidTest/assets"/><source path="/home/zpauly/桌面/JXNUmarket/jxnuMarket/jxnuMarket/weiboSDK/build/generated/assets/shaders/androidTest/debug"/></dataSet></merger>

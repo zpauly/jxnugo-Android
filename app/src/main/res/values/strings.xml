@@ -1,0 +1,70 @@
+<resources>
+    <string name="app_name">JXNUMarket</string>
+
+    <string name="registe">注册</string>
+    <string name="login">登录</string>
+
+    <string name="enter_email">请输入邮箱</string>
+    <string name="enter_password">请输入密码</string>
+    <string name="confirm">确认密码</string>
+    <string name="passowrd_different">两次输入密码不相同</string>
+    <string name="third_party_login">第三方登录</string>
+    <string name="users_login">账号管理</string>
+    <string name="login_username">请输入账号登录</string>
+    <string name="login_password">请输入密码登录</string>
+    <string name="settings">设置</string>
+    <string name="exit_after_backpressed">再按一次后退键退出</string>
+
+    <string name="my_draft">我的草稿</string>
+    <string name="my_post">我的帖子</string>
+    <string name="my_collection">我的收藏</string>
+
+    <string name="login_or_registe">（ 登录 / 注册 ）</string>
+
+    <string name="trade_list">交易列表</string>
+    <string name="user_info">个人详情</string>
+    <string name="user_manage">账号设置</string>
+
+    <string name="publish">发布</string>
+    <string name="classify">分类</string>
+
+    <string name="title">添加标题</string>
+    <string name="choose_one_picture_as_cover">选择一张照片作为封面</string>
+    <string name="add_pic">添加图片</string>
+    <string name="add_text">添加文字</string>
+    <string name="price">价格</string>
+    <string name="price_unit">单位:人民币</string>
+    <string name="choose_type">选择分类</string>
+    <string name="upload_successly">上传成功</string>
+    <string name="uploading_images">正在上传图片</string>
+    <string name="uploading_others">正在上传文字</string>
+    <string name="please_wait">请等待</string>
+
+    <string name="search_hint">搜索</string>
+
+    <string name="content">内容</string>
+    <string name="click_show_title">点开标题</string>
+    <string name="collected_true">成功收藏</string>
+    <string name="collected_false">取消收藏</string>
+    <string name="share">分享到...</string>
+
+    <string-array name="classify">
+        <item>所有种类</item>
+        <item>衣服</item>
+    </string-array>
+
+    <string-array name="demo">
+        <item>JAVA</item>
+        <item>SCALA</item>
+        <item>KOTLIN</item>
+        <item>GROOVY</item>
+        <item>C</item>
+        <item>C++</item>
+        <item>a1</item>
+        <item>a2</item>
+        <item>a3</item>
+    </string-array>
+
+    <!--新浪微博 -->
+    <string name="no_weibo_app">请先下载最新版本的微博客户端</string>
+</resources>

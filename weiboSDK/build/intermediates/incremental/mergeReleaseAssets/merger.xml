@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="/home/zpauly/桌面/JXNUmarket/jxnuMarket/jxnuMarket/weiboSDK/src/main/assets"/><source path="/home/zpauly/桌面/JXNUmarket/jxnuMarket/jxnuMarket/weiboSDK/build/generated/assets/shaders/release"/></dataSet><dataSet config="release"><source path="/home/zpauly/桌面/JXNUmarket/jxnuMarket/jxnuMarket/weiboSDK/src/release/assets"/></dataSet></merger>

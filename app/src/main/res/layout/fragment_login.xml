@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <EditText
+        android:id="@+id/login_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/login_username"
+        android:layout_margin="@dimen/edit_padding"/>
+
+    <com.maksim88.passwordedittext.PasswordEditText
+        android:id="@+id/login_password"
+        android:password="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/login_password"
+        android:layout_margin="@dimen/edit_padding"/>
+
+    <Button
+        android:id="@+id/confirm_to_login"
+        android:background="@drawable/confirm_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/login"
+        style="@style/ConfirmButton"
+        android:layout_margin="@dimen/edit_padding"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="@dimen/edit_padding"
+        android:layout_marginRight="@dimen/edit_padding"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+
+
+        <ImageButton
+            android:id="@+id/qq_login_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/qq_login_bt_blue" />
+
+        <com.sina.weibo.sdk.widget.LoginButton
+            android:layout_marginTop="10dp"
+            android:id="@+id/sina_login_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/com_sina_weibo_sdk_login_button_with_original_logo"/>
+
+    </LinearLayout>
+
+</LinearLayout>

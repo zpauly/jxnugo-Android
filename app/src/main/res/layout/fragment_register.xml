@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/edit_padding"
+        android:id="@+id/registe_email"
+        android:hint="@string/enter_email"/>
+
+    <com.maksim88.passwordedittext.PasswordEditText
+        android:password="true"
+        android:id="@+id/registe_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/enter_password"
+        android:layout_margin="@dimen/edit_padding"/>
+
+    <com.maksim88.passwordedittext.PasswordEditText
+        android:password="true"
+        android:hint="@string/confirm"
+        android:id="@+id/registe_password_again"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/edit_padding"/>
+
+    <Button
+        android:layout_margin="@dimen/edit_padding"
+        android:id="@+id/confirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/registe"
+        style="@style/ConfirmButton"
+        android:background="@drawable/confirm_button"/>
+
+</LinearLayout>

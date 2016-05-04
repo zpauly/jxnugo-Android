@@ -1,0 +1,15 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="nav_header_height">192dp</dimen>
+    <dimen name="nav_header_padding">16dp</dimen>
+    <dimen name="edit_padding">16dp</dimen>
+    <dimen name="edit_button_size">20dp</dimen>
+    <dimen name="card_margin">16dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="toolbar_double_height">136dp</dimen>
+    <dimen name="toolbar_trible_height">192dp</dimen>
+    <dimen name="cardview_toolbar_spacer">32dp</dimen>
+    <dimen name="toolbar_height">56dp</dimen>
+</resources>

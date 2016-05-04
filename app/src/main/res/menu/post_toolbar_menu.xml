@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activity.postcontent.PostContentActivity">
+
+    <item
+        android:id="@+id/post_share"
+        android:title="share"
+        android:icon="@mipmap/ic_share_white_36dp"
+        app:showAsAction="always"/>
+
+</menu>
