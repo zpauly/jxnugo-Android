@@ -25,7 +25,7 @@ public class CommentsActivity extends BaseActivity {
     @Bind(R.id.comments_recyclerview)
     protected RecyclerView mRecyclerView;
 
-    private RecyclerView.Adapter mRAdapter;
+    private CommentsAdapter mRAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,5 +63,26 @@ public class CommentsActivity extends BaseActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mRAdapter);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this, 1));
+        final LinearLayoutManager layoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int lastItemPosition =  layoutManager.findLastVisibleItemPosition();
+                if (lastItemPosition == mRAdapter.getItemCount() - 2) {
+                    mRAdapter.setShowLoadMore(true);
+                } else if (lastItemPosition == mRAdapter.getItemCount() - 1
+                        && mRAdapter.isShowingLoadMore()) {
+                    mRAdapter.setShowLoadMore(true);
+                } else {
+                    mRAdapter.setShowLoadMore(false);
+                }
+            }
+        });
     }
 }

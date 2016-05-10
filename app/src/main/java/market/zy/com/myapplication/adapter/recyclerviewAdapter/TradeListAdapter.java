@@ -30,8 +30,32 @@ public class TradeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     private List<Goods> mData = new ArrayList<>();
 
+    private boolean showLoadMore = false;
+
     public TradeListAdapter(Context context) {
         mContext = context;
+        for (int i = 0; i < 20; i++) {
+            mData.add(new Goods());
+        }
+    }
+
+    public void addData(Goods goods) {
+        mData.add(goods);
+        notifyDataSetChanged();
+    }
+
+    public void addAllData(List<Goods> list) {
+        mData.addAll(list);
+        notifyDataSetChanged();
+    }
+
+    public void setShowLoadMore(boolean show) {
+        showLoadMore = show;
+        notifyDataSetChanged();
+    }
+
+    public boolean isShowingLoadMore() {
+        return showLoadMore;
     }
 
     @Override
@@ -39,7 +63,7 @@ public class TradeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         if (position == getItemCount() - 1)
             return -1;
         else
-            return super.getItemViewType(position);
+            return 1;
     }
 
     @Override
@@ -59,11 +83,16 @@ public class TradeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (position == getItemCount() - 1){
+        if (showLoadMore && position == getItemCount() - 1){
             MyViewHolder2 viewHolder = (MyViewHolder2) holder;
             viewHolder.mCircleProgressBar.setColorSchemeResources(android.R.color.holo_blue_bright,
                     android.R.color.holo_green_light, android.R.color.holo_orange_light,
                     android.R.color.holo_red_light);
+            if (showLoadMore) {
+                viewHolder.itemView.setVisibility(View.VISIBLE);
+            } else {
+                viewHolder.itemView.setVisibility(View.GONE);
+            }
             return;
         }
         MyViewHolder1 viewHolder = (MyViewHolder1) holder;
@@ -83,7 +112,7 @@ public class TradeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public int getItemCount() {
-        return 31;
+        return mData.size() + 1;
     }
 
 

@@ -23,12 +23,12 @@ import com.tencent.tauth.Tencent;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import market.zy.com.myapplication.Constants;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseFragment;
+import market.zy.com.myapplication.utils.AccessTokenKeeper;
 import market.zy.com.myapplication.utils.qqUtils.AppConstants;
 import market.zy.com.myapplication.utils.qqUtils.LoginUiListener;
-import market.zy.com.myapplication.Constants;
-import market.zy.com.myapplication.utils.AccessTokenKeeper;
 
 /**
  * Created by dell on 2016/3/8.

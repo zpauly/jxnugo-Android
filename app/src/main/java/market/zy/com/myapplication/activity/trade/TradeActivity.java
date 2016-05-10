@@ -26,12 +26,12 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import market.zy.com.myapplication.Constants;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.classify.ClassifyActivity;
 import market.zy.com.myapplication.activity.publish.PublishGoodsActivity;
-import market.zy.com.myapplication.Constants;
-import market.zy.com.myapplication.ui.material.MaterialDrawerActivity;
 import market.zy.com.myapplication.adapter.recyclerviewAdapter.TradeListAdapter;
+import market.zy.com.myapplication.ui.material.MaterialDrawerActivity;
 
 /**
  * Created by dell on 2016/3/10.
@@ -59,6 +59,7 @@ public class TradeActivity extends MaterialDrawerActivity {
     protected MaterialSearchView mSearchView;
 
     private LinearLayoutManager manager;
+    private TradeListAdapter adapter;
 
     private FragmentManager mContextFragmentManager;
     private ContextMenuDialogFragment mMenuDialogFragment;
@@ -126,16 +127,32 @@ public class TradeActivity extends MaterialDrawerActivity {
     }
 
     private void setUpRecyclerView() {
+        adapter = new TradeListAdapter(this);
         manager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(manager);
-        mRecyclerView.setAdapter(new TradeListAdapter(this));
-        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRecyclerView.setAdapter(adapter);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
                 if (manager.findFirstCompletelyVisibleItemPosition() == 0) {
                     mSwipeRefreshLayout.setEnabled(true);
                 } else {
                     mSwipeRefreshLayout.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int lastVisiableItemPosition = manager.findLastCompletelyVisibleItemPosition();
+                if (lastVisiableItemPosition == adapter.getItemCount() - 2) {
+                    adapter.setShowLoadMore(true);
+                } else if (lastVisiableItemPosition == adapter.getItemCount() - 1
+                        && adapter.isShowingLoadMore()) {
+                    adapter.setShowLoadMore(true);
+                } else {
+                    adapter.setShowLoadMore(false);
                 }
             }
         });

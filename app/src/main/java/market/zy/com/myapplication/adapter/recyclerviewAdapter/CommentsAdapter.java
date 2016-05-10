@@ -26,8 +26,13 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private List<Comment> mData = new ArrayList<>();
 
+    private boolean showLoadMore = false;
+
     public CommentsAdapter(Context context) {
         mContext = context;
+        for (int i = 0; i < 20 ;i++) {
+            mData.add(new Comment());
+        }
     }
 
     @Override
@@ -45,23 +50,35 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (getItemViewType(position) == -1) {
+        if (position == getItemCount() - 1) {
             MyViewHolder2 holder2 = (MyViewHolder2) holder;
             holder2.mCircleProgressBar.setColorSchemeResources(android.R.color.holo_blue_bright,
                     android.R.color.holo_green_light, android.R.color.holo_orange_light,
                     android.R.color.holo_red_light);
+            if (showLoadMore) {
+                holder2.itemView.setVisibility(View.VISIBLE);
+            } else {
+                holder2.itemView.setVisibility(View.GONE);
+            }
             return;
         }
         MyViewHolder1 myViewHolder1 = (MyViewHolder1) holder;
-        if (mData.size() == 0) {
-            myViewHolder1.mUserTextView.setText("username");
-            myViewHolder1.mCommentTextView.setText("comments");
-        }
+        myViewHolder1.mUserTextView.setText("username");
+        myViewHolder1.mCommentTextView.setText("comments");
+    }
+
+    public void setShowLoadMore(boolean show) {
+        showLoadMore = show;
+        notifyDataSetChanged();
+    }
+
+    public boolean isShowingLoadMore() {
+        return showLoadMore;
     }
 
     @Override
     public int getItemCount() {
-        return 20;
+        return mData.size() + 1;
     }
 
     @Override
@@ -69,7 +86,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (position == getItemCount() - 1)
             return -1;
         else
-            return super.getItemViewType(position);
+            return 1;
     }
 
     public void addData(Comment comment) {

@@ -1,9 +1,7 @@
 package market.zy.com.myapplication.activity.postcontent;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -15,23 +13,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.sina.weibo.sdk.api.share.BaseResponse;
-import com.sina.weibo.sdk.api.share.IWeiboHandler;
-import com.sina.weibo.sdk.api.share.IWeiboShareAPI;
 
 import java.net.URL;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import market.zy.com.myapplication.R;
+import market.zy.com.myapplication.activity.BaseActivity;
 import market.zy.com.myapplication.activity.comments.CommentsActivity;
-import market.zy.com.myapplication.ui.material.MaterialBottomSheetActivity;
-import market.zy.com.myapplication.utils.sinaUtils.WeiboShare;
 
 /**
  * Created by zpauly on 16-3-24.
  */
-public class PostContentActivity extends MaterialBottomSheetActivity {
+public class PostContentActivity extends BaseActivity {
     @Bind(R.id.content_toolbar)
     protected Toolbar mContentToolbar;
 

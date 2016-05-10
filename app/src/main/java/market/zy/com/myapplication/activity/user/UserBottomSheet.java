@@ -1,30 +1,20 @@
 package market.zy.com.myapplication.activity.user;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.FrameLayout;
 
 import market.zy.com.myapplication.R;
-import market.zy.com.myapplication.activity.BaseBottomSheet;
 
 /**
  * Created by root on 16-5-9.
  */
-public class UserBottomSheet extends BaseBottomSheet {
+public class UserBottomSheet extends BottomSheetDialogFragment {
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetCallback;
 
     private View mView;
