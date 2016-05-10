@@ -1,10 +1,9 @@
 package market.zy.com.myapplication.activity.publish;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.widget.NestedScrollView;
@@ -16,17 +15,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.nineoldandroids.view.ViewPropertyAnimator;
-import com.qiniu.android.http.ResponseInfo;
-import com.qiniu.android.storage.UpCancellationSignal;
-import com.qiniu.android.storage.UpCompletionHandler;
-import com.qiniu.android.storage.UpProgressHandler;
-import com.qiniu.android.storage.UploadOptions;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +29,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseActivity;
-import market.zy.com.myapplication.engine.qiniu.UploadImages;
+import market.zy.com.myapplication.engine.qiniu.UploadStategy;
+import market.zy.com.myapplication.utils.PhotoUtil;
 
 /**
  * Created by zpauly on 16-3-27.
@@ -93,10 +88,10 @@ public class PublishGoodsActivity extends BaseActivity {
     private int imageLine = 1;
     private int imageCount = 0;
     private List<String> selectedImagePath = new ArrayList<>();
+    private List<Uri> selectedImageUri = new ArrayList<>();
+    private Uri uri;
     private boolean isCoverImage;
     private boolean isButtonsHide;
-
-    private UploadImages uploadImages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,20 +108,24 @@ public class PublishGoodsActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == SELECT_PICTURE) {
-                Uri selectedImageUri = data.getData();
-                selectedImagePath.add(getPicPath(selectedImageUri));
+                Uri imageUri = data.getData();
+                selectedImageUri.add(imageUri);
+                uri = imageUri;
                 if (isCoverImage) {
                     Glide.with(this)
                             .load(selectedImageUri)
                             .centerCrop()
                             .thumbnail(0.2f)
                             .into(mImageCover);
-                    coverUri = selectedImageUri;
+                    coverUri = imageUri;
                 } else {
-                    addImageViewDynamiclly(addingLayout, selectedImageUri);
-                    imageUris.add(selectedImageUri);
+                    addImageViewDynamiclly(addingLayout, imageUri);
+                    imageUris.add(imageUri);
                     imageCount++;
                 }
+                String path = PhotoUtil.getPath(this, imageUri);
+                Toast.makeText(PublishGoodsActivity.this, path, Toast.LENGTH_SHORT).show();
+                selectedImagePath.add(path);
             }
         }
     }
@@ -223,14 +222,48 @@ public class PublishGoodsActivity extends BaseActivity {
         mSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                upload();
+                MaterialDialog dialog = new MaterialDialog.Builder(PublishGoodsActivity.this)
+                        .title(R.string.upload)
+                        .content(R.string.can_upload)
+                        .positiveText(R.string.yes)
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                upload();
+                            }
+                        })
+                        .negativeText(R.string.no)
+                        .onNegative(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .show();
             }
         });
 
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                upload();
+                MaterialDialog dialog = new MaterialDialog.Builder(PublishGoodsActivity.this)
+                        .title(R.string.upload)
+                        .content(R.string.can_upload)
+                        .positiveText(R.string.yes)
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                upload();
+                            }
+                        })
+                        .negativeText(R.string.no)
+                        .onNegative(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .show();
             }
         });
     }
@@ -241,21 +274,6 @@ public class PublishGoodsActivity extends BaseActivity {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent,
                 "Select Picture"), SELECT_PICTURE);
-    }
-
-    private String getPicPath(Uri uri) {
-        if( uri == null ) {
-            return null;
-        }
-        String[] projection = { MediaStore.Images.Media.DATA };
-        Cursor cursor = managedQuery(uri, projection, null, null, null);
-        if( cursor != null ){
-            int column_index = cursor
-                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        }
-        return uri.getPath();
     }
 
     private void addImageViewDynamiclly(ViewGroup mViewGroup, Uri path) {
@@ -283,51 +301,29 @@ public class PublishGoodsActivity extends BaseActivity {
     private void showButtons() {
         ViewPropertyAnimator.animate(mSendButton)
                 .rotation(-720f)
-                .translationYBy(-200f)
+                .translationY(-mEditButton.getHeight())
                 .setDuration(500);
 
         ViewPropertyAnimator.animate(mSaveButton)
                 .rotation(-720f)
-                .translationYBy(-400f)
+                .translationY(-mEditButton.getHeight() * 2)
                 .setDuration(500);
     }
 
     private void hideButtons() {
         ViewPropertyAnimator.animate(mSendButton)
                 .rotation(0f)
-                .translationYBy(200f)
+                .translationY(0)
                 .setDuration(500);
 
         ViewPropertyAnimator.animate(mSaveButton)
                 .rotation(0f)
-                .translationYBy(400f)
+                .translationY(0)
                 .setDuration(500);
     }
 
     private void uploadImages(final MaterialDialog dialog) {
-        dialog.show();
-        uploadImages = UploadImages.getInstance();
-        final ArrayList<Boolean> count = new ArrayList<>();
-        for (int i = 0; i < selectedImagePath.size(); i++) {
-            uploadImages.uploadImages(selectedImagePath.get(i), String.valueOf(i), new UpCompletionHandler() {
-                @Override
-                public void complete(String key, ResponseInfo info, JSONObject response) {
-                    count.add(true);
-                    if (count.size() == selectedImagePath.size())
-                        dialog.dismiss();
-                }
-            }, new UploadOptions(null, null, false, new UpProgressHandler() {
-                @Override
-                public void progress(String key, double percent) {
-
-                }
-            }, new UpCancellationSignal() {
-                @Override
-                public boolean isCancelled() {
-                    return false;
-                }
-            }));
-        }
+        new UploadStategy().uploadImages(this, selectedImagePath.get(0), dialog);
     }
 
     private void uploadOthers(final MaterialDialog dialog) {
@@ -347,6 +343,7 @@ public class PublishGoodsActivity extends BaseActivity {
                 .progress(true, 0)
                 .build();
 
+        imageUploadDialog.show();
         uploadImages(imageUploadDialog);
 
         if (!imageUploadDialog.isShowing()) {

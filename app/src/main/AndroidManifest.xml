@@ -28,6 +28,7 @@
 
         <activity android:name=".activity.usermanager.UserManagerActivity"/>
         <activity android:name=".activity.user.UserActivity"/>
+        <activity android:name=".activity.comments.CommentsActivity"/>
         <activity android:name=".activity.classify.ClassifyActivity"/>
         <activity android:name=".activity.publish.PublishGoodsActivity"/>
         <activity android:name=".activity.postcontent.PostContentActivity"/>

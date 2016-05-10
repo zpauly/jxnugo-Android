@@ -13,12 +13,20 @@
     <string name="login_username">请输入账号登录</string>
     <string name="login_password">请输入密码登录</string>
     <string name="settings">设置</string>
+    <string name="please_login">请登录</string>
     <string name="exit_after_backpressed">再按一次后退键退出</string>
 
     <string name="my_draft">我的草稿</string>
     <string name="my_post">我的帖子</string>
     <string name="my_collection">我的收藏</string>
-
+    <string name="contact">联系方式</string>
+    <string name="qq">QQ</string>
+    <string name="email">电子邮件</string>
+    <string name="phone_number">手机</string>
+    <string name="personal_introduce">个人简介</string>
+    <string name="sex">性别</string>
+    <string name="personal_tag">个人标签</string>
+    <string name="personal_info">个人资料</string>
     <string name="login_or_registe">（ 登录 / 注册 ）</string>
 
     <string name="trade_list">交易列表</string>
@@ -38,6 +46,10 @@
     <string name="upload_successly">上传成功</string>
     <string name="uploading_images">正在上传图片</string>
     <string name="uploading_others">正在上传文字</string>
+    <string name="upload">上传</string>
+    <string name="can_upload">是否确认上传内容</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
     <string name="please_wait">请等待</string>
 
     <string name="search_hint">搜索</string>
@@ -47,6 +59,8 @@
     <string name="collected_true">成功收藏</string>
     <string name="collected_false">取消收藏</string>
     <string name="share">分享到...</string>
+
+    <string name="comments">评论</string>
 
     <string-array name="classify">
         <item>所有种类</item>

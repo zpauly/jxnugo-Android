@@ -1,22 +1,28 @@
 package market.zy.com.myapplication.activity.user;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import market.zy.com.myapplication.R;
-import market.zy.com.myapplication.activity.usermanager.UserManagerActivity;
 import market.zy.com.myapplication.activity.BaseActivity;
-import market.zy.com.myapplication.adapter.recyclerviewAdapter.PersonalAdapter;
+import market.zy.com.myapplication.activity.PleaseLoginFragment;
+import market.zy.com.myapplication.activity.usermanager.LoginFragment;
 
 /**
  * Created by dell on 2016/3/11.
@@ -25,67 +31,84 @@ public class UserActivity extends BaseActivity {
     @Bind(R.id.personal_toolbar)
     protected Toolbar mToolbar;
 
-    @Bind(R.id.personal_bg_image)
-    protected ImageView mImageView;
+    @Bind(R.id.personal_image_header)
+    protected ImageView mHeaderImageView;
 
     @Bind(R.id.personal_avater)
-    protected CircleImageView mAvater;
+    protected CircleImageView mAvatarImageView;
 
-    @Bind(R.id.username_personal)
-    protected TextView username;
+    private PleaseLoginFragment mLoginPage;
 
-    @Bind(R.id.user_manager_personal)
-    protected TextView userManage;
-
-    @Bind(R.id.personal_recyclerview)
-    protected RecyclerView mRecyclerView;
+    private UserBottomSheet mBottomSheet;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal);
+        ButterKnife.bind(this);
 
         setOnBackTwiceToTrue();
 
         initView();
     }
 
-    private void initView() {
-        ButterKnife.bind(this);
-
-        setUpToolbar();
-        setUpRecyclerView();
-        setText();
+    @Override
+    protected void onStart() {
+        super.onStart();
+        selectPage();
     }
 
-    private void setText() {
-        userManage.setOnClickListener(new View.OnClickListener() {
+    private void initView() {
+        setUpToolbar();
+
+        selectPage();
+    }
+
+    private void selectPage() {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        if (isCurrentUsing()) {
+
+        } else {
+            mLoginPage = new PleaseLoginFragment();
+            ft.replace(R.id.personal_page, mLoginPage);
+        }
+        ft.commit();
+    }
+
+    private void setUpToolbar() {
+        if (isCurrentUsing()) {
+            mToolbar.setTitle(getCurrentUser());
+        } else {
+            mToolbar.setTitle(R.string.user_info);
+        }
+        setSupportActionBar(mToolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setClass(UserActivity.this, UserManagerActivity.class);
-                startActivity(intent);
+                onBackPressed();
             }
         });
     }
 
-    private void setUpToolbar() {
-        if (mToolbar != null) {
-            mToolbar.setTitle(R.string.user_info);
-            setSupportActionBar(mToolbar);
-            ActionBar actionBar = getSupportActionBar();
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onBackPressed();
-                }
-            });
-        }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.personal_toolbar_menu, menu);
+        return true;
     }
 
-    private void setUpRecyclerView() {
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(UserActivity.this));
-        mRecyclerView.setAdapter(new PersonalAdapter(UserActivity.this));
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.personal_person :
+                mBottomSheet = new UserBottomSheet();
+                mBottomSheet.show(getSupportFragmentManager(), mBottomSheet.getTag());
+                break;
+            default :
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

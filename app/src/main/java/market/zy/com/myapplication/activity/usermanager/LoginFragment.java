@@ -27,7 +27,7 @@ import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseFragment;
 import market.zy.com.myapplication.utils.qqUtils.AppConstants;
 import market.zy.com.myapplication.utils.qqUtils.LoginUiListener;
-import market.zy.com.myapplication.utils.sinaUtils.Constants;
+import market.zy.com.myapplication.Constants;
 import market.zy.com.myapplication.utils.AccessTokenKeeper;
 
 /**

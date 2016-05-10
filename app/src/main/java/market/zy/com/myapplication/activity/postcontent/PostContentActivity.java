@@ -1,6 +1,7 @@
 package market.zy.com.myapplication.activity.postcontent;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
@@ -23,6 +24,7 @@ import java.net.URL;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import market.zy.com.myapplication.R;
+import market.zy.com.myapplication.activity.comments.CommentsActivity;
 import market.zy.com.myapplication.ui.material.MaterialBottomSheetActivity;
 import market.zy.com.myapplication.utils.sinaUtils.WeiboShare;
 
@@ -51,8 +53,6 @@ public class PostContentActivity extends MaterialBottomSheetActivity {
     private boolean isCollected;
     private boolean isTitleShowing;
 
-    private IWeiboShareAPI weiboShareAPI;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,17 +64,6 @@ public class PostContentActivity extends MaterialBottomSheetActivity {
         isTitleShowing = false;
 
         initView();
-
-        setWeiboShare();
-
-        if (savedInstanceState != null) {
-            weiboShareAPI.handleWeiboResponse(getIntent(), new IWeiboHandler.Response() {
-                @Override
-                public void onResponse(BaseResponse baseResponse) {
-
-                }
-            });
-        }
     }
 
     @Override
@@ -87,18 +76,6 @@ public class PostContentActivity extends MaterialBottomSheetActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.post_share :
-                showShareBottomSheet(new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-                            case 0 :
-                                Snackbar.make(getCurrentFocus(), "weibo", Snackbar.LENGTH_SHORT).show();
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                });
                 break;
             default:
                 break;
@@ -149,6 +126,14 @@ public class PostContentActivity extends MaterialBottomSheetActivity {
         mCommentImageView.setImageResource(R.drawable.ic_mode_comment_24dp);
         mCollectImageView.setImageResource(R.drawable.ic_favorite_outline_24dp);
         mConnectImageView.setImageResource(R.drawable.ic_local_phone_24dp);
+        mCommentImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setClass(PostContentActivity.this, CommentsActivity.class);
+                startActivity(intent);
+            }
+        });
         mCollectImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -195,9 +180,5 @@ public class PostContentActivity extends MaterialBottomSheetActivity {
         newTextView.setTextSize(15f);
         newTextView.setText(str);
         mViewGroup.addView(newTextView, -1, layoutParams);
-    }
-
-    private void setWeiboShare() {
-        weiboShareAPI = WeiboShare.getWeiboAPIInstance();
     }
 }

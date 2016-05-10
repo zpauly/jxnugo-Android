@@ -1,6 +1,9 @@
 package market.zy.com.myapplication.activity;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Fade;
@@ -10,18 +13,33 @@ import android.view.View;
 import android.widget.Toast;
 
 import market.zy.com.myapplication.R;
-import market.zy.com.myapplication.utils.sinaUtils.Constants;
+import market.zy.com.myapplication.Constants;
 
 /**
  * Created by dell on 2016/3/8.
  */
 public class BaseActivity extends AppCompatActivity {
+    public static String IS_USING = "isUsing";
+    public static String CURRENT_USER = "current_user";
+
     private boolean isExitConfirm = false;
     private long lastPressTime = 0;
     private boolean onBackTwice = false;
 
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor preferencesEditor;
+
+    protected String currentUser;
+
     public void setOnBackTwiceToTrue() {
         onBackTwice = true;
+    }
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        sharedPreferences = getSharedPreferences(IS_USING, MODE_PRIVATE);
+        preferencesEditor = sharedPreferences.edit();
     }
 
     @Override
@@ -32,6 +50,27 @@ public class BaseActivity extends AppCompatActivity {
             if (canExit()) {
                 super.onBackPressed();
         }
+    }
+
+    protected boolean isCurrentUsing() {
+        if (sharedPreferences.getString(CURRENT_USER, null) == null) {
+            return false;
+        } else {
+            currentUser = sharedPreferences.getString(CURRENT_USER, null);
+            return true;
+        }
+    }
+
+    protected String getCurrentUser() {
+        return currentUser;
+    }
+
+    protected void setCurrentUser(String currentUser) {
+        preferencesEditor.putString(CURRENT_USER, currentUser);
+    }
+
+    protected void exitCurrentUser() {
+        preferencesEditor.remove(CURRENT_USER);
     }
 
     public void showSnackbarTipShort(View view, int resourceId) {

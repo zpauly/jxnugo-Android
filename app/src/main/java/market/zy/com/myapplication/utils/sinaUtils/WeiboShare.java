@@ -6,6 +6,8 @@ import com.sina.weibo.sdk.api.share.IWeiboHandler;
 import com.sina.weibo.sdk.api.share.IWeiboShareAPI;
 import com.sina.weibo.sdk.api.share.WeiboShareSDK;
 
+import market.zy.com.myapplication.Constants;
+
 
 /**
  * Created by zpauly on 16-4-1.

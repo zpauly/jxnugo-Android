@@ -1,7 +1,5 @@
 package market.zy.com.myapplication.activity.trade;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,7 +9,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,7 +29,7 @@ import butterknife.ButterKnife;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.classify.ClassifyActivity;
 import market.zy.com.myapplication.activity.publish.PublishGoodsActivity;
-import market.zy.com.myapplication.utils.sinaUtils.Constants;
+import market.zy.com.myapplication.Constants;
 import market.zy.com.myapplication.ui.material.MaterialDrawerActivity;
 import market.zy.com.myapplication.adapter.recyclerviewAdapter.TradeListAdapter;
 

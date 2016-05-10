@@ -8,8 +8,10 @@
     <dimen name="edit_button_size">20dp</dimen>
     <dimen name="card_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
-    <dimen name="toolbar_double_height">136dp</dimen>
+    <dimen name="mini_fab_margin">24dp</dimen>
+    <dimen name="toolbar_double_height">128dp</dimen>
     <dimen name="toolbar_trible_height">192dp</dimen>
     <dimen name="cardview_toolbar_spacer">32dp</dimen>
     <dimen name="toolbar_height">56dp</dimen>
+    <dimen name="personal_bottom_peek_height">376dp</dimen>
 </resources>

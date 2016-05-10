@@ -6,6 +6,10 @@ import com.qiniu.android.storage.UploadOptions;
 
 import java.io.File;
 
+import market.zy.com.myapplication.entity.qiniu.QiniuUploadToken;
+import market.zy.com.myapplication.network.qiniu.uploadtoken.TokenMethod;
+import rx.Observer;
+
 /**
  * Created by root on 16-5-4.
  */
@@ -14,7 +18,9 @@ public class SimpleUploadService implements IFileUploadService {
 
     private String filePath;
 
-    private byte[] data;
+    private byte[] data = new byte[1024];
+
+    private boolean hasbytes = false;
 
     private File file;
 
@@ -31,6 +37,7 @@ public class SimpleUploadService implements IFileUploadService {
     @Override
     public IFileUploadService putData(byte[] data) {
         this.data = data;
+        hasbytes = true;
         return this;
     }
 
@@ -48,24 +55,38 @@ public class SimpleUploadService implements IFileUploadService {
 
     @Override
     public IFileUploadService getUpFromServer() {
-        this.token = null;
         return this;
     }
 
     @Override
-    public void upload(UpCompletionHandler handler, UploadOptions options) {
+    public void upload(final UpCompletionHandler handler, final UploadOptions options) {
         uploadManager = Upload.getInstance();
 
-        if (filePath != null) {
-            uploadManager.put(filePath, key, token, handler, options);
-        }
+        TokenMethod.getInstance().getUploadToken(new Observer<QiniuUploadToken>() {
+            @Override
+            public void onCompleted() {
+                if (filePath != null) {
+                    uploadManager.put(filePath, key, token, handler, options);
+                }
 
-        if (data.length != 0) {
-            uploadManager.put(data, key, token, handler, options);
-        }
+                if (hasbytes) {
+                    uploadManager.put(data, key, token, handler, options);
+                }
 
-        if (file != null) {
-            uploadManager.put(file, key, token, handler, options);
-        }
+                if (file != null) {
+                    uploadManager.put(file, key, token, handler, options);
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(QiniuUploadToken qiniuUploadToken) {
+                token = qiniuUploadToken.getUptoken();
+            }
+        });
     }
 }

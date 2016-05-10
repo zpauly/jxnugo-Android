@@ -12,10 +12,14 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.lsjwzh.widget.materialloadingprogressbar.CircleProgressBar;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.postcontent.PostContentActivity;
+import market.zy.com.myapplication.engine.tradelist.Goods;
 
 /**
  * Created by dell on 2016/3/12.
@@ -23,6 +27,8 @@ import market.zy.com.myapplication.activity.postcontent.PostContentActivity;
 public class TradeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
     private View mView;
+
+    private List<Goods> mData = new ArrayList<>();
 
     public TradeListAdapter(Context context) {
         mContext = context;

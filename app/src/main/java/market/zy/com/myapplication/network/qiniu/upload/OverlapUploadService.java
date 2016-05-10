@@ -14,7 +14,9 @@ public class OverlapUploadService implements IFileUploadService {
 
     private String filePath;
 
-    private byte[] data;
+    private byte[] data = new byte[1024];
+
+    private boolean hasBytes = false;
 
     private File file;
 
@@ -31,6 +33,7 @@ public class OverlapUploadService implements IFileUploadService {
     @Override
     public IFileUploadService putData(byte[] data) {
         this.data = data;
+        hasBytes = true;
         return this;
     }
 
@@ -60,7 +63,7 @@ public class OverlapUploadService implements IFileUploadService {
             uploadManager.put(filePath, key, token, handler, options);
         }
 
-        if (data.length != 0) {
+        if (hasBytes) {
             uploadManager.put(data, key, token, handler, options);
         }
 

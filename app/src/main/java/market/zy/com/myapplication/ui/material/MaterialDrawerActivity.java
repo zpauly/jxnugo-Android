@@ -20,7 +20,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseActivity;
-import market.zy.com.myapplication.utils.sinaUtils.Constants;
+import market.zy.com.myapplication.Constants;
 import market.zy.com.myapplication.activity.trade.TradeActivity;
 import market.zy.com.myapplication.activity.user.UserActivity;
 

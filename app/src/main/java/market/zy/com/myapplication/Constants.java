@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package market.zy.com.myapplication.utils.sinaUtils;
+package market.zy.com.myapplication;
 
 /**
  * 该类定义了微博授权时所需要的参数。
@@ -66,4 +66,8 @@ public interface Constants {
      * 对于TradeActivity的全局唯一的标识
      * */
     public static final long TRADEACTIVITY = 10000;
+
+    public static final long DEFAULT_TIMEOUT =  5000;
+
+    public static final String QINIU_UPLOAD_TOKEN_BASE_URL = "http://www.jxnugo.com/api/";
 }
