@@ -30,8 +30,11 @@ import butterknife.ButterKnife;
 import market.zy.com.myapplication.Constants;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseFragment;
+import market.zy.com.myapplication.db.UserInfoDao;
 import market.zy.com.myapplication.entity.login.LoginTokenSuccess;
+import market.zy.com.myapplication.entity.user.UserBasicInfo;
 import market.zy.com.myapplication.network.login_register.LoginMethod;
+import market.zy.com.myapplication.network.user.UserInfoMethod;
 import market.zy.com.myapplication.utils.AccessTokenKeeper;
 import market.zy.com.myapplication.utils.SPUtil;
 import market.zy.com.myapplication.utils.qqUtils.AppConstants;
@@ -130,12 +133,11 @@ public class LoginFragment extends BaseFragment {
                 Subscriber<LoginTokenSuccess> subscriber = new Subscriber<LoginTokenSuccess>() {
                     @Override
                     public void onCompleted() {
-                        getActivity().finish();
+                        loadUserInfo();
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        e.printStackTrace();
                         Snackbar.make(getView(), R.string.username_or_password_error, Snackbar.LENGTH_SHORT).show();
                     }
 
@@ -153,6 +155,28 @@ public class LoginFragment extends BaseFragment {
                         .login(subscriber);
             }
         });
+    }
+
+    private void loadUserInfo() {
+        Subscriber<UserBasicInfo> subscriber = new Subscriber<UserBasicInfo>() {
+            @Override
+            public void onCompleted() {
+                getActivity().finish();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Snackbar.make(getView(), R.string.username_or_password_error, Snackbar.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNext(UserBasicInfo info) {
+                UserInfoDao.insertUserInfo(info);
+            }
+        };
+        SPUtil sp = SPUtil.getInstance(getContext());
+        UserInfoMethod.getInstance(sp.getCurrentUsername(), sp.getCurrentPassword())
+                .getUserInfo(subscriber, sp.getCurrentUserId());
     }
 
     private void setQQLogin() {

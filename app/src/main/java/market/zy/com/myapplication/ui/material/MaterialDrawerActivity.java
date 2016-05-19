@@ -2,6 +2,7 @@ package market.zy.com.myapplication.ui.material;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
@@ -24,15 +25,23 @@ import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseActivity;
 import market.zy.com.myapplication.activity.trade.TradeActivity;
 import market.zy.com.myapplication.activity.user.UserActivity;
+import market.zy.com.myapplication.db.UserInfoDao;
+import market.zy.com.myapplication.utils.ImageUtil;
 import market.zy.com.myapplication.utils.SPUtil;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by dell on 2016/3/10.
  */
 public class MaterialDrawerActivity extends BaseActivity {
-    private AccountHeader mAccountHeader;
+    private static AccountHeader mAccountHeader;
     private ProfileDrawerItem mProfileDrawerItem;
-    private Drawer mDrawer;
+    private static Drawer mDrawer;
+    private static DrawerBuilder mDrawerBuilder;
 
 
     public void initDrawer(final Activity activity , Toolbar mToolbar, final long identifier) {
@@ -62,7 +71,7 @@ public class MaterialDrawerActivity extends BaseActivity {
                 })
                 .build();
 
-        mDrawer = new DrawerBuilder()
+        mDrawerBuilder = new DrawerBuilder()
                 .withActivity(activity)
                 .withToolbar(mToolbar)
                 .withAccountHeader(mAccountHeader)
@@ -88,35 +97,72 @@ public class MaterialDrawerActivity extends BaseActivity {
                                     @Override
                                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                                         SPUtil.getInstance(activity).removeCurrentUser();
+                                        UserInfoDao.deleteUserInfo();
                                         return false;
                                     }
                                 })
-                )
-                .withStickyFooter(R.layout.nav_footer)
-                .build();
+                );
+//                .withStickyFooter(R.layout.nav_footer)
 
-        mDrawer.getStickyFooter().setOnClickListener(new View.OnClickListener() {
+        /*mDrawer.getStickyFooter().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             }
-        });
+        });*/
+        mDrawer = mDrawerBuilder.build();
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         resetHeader();
     }
 
     private void resetHeader() {
         if (SPUtil.getInstance(getParent()).getCurrentUsername() == null) {
+            ProfileDrawerItem mProfileDrawerItem = new ProfileDrawerItem()
+                    .withName(getResources().getString(R.string.please_login))
+                    .withIcon(R.mipmap.cheese_1);
+            mAccountHeader.clear();
+            mAccountHeader.addProfiles(mProfileDrawerItem);
+            mDrawerBuilder.withAccountHeader(mAccountHeader);
             return;
         }
-        mProfileDrawerItem = new ProfileDrawerItem()
-                .withName(SPUtil.getInstance(getParent()).getCurrentUsername())
-                .withIcon(SPUtil.getInstance(getParent()).getCurrentUserAvatar());
-        mAccountHeader.updateProfile(mProfileDrawerItem);
+        loadAvatar();
+    }
+
+    private void loadAvatar() {
+
+        Observable.create(new Observable.OnSubscribe<Bitmap>() {
+            @Override
+            public void call(Subscriber<? super Bitmap> subscriber) {
+                Bitmap avatar = ImageUtil.getBitmapFromURL(userInfo.getAvatar());
+                subscriber.onNext(avatar);
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Bitmap>() {
+                    @Override
+                    public void onCompleted() {
+                        mDrawerBuilder.withAccountHeader(mAccountHeader);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Bitmap bitmap) {
+                        ProfileDrawerItem mProfileDrawerItem = new ProfileDrawerItem()
+                                .withName(userInfo.getUserName())
+                                .withEmail(userInfo.getContactMe())
+                                .withIcon(bitmap);
+                        mAccountHeader.clear();
+                        mAccountHeader.addProfiles(mProfileDrawerItem);
+                    }
+                });
     }
 
     public void addDrawerItems(IDrawerItem... drawerItems) {

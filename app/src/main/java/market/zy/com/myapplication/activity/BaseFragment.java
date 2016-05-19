@@ -1,15 +1,28 @@
 package market.zy.com.myapplication.activity;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.Toast;
 
+import market.zy.com.myapplication.db.UserInfo;
+import market.zy.com.myapplication.db.UserInfoDao;
+
 /**
  * Created by dell on 2016/3/8.
  */
 public class BaseFragment extends Fragment {
+    protected UserInfo userInfo;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        userInfo = UserInfoDao.queryUserInfo();
+    }
+
     public void showSnackbarTipShort(View view, int resourceId) {
         Snackbar.make(view, getResources().getString(resourceId), Snackbar.LENGTH_SHORT).show();
     }

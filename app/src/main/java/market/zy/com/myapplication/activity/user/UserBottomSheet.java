@@ -8,8 +8,17 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 import market.zy.com.myapplication.R;
+import market.zy.com.myapplication.db.UserInfo;
+import market.zy.com.myapplication.db.UserInfoDao;
 
 /**
  * Created by root on 16-5-9.
@@ -19,16 +28,32 @@ public class UserBottomSheet extends BottomSheetDialogFragment {
 
     private View mView;
 
-    private Toolbar mToolbar;
+    @Bind(R.id.personal_bottom_toolbar)
+    protected Toolbar mToolbar;
 
+    @Bind(R.id.personal_bottom_avater)
+    protected CircleImageView mAvatar;
 
+    @Bind(R.id.personal_bottom_email)
+    protected TextView mEmailText;
+
+    @Bind(R.id.personal_bottom_phone)
+    protected TextView mPhoneText;
+
+    @Bind(R.id.personal_bottom_sex)
+    protected TextView mSexText;
+
+    @Bind(R.id.personal_bottom_tag)
+    protected TextView mTagText;
+
+    private UserInfo userInfo;
     @Override
     public void setupDialog(final Dialog dialog, int style) {
         super.setupDialog(dialog, style);
         mView = View.inflate(getContext(), R.layout.personal_bottom_sheet, null);
         dialog.setContentView(mView);
 
-        mToolbar = (Toolbar) mView.findViewById(R.id.personal_bottom_toolbar);
+        ButterKnife.bind(this, mView);
         mToolbar.setTitle(R.string.personal_info);
         mToolbar.setNavigationIcon(R.mipmap.ic_close_white_24dp);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -74,5 +99,20 @@ public class UserBottomSheet extends BottomSheetDialogFragment {
             bottomSheetBehavior.setPeekHeight(getResources().getDimensionPixelOffset(R.dimen.personal_bottom_peek_height));
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }
+
+        loadUserInfo();
+    }
+
+    private void loadUserInfo() {
+        userInfo = UserInfoDao.queryUserInfo();
+        Glide.with(this)
+                .load(userInfo.getAvatar())
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .centerCrop()
+                .into(mAvatar);
+        mToolbar.setTitle(userInfo.getUserName());
+        mPhoneText.setText(userInfo.getContactMe());
+        mSexText.setText(userInfo.getSex());
+        mTagText.setText(userInfo.getAbout_me());
     }
 }

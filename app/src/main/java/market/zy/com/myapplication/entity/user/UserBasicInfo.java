@@ -3,7 +3,7 @@ package market.zy.com.myapplication.entity.user;
 /**
  * Created by zpauly on 16-5-18.
  */
-public class BasicInfo {
+public class UserBasicInfo {
     /**
      * about_me : Nulla ac enim.
      * avatar : http://7xrkww.com1.z0.glb.clouddn.com/84BE7838-E41C-4E60-A1B8-CA

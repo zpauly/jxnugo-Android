@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.Constants;
+import market.zy.com.myapplication.db.UserInfo;
+import market.zy.com.myapplication.db.UserInfoDao;
 import market.zy.com.myapplication.utils.SPUtil;
 
 /**
@@ -27,6 +29,8 @@ public class BaseActivity extends AppCompatActivity {
 
     protected SPUtil sp;
 
+    protected UserInfo userInfo;
+
     public void setOnBackTwiceToTrue() {
         onBackTwice = true;
     }
@@ -35,6 +39,13 @@ public class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sp = SPUtil.getInstance(this);
+        loadUserInfo();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        loadUserInfo();
     }
 
     @Override
@@ -53,6 +64,10 @@ public class BaseActivity extends AppCompatActivity {
         } else {
             return false;
         }
+    }
+
+    protected void loadUserInfo() {
+        userInfo = UserInfoDao.queryUserInfo();
     }
 
     protected void exitCurrentUser() {

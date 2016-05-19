@@ -1,7 +1,7 @@
 package market.zy.com.myapplication.network.user;
 
 
-import market.zy.com.myapplication.entity.user.BasicInfo;
+import market.zy.com.myapplication.entity.user.UserBasicInfo;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import rx.Observable;
@@ -11,5 +11,5 @@ import rx.Observable;
  */
 public interface IUserInfoService {
     @GET("user/{id}")
-    Observable<BasicInfo> getUserInfo(@Path("id") int id);
+    Observable<UserBasicInfo> getUserInfo(@Path("id") int id);
 }

@@ -10,9 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -22,7 +20,9 @@ import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseActivity;
-import market.zy.com.myapplication.entity.user.BasicInfo;
+import market.zy.com.myapplication.db.UserInfo;
+import market.zy.com.myapplication.db.UserInfoDao;
+import market.zy.com.myapplication.entity.user.UserBasicInfo;
 import market.zy.com.myapplication.network.user.UserInfoMethod;
 import market.zy.com.myapplication.utils.SPUtil;
 import rx.Subscriber;
@@ -61,28 +61,33 @@ public class UserActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
         initView();
     }
 
-    @Override
+    /*@Override
     protected void onResume() {
         super.onResume();
         initView();
-    }
+    }*/
 
     private void initView() {
         fm = getSupportFragmentManager();
         ft = fm.beginTransaction();
 
-        setUpToolbar();
-
         selectPage();
+
+        setUpToolbar();
     }
 
     private void selectPage() {
         if (isCurrentUsing()) {
             mLoginPage = new UserDetailFragment();
-            loadUserInfo();
+            Glide.with(this)
+                    .load(userInfo.getAvatar())
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .centerCrop()
+                    .into(mAvatarImageView);
             ft.replace(R.id.personal_page, mLoginPage);
             ft.commit();
         } else {
@@ -92,39 +97,9 @@ public class UserActivity extends BaseActivity {
         }
     }
 
-    private void loadUserInfo() {
-        final BasicInfo[] info = new BasicInfo[1];
-        Subscriber<BasicInfo> subscriber = new Subscriber<BasicInfo>() {
-            @Override
-            public void onCompleted() {
-                Glide.with(UserActivity.this)
-                        .load(info[0].getAvatar())
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .centerCrop()
-                        .into(mAvatarImageView);
-                SPUtil.getInstance(UserActivity.this).putCurrentUserAvatar(info[0].getAvatar());
-                mToolbar.setTitle(SPUtil.getInstance(UserActivity.this).getCurrentUsername());
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(BasicInfo basicInfo) {
-                info[0] = basicInfo;
-            }
-        };
-        UserInfoMethod.getInstance(SPUtil.getInstance(this).getCurrentUsername()
-                , SPUtil.getInstance(this).getCurrentPassword())
-                .getUserInfo(subscriber, SPUtil.getInstance(this).getCurrentUserId());
-    }
-
     private void setUpToolbar() {
         if (isCurrentUsing()) {
-            mToolbar.setTitle(sp.getCurrentUsername());
+            mToolbar.setTitle(userInfo.getUserName());
         } else {
             mToolbar.setTitle(R.string.user_info);
         }

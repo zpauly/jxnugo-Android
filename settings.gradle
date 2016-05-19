@@ -1,2 +1,2 @@
-include ':app', ':jxnugodblib'
+include ':app'
 include ':weiboSDK'

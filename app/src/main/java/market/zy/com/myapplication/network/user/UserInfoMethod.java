@@ -1,7 +1,7 @@
 package market.zy.com.myapplication.network.user;
 
 import market.zy.com.myapplication.Constants;
-import market.zy.com.myapplication.entity.user.BasicInfo;
+import market.zy.com.myapplication.entity.user.UserBasicInfo;
 import market.zy.com.myapplication.utils.RetrofitUtil;
 import retrofit2.Retrofit;
 import rx.Observer;
@@ -36,7 +36,7 @@ public class UserInfoMethod {
         return instance;
     }
 
-    public void getUserInfo(Observer<BasicInfo> observer, int userId) {
+    public void getUserInfo(Observer<UserBasicInfo> observer, int userId) {
         service.getUserInfo(userId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
