@@ -28,8 +28,10 @@
     <string name="personal_tag">个人标签</string>
     <string name="personal_info">个人资料</string>
     <string name="login_or_registe">（ 登录 / 注册 ）</string>
+    <string name="username_or_password_error">账号或密码错误</string>
 
     <string name="trade_list">交易列表</string>
+    <string name="exit_current_user">注销</string>
     <string name="user_info">个人详情</string>
     <string name="user_manage">账号设置</string>
 

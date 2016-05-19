@@ -1,4 +1,4 @@
-package market.zy.com.myapplication.activity;
+package market.zy.com.myapplication.activity.user;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,7 +13,7 @@ import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.usermanager.UserManagerActivity;
 
 /**
- * Created by root on 16-5-10.
+ * Created by zpauly on 16-5-10.
  */
 public class PleaseLoginFragment extends Fragment {
 

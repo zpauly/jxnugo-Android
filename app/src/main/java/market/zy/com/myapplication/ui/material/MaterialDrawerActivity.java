@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Toast;
 
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -13,6 +14,7 @@ import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SwitchDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
@@ -22,6 +24,7 @@ import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseActivity;
 import market.zy.com.myapplication.activity.trade.TradeActivity;
 import market.zy.com.myapplication.activity.user.UserActivity;
+import market.zy.com.myapplication.utils.SPUtil;
 
 /**
  * Created by dell on 2016/3/10.
@@ -77,13 +80,17 @@ public class MaterialDrawerActivity extends BaseActivity {
                                 return false;
                             }
                         }),
-                        new PrimaryDrawerItem()
-                                .withName("item2").withIcon(GoogleMaterial.Icon.gmd_label),
-                        new PrimaryDrawerItem()
-                                .withName("item3").withIcon(GoogleMaterial.Icon.gmd_label),
                         new DividerDrawerItem(),
-                        new SwitchDrawerItem()
-                                .withName("subitem").withIcon(GoogleMaterial.Icon.gmd_filter)
+                        new SecondaryDrawerItem()
+                                .withName(R.string.exit_current_user)
+                                .withIcon(GoogleMaterial.Icon.gmd_exit_to_app)
+                                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                                    @Override
+                                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                                        SPUtil.getInstance(activity).removeCurrentUser();
+                                        return false;
+                                    }
+                                })
                 )
                 .withStickyFooter(R.layout.nav_footer)
                 .build();
@@ -94,6 +101,22 @@ public class MaterialDrawerActivity extends BaseActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        resetHeader();
+    }
+
+    private void resetHeader() {
+        if (SPUtil.getInstance(getParent()).getCurrentUsername() == null) {
+            return;
+        }
+        mProfileDrawerItem = new ProfileDrawerItem()
+                .withName(SPUtil.getInstance(getParent()).getCurrentUsername())
+                .withIcon(SPUtil.getInstance(getParent()).getCurrentUserAvatar());
+        mAccountHeader.updateProfile(mProfileDrawerItem);
     }
 
     public void addDrawerItems(IDrawerItem... drawerItems) {

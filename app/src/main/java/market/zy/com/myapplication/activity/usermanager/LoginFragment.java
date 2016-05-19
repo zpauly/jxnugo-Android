@@ -3,14 +3,18 @@ package market.zy.com.myapplication.activity.usermanager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.maksim88.passwordedittext.PasswordEditText;
 import com.sina.weibo.sdk.auth.AuthInfo;
@@ -26,12 +30,17 @@ import butterknife.ButterKnife;
 import market.zy.com.myapplication.Constants;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseFragment;
+import market.zy.com.myapplication.entity.login.LoginTokenSuccess;
+import market.zy.com.myapplication.network.login_register.LoginMethod;
 import market.zy.com.myapplication.utils.AccessTokenKeeper;
+import market.zy.com.myapplication.utils.SPUtil;
 import market.zy.com.myapplication.utils.qqUtils.AppConstants;
 import market.zy.com.myapplication.utils.qqUtils.LoginUiListener;
+import okhttp3.Credentials;
+import rx.Subscriber;
 
 /**
- * Created by dell on 2016/3/8.
+ * Created by zpauly on 2016/3/8.
  */
 public class LoginFragment extends BaseFragment {
     private static final int QQ_BUTTON = 1;
@@ -75,6 +84,8 @@ public class LoginFragment extends BaseFragment {
 
         setTextListener();
 
+        setLoginButton();
+
         setQQLogin();
 
         setSinaLogin();
@@ -109,6 +120,39 @@ public class LoginFragment extends BaseFragment {
         public void afterTextChanged(Editable s) {
             setButtonEnabled();
         }
+    }
+
+    private void setLoginButton() {
+        mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Subscriber<LoginTokenSuccess> subscriber = new Subscriber<LoginTokenSuccess>() {
+                    @Override
+                    public void onCompleted() {
+                        getActivity().finish();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        Snackbar.make(getView(), R.string.username_or_password_error, Snackbar.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNext(LoginTokenSuccess loginTokenSuccess) {
+                        SPUtil sp = SPUtil.getInstance(getContext());
+                        sp.putCurrentUsername(mEditText.getText().toString());
+                        sp.putCurrentPassword(mPasswordEditText.getText().toString());
+                        sp.putCurrentUserId(loginTokenSuccess.getUserId());
+                    }
+                };
+                String username = mEditText.getText().toString();
+                String password = mPasswordEditText.getText().toString();
+                LoginMethod.getInstance(username, password)
+                        .login(subscriber);
+            }
+        });
     }
 
     private void setQQLogin() {

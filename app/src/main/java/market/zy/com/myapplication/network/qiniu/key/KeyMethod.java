@@ -9,7 +9,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
- * Created by root on 16-5-7.
+ * Created by zpauly on 16-5-7.
  */
 public class KeyMethod {
     private static KeyMethod instance = null;
@@ -19,7 +19,7 @@ public class KeyMethod {
     private IKeyService service;
 
     private KeyMethod() {
-        retrofit = RetrofitUtil.initRetrofit(Constants.QINIU_UPLOAD_TOKEN_BASE_URL);
+        retrofit = RetrofitUtil.initRetrofit(Constants.BASE_URL);
 
         service = retrofit.create(IKeyService.class);
     }

@@ -2,6 +2,7 @@ package market.zy.com.myapplication.activity.user;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
@@ -9,17 +10,25 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseActivity;
-import market.zy.com.myapplication.activity.PleaseLoginFragment;
+import market.zy.com.myapplication.entity.user.BasicInfo;
+import market.zy.com.myapplication.network.user.UserInfoMethod;
+import market.zy.com.myapplication.utils.SPUtil;
+import rx.Subscriber;
 
 /**
- * Created by dell on 2016/3/11.
+ * Created by zpauly on 2016/3/11.
  */
 public class UserActivity extends BaseActivity {
     @Bind(R.id.personal_toolbar)
@@ -31,9 +40,12 @@ public class UserActivity extends BaseActivity {
     @Bind(R.id.personal_avater)
     protected CircleImageView mAvatarImageView;
 
-    private PleaseLoginFragment mLoginPage;
+    private Fragment mLoginPage;
 
     private UserBottomSheet mBottomSheet;
+
+    private FragmentManager fm;
+    private FragmentTransaction ft;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,30 +61,70 @@ public class UserActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        selectPage();
+        initView();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initView();
     }
 
     private void initView() {
+        fm = getSupportFragmentManager();
+        ft = fm.beginTransaction();
+
         setUpToolbar();
 
         selectPage();
     }
 
     private void selectPage() {
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
         if (isCurrentUsing()) {
-
+            mLoginPage = new UserDetailFragment();
+            loadUserInfo();
+            ft.replace(R.id.personal_page, mLoginPage);
+            ft.commit();
         } else {
             mLoginPage = new PleaseLoginFragment();
             ft.replace(R.id.personal_page, mLoginPage);
+            ft.commit();
         }
-        ft.commit();
+    }
+
+    private void loadUserInfo() {
+        final BasicInfo[] info = new BasicInfo[1];
+        Subscriber<BasicInfo> subscriber = new Subscriber<BasicInfo>() {
+            @Override
+            public void onCompleted() {
+                Glide.with(UserActivity.this)
+                        .load(info[0].getAvatar())
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .centerCrop()
+                        .into(mAvatarImageView);
+                SPUtil.getInstance(UserActivity.this).putCurrentUserAvatar(info[0].getAvatar());
+                mToolbar.setTitle(SPUtil.getInstance(UserActivity.this).getCurrentUsername());
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(BasicInfo basicInfo) {
+                info[0] = basicInfo;
+            }
+        };
+        UserInfoMethod.getInstance(SPUtil.getInstance(this).getCurrentUsername()
+                , SPUtil.getInstance(this).getCurrentPassword())
+                .getUserInfo(subscriber, SPUtil.getInstance(this).getCurrentUserId());
     }
 
     private void setUpToolbar() {
         if (isCurrentUsing()) {
-            mToolbar.setTitle(getCurrentUser());
+            mToolbar.setTitle(sp.getCurrentUsername());
         } else {
             mToolbar.setTitle(R.string.user_info);
         }

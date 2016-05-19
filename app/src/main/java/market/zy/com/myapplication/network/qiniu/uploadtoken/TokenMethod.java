@@ -19,7 +19,7 @@ public class TokenMethod {
     private ITokenService service;
 
     private TokenMethod() {
-        retrofit = RetrofitUtil.initRetrofit(Constants.QINIU_UPLOAD_TOKEN_BASE_URL);
+        retrofit = RetrofitUtil.initRetrofit(Constants.BASE_URL);
 
         service = retrofit.create(ITokenService.class);
     }

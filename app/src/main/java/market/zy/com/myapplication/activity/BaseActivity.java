@@ -14,22 +14,18 @@ import android.widget.Toast;
 
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.Constants;
+import market.zy.com.myapplication.utils.SPUtil;
 
 /**
  * Created by dell on 2016/3/8.
  */
 public class BaseActivity extends AppCompatActivity {
-    public static String IS_USING = "isUsing";
-    public static String CURRENT_USER = "current_user";
 
     private boolean isExitConfirm = false;
     private long lastPressTime = 0;
     private boolean onBackTwice = false;
 
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor preferencesEditor;
-
-    protected String currentUser;
+    protected SPUtil sp;
 
     public void setOnBackTwiceToTrue() {
         onBackTwice = true;
@@ -38,8 +34,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sharedPreferences = getSharedPreferences(IS_USING, MODE_PRIVATE);
-        preferencesEditor = sharedPreferences.edit();
+        sp = SPUtil.getInstance(this);
     }
 
     @Override
@@ -53,24 +48,15 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     protected boolean isCurrentUsing() {
-        if (sharedPreferences.getString(CURRENT_USER, null) == null) {
-            return false;
-        } else {
-            currentUser = sharedPreferences.getString(CURRENT_USER, null);
+        if (sp.getCurrentUsername() != null) {
             return true;
+        } else {
+            return false;
         }
     }
 
-    protected String getCurrentUser() {
-        return currentUser;
-    }
-
-    protected void setCurrentUser(String currentUser) {
-        preferencesEditor.putString(CURRENT_USER, currentUser);
-    }
-
     protected void exitCurrentUser() {
-        preferencesEditor.remove(CURRENT_USER);
+        sp.removeCurrentUser();
     }
 
     public void showSnackbarTipShort(View view, int resourceId) {

@@ -5,7 +5,7 @@ import retrofit2.http.GET;
 import rx.Observable;
 
 /**
- * Created by root on 16-5-7.
+ * Created by zpauly on 16-5-7.
  */
 public interface ITokenService {
 

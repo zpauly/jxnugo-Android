@@ -4,20 +4,32 @@
     android:layout_height="match_parent"
     android:gravity="center">
 
-    <EditText
-        android:id="@+id/login_username"
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/login_username"
-        android:layout_margin="@dimen/edit_padding"/>
+        android:layout_height="wrap_content">
 
-    <com.maksim88.passwordedittext.PasswordEditText
-        android:id="@+id/login_password"
-        android:password="true"
+        <EditText
+            android:id="@+id/login_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/login_username"
+            android:layout_margin="@dimen/edit_padding"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/login_password"
-        android:layout_margin="@dimen/edit_padding"/>
+        android:layout_height="wrap_content">
+
+        <com.maksim88.passwordedittext.PasswordEditText
+            android:id="@+id/login_password"
+            android:inputType="textPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/login_password"
+            android:layout_margin="@dimen/edit_padding"/>
+
+    </android.support.design.widget.TextInputLayout>
 
     <Button
         android:id="@+id/confirm_to_login"

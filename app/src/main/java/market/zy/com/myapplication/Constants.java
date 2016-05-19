@@ -69,5 +69,5 @@ public interface Constants {
 
     public static final long DEFAULT_TIMEOUT =  5000;
 
-    public static final String QINIU_UPLOAD_TOKEN_BASE_URL = "http://www.jxnugo.com/api/";
+    public static final String BASE_URL = "http://www.jxnugo.com/api/";
 }

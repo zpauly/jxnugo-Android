@@ -4,28 +4,46 @@
     android:layout_height="match_parent"
     android:gravity="center">
 
-    <EditText
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/edit_padding"
-        android:id="@+id/registe_email"
-        android:hint="@string/enter_email"/>
+        android:layout_height="wrap_content">
 
-    <com.maksim88.passwordedittext.PasswordEditText
-        android:password="true"
-        android:id="@+id/registe_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/enter_password"
-        android:layout_margin="@dimen/edit_padding"/>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/edit_padding"
+            android:id="@+id/registe_email"
+            android:hint="@string/enter_email"/>
 
-    <com.maksim88.passwordedittext.PasswordEditText
-        android:password="true"
-        android:hint="@string/confirm"
-        android:id="@+id/registe_password_again"
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/edit_padding"/>
+        android:layout_height="wrap_content">
+
+        <com.maksim88.passwordedittext.PasswordEditText
+            android:inputType="textPassword"
+            android:id="@+id/registe_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_password"
+            android:layout_margin="@dimen/edit_padding"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.maksim88.passwordedittext.PasswordEditText
+            android:inputType="textPassword"
+            android:hint="@string/confirm"
+            android:id="@+id/registe_password_again"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/edit_padding"/>
+
+    </android.support.design.widget.TextInputLayout>
 
     <Button
         android:layout_margin="@dimen/edit_padding"
