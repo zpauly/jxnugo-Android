@@ -18,26 +18,25 @@ public class LoginMethod {
 
     private ILoginService service;
 
-    private String username;
-
-    private String password;
-
-    private LoginMethod(String username, String password) {
-        this.username = username;
-        this.password = password;
-
-        retrofit = RetrofitUtil.initAuthRetrofit(Constants.BASE_URL, username, password);
+    private LoginMethod() {
+        retrofit = RetrofitUtil.initRetrofit(Constants.BASE_URL);
 
         service = retrofit.create(ILoginService.class);
     }
 
-    public static LoginMethod getInstance(String username, String password) {
-        instance = new LoginMethod(username, password);
+    public static LoginMethod getInstance() {
+        if (instance == null) {
+            synchronized (LoginMethod.class) {
+                if (instance == null) {
+                    instance = new LoginMethod();
+                }
+            }
+        }
         return instance;
     }
 
-    public void login(Observer<LoginTokenSuccess> observer) {
-        service.getLoginToken(username, password)
+    public void login(Observer<LoginTokenSuccess> observer, String auth, String username, String password) {
+        service.getLoginToken(auth, username, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);

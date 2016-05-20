@@ -13,11 +13,12 @@ import com.bumptech.glide.Glide;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import market.zy.com.myapplication.R;
+import market.zy.com.myapplication.activity.viewholder.PersonalViewHolder;
 
 /**
  * Created by dell on 2016/3/11.
  */
-public class PersonalAdapter extends RecyclerView.Adapter<PersonalAdapter.MyViewHolder> {
+public class PersonalAdapter extends RecyclerView.Adapter<PersonalViewHolder> {
     private Context mContext;
     private View mView;
 
@@ -26,15 +27,15 @@ public class PersonalAdapter extends RecyclerView.Adapter<PersonalAdapter.MyView
     }
 
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public PersonalViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         mView = LayoutInflater.from(mContext)
                 .inflate(R.layout.personal_recyclerview_item, parent, false);
-        MyViewHolder viewHolder = new MyViewHolder(mView);
+        PersonalViewHolder viewHolder = new PersonalViewHolder(mView);
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(PersonalViewHolder holder, int position) {
         Glide.with(mContext)
                 .load(R.drawable.ic_keyboard_arrow_right_24dp)
                 .into(holder.mImageView);
@@ -57,18 +58,4 @@ public class PersonalAdapter extends RecyclerView.Adapter<PersonalAdapter.MyView
     public int getItemCount() {
         return 3;
     }
-
-    public class MyViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.personal_item_textview)
-        protected TextView mTextView;
-
-        @Bind(R.id.personal_item_arrow_right)
-        protected ImageView mImageView;
-
-        public MyViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-    }
-
 }

@@ -16,10 +16,13 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import market.zy.com.myapplication.R;
-import market.zy.com.myapplication.entity.Comment;
+import market.zy.com.myapplication.activity.viewholder.CommentsViewHolder;
+import market.zy.com.myapplication.activity.viewholder.LoadMoreViewHolder;
+import market.zy.com.myapplication.engine.ImageEngine;
+import market.zy.com.myapplication.entity.comments.Comment;
 
 /**
- * Created by root on 16-5-10.
+ * Created by zpauly on 16-5-10.
  */
 public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
@@ -41,9 +44,9 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         View mView2 = LayoutInflater.from(mContext).inflate(R.layout.loadmore_layout, parent, false);
         RecyclerView.ViewHolder viewHolder;
         if (viewType == -1) {
-            viewHolder = new MyViewHolder2(mView2);
+            viewHolder = new LoadMoreViewHolder(mView2);
         } else {
-            viewHolder = new MyViewHolder1(mView1);
+            viewHolder = new CommentsViewHolder(mView1);
         }
         return viewHolder;
     }
@@ -51,7 +54,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (position == getItemCount() - 1) {
-            MyViewHolder2 holder2 = (MyViewHolder2) holder;
+            LoadMoreViewHolder holder2 = (LoadMoreViewHolder) holder;
             holder2.mCircleProgressBar.setColorSchemeResources(android.R.color.holo_blue_bright,
                     android.R.color.holo_green_light, android.R.color.holo_orange_light,
                     android.R.color.holo_red_light);
@@ -62,9 +65,11 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
             return;
         }
-        MyViewHolder1 myViewHolder1 = (MyViewHolder1) holder;
-        myViewHolder1.mUserTextView.setText("username");
-        myViewHolder1.mCommentTextView.setText("comments");
+        CommentsViewHolder myViewHolder1 = (CommentsViewHolder) holder;
+        myViewHolder1.mUsername.setText(mData.get(position).getAuthor());
+        myViewHolder1.mCommentsTime.setText(mData.get(position).getTimestamp());
+        myViewHolder1.mComments.setText(mData.get(position).getBody());
+        ImageEngine.loadimageFromUrl(mContext, myViewHolder1.mUserAvatar, mData.get(position).getAuthorAvatar());
     }
 
     public void setShowLoadMore(boolean show) {
@@ -97,32 +102,5 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void addAllData(List<Comment> list) {
         mData.addAll(list);
         notifyDataSetChanged();
-    }
-
-    class MyViewHolder1 extends RecyclerView.ViewHolder {
-
-        @Bind(R.id.comments_item_avater)
-        CircleImageView mAvaterImage;
-
-        @Bind(R.id.comments_item_user)
-        TextView mUserTextView;
-
-        @Bind(R.id.comments_item_comment)
-        TextView mCommentTextView;
-
-        public MyViewHolder1(View itemView) {
-            super(itemView);
-
-            ButterKnife.bind(this, itemView);
-        }
-    }
-
-    class MyViewHolder2 extends RecyclerView.ViewHolder {
-        @Bind(R.id.load_more_progressbar)
-        protected CircleProgressBar mCircleProgressBar;
-        public MyViewHolder2(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
     }
 }

@@ -65,12 +65,6 @@ public class UserActivity extends BaseActivity {
         initView();
     }
 
-    /*@Override
-    protected void onResume() {
-        super.onResume();
-        initView();
-    }*/
-
     private void initView() {
         fm = getSupportFragmentManager();
         ft = fm.beginTransaction();
@@ -124,8 +118,12 @@ public class UserActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.personal_person :
-                mBottomSheet = new UserBottomSheet();
-                mBottomSheet.show(getSupportFragmentManager(), mBottomSheet.getTag());
+                if (SPUtil.getInstance(this).getCurrentUsername() != null) {
+                    mBottomSheet = new UserBottomSheet();
+                    mBottomSheet.show(getSupportFragmentManager(), mBottomSheet.getTag());
+                } else {
+                    showSnackbarTipShort(getCurrentFocus(), R.string.please_login);
+                }
                 break;
             default :
                 break;

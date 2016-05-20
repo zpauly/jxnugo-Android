@@ -12,5 +12,5 @@ import rx.Observable;
  */
 public interface ILoginService {
     @GET("get_token")
-    Observable<LoginTokenSuccess> getLoginToken(@Query("userName") String username, @Query("passWord") String password);
+    Observable<LoginTokenSuccess> getLoginToken(@Header("Authorization") String auth, @Query("userName") String username, @Query("passWord") String password);
 }

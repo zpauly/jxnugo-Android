@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".activity.trade.TradeActivity">
+        <activity android:name=".activity.PostDetailsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,7 +31,7 @@
         <activity android:name=".activity.comments.CommentsActivity"/>
         <activity android:name=".activity.classify.ClassifyActivity"/>
         <activity android:name=".activity.publish.PublishGoodsActivity"/>
-        <activity android:name=".activity.postcontent.PostContentActivity"/>
+        <!--<activity android:name=".activity.postcontent.PostContentActivity"/>-->
 
         <activity android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
             android:configChanges="keyboardHidden|orientation"

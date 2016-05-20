@@ -98,6 +98,7 @@ public class MaterialDrawerActivity extends BaseActivity {
                                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                                         SPUtil.getInstance(activity).removeCurrentUser();
                                         UserInfoDao.deleteUserInfo();
+                                        resetHeader();
                                         return false;
                                     }
                                 })

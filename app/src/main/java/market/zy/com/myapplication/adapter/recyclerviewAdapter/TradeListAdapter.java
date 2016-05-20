@@ -21,7 +21,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import market.zy.com.myapplication.R;
+import market.zy.com.myapplication.activity.PostDetailsActivity;
 import market.zy.com.myapplication.activity.postcontent.PostContentActivity;
+import market.zy.com.myapplication.activity.viewholder.LoadMoreViewHolder;
+import market.zy.com.myapplication.activity.viewholder.TradeListViewHolder;
+import market.zy.com.myapplication.engine.ImageEngine;
 import market.zy.com.myapplication.entity.post.OneSimplePost;
 import market.zy.com.myapplication.utils.ImageUtil;
 import rx.Observable;
@@ -43,9 +47,6 @@ public class TradeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     public TradeListAdapter(Context context) {
         mContext = context;
-        /*for (int i = 0; i < 0; i++) {
-            mData.add(new OneSimplePost());
-        }*/
     }
 
     public void addData(OneSimplePost post) {
@@ -85,12 +86,12 @@ public class TradeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         if (viewType == -1) {
             mView = LayoutInflater.from(mContext)
                     .inflate(R.layout.loadmore_layout, parent, false);
-            MyViewHolder2 viewHolder = new MyViewHolder2(mView);
+            LoadMoreViewHolder viewHolder = new LoadMoreViewHolder(mView);
             return viewHolder;
         } else {
             mView = LayoutInflater.from(mContext)
                     .inflate(R.layout.trade_list_recyclerview_item, parent, false);
-            MyViewHolder1 viewHolder = new MyViewHolder1(mView);
+            TradeListViewHolder viewHolder = new TradeListViewHolder(mView);
             return viewHolder;
         }
     }
@@ -98,7 +99,7 @@ public class TradeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (position == getItemCount() - 1){
-            MyViewHolder2 viewHolder = (MyViewHolder2) holder;
+            LoadMoreViewHolder viewHolder = (LoadMoreViewHolder) holder;
             viewHolder.mCircleProgressBar.setColorSchemeResources(android.R.color.holo_blue_bright,
                     android.R.color.holo_green_light, android.R.color.holo_orange_light,
                     android.R.color.holo_red_light);
@@ -109,8 +110,8 @@ public class TradeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             }
             return;
         }
-        MyViewHolder1 viewHolder = (MyViewHolder1) holder;
-        loadAvatar(viewHolder.mAvatar, mData.get(position).getPostUserAvator());
+        TradeListViewHolder viewHolder = (TradeListViewHolder) holder;
+        ImageEngine.loadimageFromUrl(mContext, viewHolder.mAvatar, mData.get(position).getPostUserAvator());
         /*loadCover(viewHolder.mImageView, mData.get(position).getPhotos().get(0).getKey());*/
         viewHolder.mUsername.setText(mData.get(position).getPostUserName());
         viewHolder.mGoodname.setText(mData.get(position).getPhotos().get(0).getKey());
@@ -118,9 +119,9 @@ public class TradeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent postContentIntent = new Intent();
-                postContentIntent.setClass(mContext, PostContentActivity.class);
-                mContext.startActivity(postContentIntent);
+                Intent postDetailsIntent = new Intent();
+                postDetailsIntent.setClass(mContext, PostDetailsActivity.class);
+                mContext.startActivity(postDetailsIntent);
             }
         });
     }
@@ -128,100 +129,5 @@ public class TradeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public int getItemCount() {
         return mData.size() + 1;
-    }
-
-    private void loadAvatar(final CircleImageView avatar, final String url) {
-        Observable.create(new Observable.OnSubscribe<Bitmap>() {
-
-            @Override
-            public void call(Subscriber<? super Bitmap> subscriber) {
-                Bitmap bitmap = ImageUtil.getBitmapFromURL(url);
-                subscriber.onNext(bitmap);
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Bitmap>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Bitmap bitmap) {
-                        Glide.with(mContext)
-                                .load(bitmap)
-                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .centerCrop()
-                                .into(avatar);
-                    }
-                });
-    }
-
-    private void loadCover(final ImageView cover, final String url) {
-        Observable.create(new Observable.OnSubscribe<Bitmap>() {
-
-            @Override
-            public void call(Subscriber<? super Bitmap> subscriber) {
-                Bitmap bitmap = ImageUtil.getBitmapFromURL(url);
-                subscriber.onNext(bitmap);
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Bitmap>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Bitmap bitmap) {
-                        Glide.with(mContext)
-                                .load(bitmap)
-                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .centerCrop()
-                                .into(cover);
-                    }
-                });
-    }
-
-    public class MyViewHolder1 extends RecyclerView.ViewHolder {
-        @Bind(R.id.trade_list_image)
-        protected ImageView mImageView;
-
-        @Bind(R.id.trade_list_item_goodname)
-        protected TextView mGoodname;
-
-        @Bind(R.id.trade_list_item_username)
-        protected TextView mUsername;
-
-        @Bind(R.id.trade_list_item_avatar)
-        protected CircleImageView mAvatar;
-
-        @Bind(R.id.trade_list_item_time)
-        protected TextView mTime;
-
-        public MyViewHolder1(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-    }
-
-    public class MyViewHolder2 extends RecyclerView.ViewHolder {
-        @Bind(R.id.load_more_progressbar)
-        protected CircleProgressBar mCircleProgressBar;
-        public MyViewHolder2(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
     }
 }

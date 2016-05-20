@@ -6,15 +6,12 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import com.maksim88.passwordedittext.PasswordEditText;
 import com.sina.weibo.sdk.auth.AuthInfo;
@@ -36,10 +33,10 @@ import market.zy.com.myapplication.entity.user.UserBasicInfo;
 import market.zy.com.myapplication.network.login_register.LoginMethod;
 import market.zy.com.myapplication.network.user.UserInfoMethod;
 import market.zy.com.myapplication.utils.AccessTokenKeeper;
+import market.zy.com.myapplication.utils.AuthUtil;
 import market.zy.com.myapplication.utils.SPUtil;
 import market.zy.com.myapplication.utils.qqUtils.AppConstants;
 import market.zy.com.myapplication.utils.qqUtils.LoginUiListener;
-import okhttp3.Credentials;
 import rx.Subscriber;
 
 /**
@@ -151,8 +148,9 @@ public class LoginFragment extends BaseFragment {
                 };
                 String username = mEditText.getText().toString();
                 String password = mPasswordEditText.getText().toString();
-                LoginMethod.getInstance(username, password)
-                        .login(subscriber);
+                String auth = AuthUtil.getAuthFromUsernameAndPassword(username, password);
+                LoginMethod.getInstance()
+                        .login(subscriber, auth, username, password);
             }
         });
     }
