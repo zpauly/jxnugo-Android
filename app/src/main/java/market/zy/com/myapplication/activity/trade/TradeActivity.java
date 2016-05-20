@@ -2,18 +2,14 @@ package market.zy.com.myapplication.activity.trade;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.design.widget.AppBarLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
 
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
@@ -28,41 +24,29 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import market.zy.com.myapplication.Constants;
 import market.zy.com.myapplication.R;
+import market.zy.com.myapplication.activity.NoInternetFragment;
 import market.zy.com.myapplication.activity.classify.ClassifyActivity;
 import market.zy.com.myapplication.activity.publish.PublishGoodsActivity;
-import market.zy.com.myapplication.adapter.recyclerviewAdapter.TradeListAdapter;
 import market.zy.com.myapplication.ui.material.MaterialDrawerActivity;
+import market.zy.com.myapplication.utils.MonitorUtil;
 
 /**
- * Created by dell on 2016/3/10.
+ * Created by zpauly on 2016/3/10.
  */
 public class TradeActivity extends MaterialDrawerActivity {
     @Bind(R.id.trade_toolbar)
     protected Toolbar mToolbar;
 
-    @Bind(R.id.trade_list_recyclerview)
-    protected RecyclerView mRecyclerView;
-
-    @Bind(R.id.trade_refresh_layout)
-    protected SwipeRefreshLayout mSwipeRefreshLayout;
-
-    @Bind(R.id.trade_appbar)
-    protected AppBarLayout mAppbarLayout;
-
-    @Bind(R.id.trade_move_to_top)
-    protected ImageButton mUpArrow;
-
-    @Bind(R.id.trade_move_to_bottom)
-    protected ImageButton mDownArrow;
-
     @Bind(R.id.search_view)
     protected MaterialSearchView mSearchView;
 
-    private LinearLayoutManager manager;
-    private TradeListAdapter adapter;
+    private Fragment mTradeFragment;
 
     private FragmentManager mContextFragmentManager;
     private ContextMenuDialogFragment mMenuDialogFragment;
+
+    private FragmentManager mMainFM;
+    private FragmentTransaction mMainFT;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,12 +63,23 @@ public class TradeActivity extends MaterialDrawerActivity {
 
     private void initView() {
         ButterKnife.bind(this);
-        setUpAppbarLayout();
         setUpToolbar();
-        setUpRecyclerView();
-        setUpRefreshLayout();
-        setImageClick();
         setUpSearchView();
+
+        setUpFragment();
+    }
+
+    private void setUpFragment() {
+        mMainFM = getSupportFragmentManager();
+        mMainFT = mMainFM.beginTransaction();
+
+        if (MonitorUtil.isNetConnected(this)) {
+            mTradeFragment = new TradeFragment();
+        } else {
+            mTradeFragment = new NoInternetFragment();
+        }
+        mMainFT.replace(R.id.trade_fragment, mTradeFragment);
+        mMainFT.commit();
     }
 
     private void setUpSearchView() {
@@ -124,84 +119,6 @@ public class TradeActivity extends MaterialDrawerActivity {
 
             setUpToolbarMenu();
         }
-    }
-
-    private void setUpRecyclerView() {
-        adapter = new TradeListAdapter(this);
-        manager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(manager);
-        mRecyclerView.setAdapter(adapter);
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (manager.findFirstCompletelyVisibleItemPosition() == 0) {
-                    mSwipeRefreshLayout.setEnabled(true);
-                } else {
-                    mSwipeRefreshLayout.setEnabled(false);
-                }
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                int lastVisiableItemPosition = manager.findLastCompletelyVisibleItemPosition();
-                if (lastVisiableItemPosition == adapter.getItemCount() - 2) {
-                    adapter.setShowLoadMore(true);
-                } else if (lastVisiableItemPosition == adapter.getItemCount() - 1
-                        && adapter.isShowingLoadMore()) {
-                    adapter.setShowLoadMore(true);
-                } else {
-                    adapter.setShowLoadMore(false);
-                }
-            }
-        });
-    }
-
-    private void setUpAppbarLayout() {
-        mAppbarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (verticalOffset == 0 && manager.findFirstCompletelyVisibleItemPosition() == 0) {
-                    mSwipeRefreshLayout.setEnabled(true);
-                } else {
-                    mSwipeRefreshLayout.setEnabled(false);
-                }
-            }
-        });
-    }
-
-    private void setUpRefreshLayout() {
-        mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light, android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    }
-                }, 2000);
-            }
-        });
-    }
-
-    private void setImageClick() {
-        mUpArrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mRecyclerView.smoothScrollToPosition(0);
-            }
-        });
-
-        mDownArrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mRecyclerView.smoothScrollToPosition(mRecyclerView.getAdapter().getItemCount() - 2);
-            }
-        });
     }
 
     private void setUpToolbarMenu() {

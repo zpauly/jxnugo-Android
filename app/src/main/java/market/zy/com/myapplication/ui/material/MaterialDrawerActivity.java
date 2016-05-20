@@ -133,7 +133,6 @@ public class MaterialDrawerActivity extends BaseActivity {
     }
 
     private void loadAvatar() {
-
         Observable.create(new Observable.OnSubscribe<Bitmap>() {
             @Override
             public void call(Subscriber<? super Bitmap> subscriber) {
