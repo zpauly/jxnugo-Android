@@ -1,4 +1,4 @@
-package market.zy.com.myapplication.activity;
+package market.zy.com.myapplication.activity.post;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,26 +18,37 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import market.zy.com.myapplication.Constants;
 import market.zy.com.myapplication.R;
+import market.zy.com.myapplication.activity.BaseActivity;
 import market.zy.com.myapplication.activity.comments.CommentsActivity;
 import market.zy.com.myapplication.activity.trade.TradeActivity;
 import market.zy.com.myapplication.adapter.recyclerviewAdapter.PostDetailCommentsAdapter;
+import market.zy.com.myapplication.adapter.recyclerviewAdapter.PostDetailPhotosAdapter;
+import market.zy.com.myapplication.db.post.PhotoBean;
+import market.zy.com.myapplication.db.post.PhotosDao;
 import market.zy.com.myapplication.db.post.PostDetailBean;
 import market.zy.com.myapplication.db.post.PostDetailDao;
 import market.zy.com.myapplication.entity.comments.AllComments;
 import market.zy.com.myapplication.network.comments.CommentsMethod;
 import market.zy.com.myapplication.utils.AuthUtil;
 import market.zy.com.myapplication.utils.SPUtil;
+import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by zpauly on 16-5-20.
  */
 public class PostDetailsActivity extends BaseActivity {
+    public static String CURRENT_PHOTO = "CURRENT_PHOTO";
+
     @Bind(R.id.post_header_image)
     protected ImageView mPostHeaderImage;
 
@@ -65,8 +76,8 @@ public class PostDetailsActivity extends BaseActivity {
     @Bind(R.id.post_good_details)
     protected TextView mPostGoodDetails;
 
-    @Bind(R.id.post_good_photos)
-    protected RecyclerView mPostGoodPhotos;
+    @Bind(R.id.post_good_photos_recyclerview)
+    protected RecyclerView mPostGoodPhotosRecyclerView;
 
     @Bind(R.id.post_comments_recyclerview)
     protected RecyclerView mPostCommentsRecyclerview;
@@ -87,8 +98,13 @@ public class PostDetailsActivity extends BaseActivity {
     protected LinearLayout mCommentsLayout;
 
     private PostDetailCommentsAdapter mCommentsAdapter;
+    private PostDetailPhotosAdapter mPhotosAdapter;
 
     private int postId;
+
+
+    private Subscriber<AllComments> subscriber;
+    private Observable<List<PhotoBean>> observable;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -101,6 +117,19 @@ public class PostDetailsActivity extends BaseActivity {
         initViews();
     }
 
+    @Override
+    protected void onDestroy() {
+        unsubscribe();
+        super.onDestroy();
+    }
+
+    private void unsubscribe() {
+        if (subscriber != null)
+            subscriber.unsubscribe();
+        if (observable != null)
+            observable.unsubscribeOn(Schedulers.immediate());
+    }
+
     private void initViews() {
         getPostId();
 
@@ -111,6 +140,8 @@ public class PostDetailsActivity extends BaseActivity {
         loadPostData();
 
         setUpCommentsLayout();
+
+        setUpPhotosRecyclerView();
     }
 
     private void setUpToolbar() {
@@ -124,6 +155,20 @@ public class PostDetailsActivity extends BaseActivity {
                 onBackPressed();
             }
         });
+    }
+
+    private void setUpPhotosRecyclerView() {
+        mPhotosAdapter = new PostDetailPhotosAdapter(this);
+        loadPhotosData();
+        mPostGoodPhotosRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        mPostGoodPhotosRecyclerView.setAdapter(mPhotosAdapter);
+        /*mPostGoodPhotosRecyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                return false;
+            }
+        });*/
     }
 
     private void setUpCommentsRecyclerView() {
@@ -150,7 +195,7 @@ public class PostDetailsActivity extends BaseActivity {
     }
 
     private void loadCommentData() {
-        Subscriber<AllComments> subscriber = new Subscriber<AllComments>() {
+        subscriber = new Subscriber<AllComments>() {
             @Override
             public void onCompleted() {
 
@@ -171,6 +216,34 @@ public class PostDetailsActivity extends BaseActivity {
         CommentsMethod.getInstance().getAllComments(subscriber, auth, postId);
     }
 
+    private void loadPhotosData() {
+        observable = Observable.create(new Observable.OnSubscribe<List<PhotoBean>>() {
+
+            @Override
+            public void call(Subscriber<? super List<PhotoBean>> subscriber) {
+                subscriber.onNext(PhotosDao.queryPhoto(postId));
+            }
+        });
+        observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<PhotoBean>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<PhotoBean> photoKeys) {
+                        mPhotosAdapter.swapData(photoKeys);
+                    }
+                });
+    }
+
     private void loadPostData() {
         PostDetailBean postDetail = PostDetailDao.queryPostDetail(postId).get(0);
         mPostGoodName.setText(postDetail.getGoodName());
@@ -181,8 +254,8 @@ public class PostDetailsActivity extends BaseActivity {
         mPostGoodQuality.setText(postDetail.getGoodQuality());
         String key = getIntent().getStringExtra(TradeActivity.POST_COVER);
         Glide.with(this)
-                .load(Constants.PIC_BASE_URL +
-                        key)
+                .load(Constants.PIC_BASE_URL
+                        + key)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .centerCrop()
                 .into(mPostHeaderImage);

@@ -18,9 +18,12 @@ import butterknife.ButterKnife;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseFragment;
 import market.zy.com.myapplication.adapter.recyclerviewAdapter.TradeListAdapter;
+import market.zy.com.myapplication.db.post.PhotoBean;
+import market.zy.com.myapplication.db.post.PhotosDao;
 import market.zy.com.myapplication.db.post.PostDetailDao;
 import market.zy.com.myapplication.entity.post.OnePagePost;
 import market.zy.com.myapplication.entity.post.OneSimplePost;
+import market.zy.com.myapplication.entity.post.PhotoKey;
 import market.zy.com.myapplication.network.post.PagePostsMethod;
 import market.zy.com.myapplication.utils.AuthUtil;
 import market.zy.com.myapplication.utils.SPUtil;
@@ -51,6 +54,10 @@ public class TradeFragment extends BaseFragment {
 
     private int postIdToLoad = 1;
 
+
+    private Subscriber<OnePagePost> newSubscriber;
+    private Subscriber<OnePagePost> moreSubscriber;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -59,6 +66,26 @@ public class TradeFragment extends BaseFragment {
 
         initView();
         return mView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mSwipeRefreshLayout.setRefreshing(true);
+        loadNewData();
+    }
+
+    @Override
+    public void onDestroy() {
+        unsubscribe();
+        super.onDestroy();
+    }
+
+    private void unsubscribe() {
+        if (newSubscriber != null)
+            newSubscriber.unsubscribe();
+        if (moreSubscriber != null)
+            moreSubscriber.unsubscribe();
     }
 
     private void initView() {
@@ -147,7 +174,8 @@ public class TradeFragment extends BaseFragment {
     }
 
     private void loadNewData() {
-        Subscriber<OnePagePost> subscriber = new Subscriber<OnePagePost>() {
+        PhotosDao.deletePhotoBean();
+        newSubscriber = new Subscriber<OnePagePost>() {
             @Override
             public void onCompleted() {
                 mSwipeRefreshLayout.setRefreshing(false);
@@ -166,6 +194,9 @@ public class TradeFragment extends BaseFragment {
                 adapter.addAllData(onePagePost.getPosts());
                 for (OneSimplePost post : onePagePost.getPosts()) {
                     PostDetailDao.insertPostDetail(post);
+                    for (PhotoKey key : post.getPhotos()) {
+                        PhotosDao.insertPhotos(key, post.getPostId());
+                    }
                 }
             }
         };
@@ -173,11 +204,11 @@ public class TradeFragment extends BaseFragment {
         String auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(getContext()).getCurrentUsername()
                 , SPUtil.getInstance(getContext()).getCurrentPassword());
         PagePostsMethod.getInstance()
-                .getOnePagePosts(subscriber, auth, postIdToLoad);
+                .getOnePagePosts(newSubscriber, auth, postIdToLoad);
     }
 
     private void loadMoreData() {
-        Subscriber<OnePagePost> subscriber = new Subscriber<OnePagePost>() {
+        moreSubscriber = new Subscriber<OnePagePost>() {
             @Override
             public void onCompleted() {
                 mSwipeRefreshLayout.setRefreshing(false);
@@ -199,6 +230,6 @@ public class TradeFragment extends BaseFragment {
         String auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(getContext()).getCurrentUsername()
                 , SPUtil.getInstance(getContext()).getCurrentPassword());
         PagePostsMethod.getInstance()
-                .getOnePagePosts(subscriber, auth, ++postIdToLoad);
+                .getOnePagePosts(moreSubscriber, auth, ++postIdToLoad);
     }
 }

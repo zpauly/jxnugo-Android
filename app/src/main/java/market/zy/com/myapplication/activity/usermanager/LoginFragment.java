@@ -69,12 +69,29 @@ public class LoginFragment extends BaseFragment {
 
     private int clickedButton;
 
+
+    private Subscriber<LoginTokenSuccess> loginSubscriber;
+    private Subscriber<UserBasicInfo> userinfoSubscriber;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         initView(view);
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        unsubscribe();
+        super.onDestroy();
+    }
+
+    private void unsubscribe() {
+        if (loginSubscriber != null)
+            loginSubscriber.unsubscribe();
+        if (userinfoSubscriber != null)
+            userinfoSubscriber.unsubscribe();
     }
 
     private void initView(View view) {
@@ -126,8 +143,7 @@ public class LoginFragment extends BaseFragment {
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Subscriber<LoginTokenSuccess> subscriber = new Subscriber<LoginTokenSuccess>() {
+                loginSubscriber = new Subscriber<LoginTokenSuccess>() {
                     @Override
                     public void onCompleted() {
                         loadUserInfo();
@@ -150,13 +166,13 @@ public class LoginFragment extends BaseFragment {
                 String password = mPasswordEditText.getText().toString();
                 String auth = AuthUtil.getAuthFromUsernameAndPassword(username, password);
                 LoginMethod.getInstance()
-                        .login(subscriber, auth, username, password);
+                        .login(loginSubscriber, auth, username, password);
             }
         });
     }
 
     private void loadUserInfo() {
-        Subscriber<UserBasicInfo> subscriber = new Subscriber<UserBasicInfo>() {
+        userinfoSubscriber = new Subscriber<UserBasicInfo>() {
             @Override
             public void onCompleted() {
                 getActivity().finish();
@@ -174,7 +190,7 @@ public class LoginFragment extends BaseFragment {
         };
         SPUtil sp = SPUtil.getInstance(getContext());
         UserInfoMethod.getInstance(sp.getCurrentUsername(), sp.getCurrentPassword())
-                .getUserInfo(subscriber, sp.getCurrentUserId());
+                .getUserInfo(userinfoSubscriber, sp.getCurrentUserId());
     }
 
     private void setQQLogin() {

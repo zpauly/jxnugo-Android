@@ -75,6 +75,7 @@ public class UserActivity extends BaseActivity {
             Glide.with(this)
                     .load(userInfo.getAvatar())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .crossFade()
                     .centerCrop()
                     .into(mAvatarImageView);
             ft.replace(R.id.personal_page, mLoginPage);

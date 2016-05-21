@@ -27,6 +27,10 @@ public class PhotosDao {
         return DataSupport.deleteAll(PhotoBean.class);
     }
 
+    public static int deletePhotoBean(int postId) {
+        return DataSupport.deleteAll(PhotoBean.class, "postid = ?", String.valueOf(postId));
+    }
+
     public static int updatePhotoBean(ContentValues values) {
         return DataSupport.updateAll(PhotoBean.class, values);
     }

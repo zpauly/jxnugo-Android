@@ -66,6 +66,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         Glide.with(mContext)
                 .load(mData.get(position).getAuthorAvatar())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .crossFade()
                 .centerCrop()
                 .into(myViewHolder1.mUserAvatar);    }
 

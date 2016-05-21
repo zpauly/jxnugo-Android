@@ -13,6 +13,8 @@
     <color name="colorSecondaryText">#727272</color>
     <color name="colorIcons">#FFFFFF</color>
     <color name="colorDivider">#B6B6B6</color>
+    
+    <color name="secondary_background">#F5F5F5</color>
 
     <color name="classify_content">#E0E0E0</color>
 </resources>

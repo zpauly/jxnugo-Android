@@ -10,7 +10,7 @@ import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseFragment;
 
 /**
- * Created by dell on 2016/3/9.
+ * Created by zpauly on 2016/3/9.
  */
 public class UsersLoginFragment extends BaseFragment {
     private View view;

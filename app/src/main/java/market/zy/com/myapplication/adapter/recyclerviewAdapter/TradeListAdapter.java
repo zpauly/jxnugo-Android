@@ -2,7 +2,6 @@ package market.zy.com.myapplication.adapter.recyclerviewAdapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,11 +15,10 @@ import java.util.List;
 
 import market.zy.com.myapplication.Constants;
 import market.zy.com.myapplication.R;
-import market.zy.com.myapplication.activity.PostDetailsActivity;
+import market.zy.com.myapplication.activity.post.PostDetailsActivity;
 import market.zy.com.myapplication.activity.trade.TradeActivity;
 import market.zy.com.myapplication.activity.viewholder.LoadMoreViewHolder;
 import market.zy.com.myapplication.activity.viewholder.TradeListViewHolder;
-import market.zy.com.myapplication.engine.ImageEngine;
 import market.zy.com.myapplication.entity.post.OneSimplePost;
 
 /**
@@ -105,11 +103,13 @@ public class TradeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 .load(Constants.PIC_BASE_URL +
                         mData.get(position).getPhotos().get(0).getKey())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .crossFade()
                 .centerCrop()
                 .into(viewHolder.mImageView);
         Glide.with(mContext)
                 .load(mData.get(position).getPostUserAvator())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .crossFade()
                 .centerCrop()
                 .into(viewHolder.mAvatar);
         viewHolder.mUsername.setText(mData.get(position).getPostUserName());

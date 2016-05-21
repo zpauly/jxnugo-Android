@@ -60,6 +60,7 @@ public class PostDetailCommentsAdapter extends RecyclerView.Adapter<CommentsView
         Glide.with(mContext)
                 .load(mData.get(position).getAuthorAvatar())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .crossFade()
                 .centerCrop()
                 .into(holder.mUserAvatar);
     }

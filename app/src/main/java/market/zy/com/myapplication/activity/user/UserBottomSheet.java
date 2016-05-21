@@ -108,6 +108,7 @@ public class UserBottomSheet extends BottomSheetDialogFragment {
         Glide.with(this)
                 .load(userInfo.getAvatar())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .crossFade()
                 .centerCrop()
                 .into(mAvatar);
         mToolbar.setTitle(userInfo.getUserName());

@@ -22,7 +22,7 @@ import market.zy.com.myapplication.utils.SPUtil;
 import rx.Subscriber;
 
 /**
- * Created by root on 16-5-10.
+ * Created by zpauly on 16-5-10.
  */
 public class CommentsActivity extends BaseActivity {
     @Bind(R.id.comments_toolbar)
@@ -34,6 +34,9 @@ public class CommentsActivity extends BaseActivity {
     private CommentsAdapter mRAdapter;
 
     private int postId;
+
+
+    private Subscriber<AllComments> subscriber;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,9 +54,20 @@ public class CommentsActivity extends BaseActivity {
         initView();
     }
 
+    @Override
+    protected void onDestroy() {
+        unsubscribe();
+        super.onDestroy();
+    }
+
     private void initView() {
         setUpToolbar();
         setUpRecyclerView();
+    }
+
+    private void unsubscribe() {
+        if (subscriber != null)
+            subscriber.unsubscribe();
     }
 
     private void setUpToolbar() {
@@ -98,7 +112,7 @@ public class CommentsActivity extends BaseActivity {
     }
 
     private void loadCommentData() {
-        Subscriber<AllComments> subscriber = new Subscriber<AllComments>() {
+        subscriber = new Subscriber<AllComments>() {
             @Override
             public void onCompleted() {
 
