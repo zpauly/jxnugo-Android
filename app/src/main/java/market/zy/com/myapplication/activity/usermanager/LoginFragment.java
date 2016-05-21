@@ -27,7 +27,7 @@ import butterknife.ButterKnife;
 import market.zy.com.myapplication.Constants;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseFragment;
-import market.zy.com.myapplication.db.UserInfoDao;
+import market.zy.com.myapplication.db.user.UserInfoDao;
 import market.zy.com.myapplication.entity.login.LoginTokenSuccess;
 import market.zy.com.myapplication.entity.user.UserBasicInfo;
 import market.zy.com.myapplication.network.login_register.LoginMethod;

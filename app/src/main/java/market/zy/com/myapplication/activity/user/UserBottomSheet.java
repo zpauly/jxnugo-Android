@@ -17,8 +17,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import market.zy.com.myapplication.R;
-import market.zy.com.myapplication.db.UserInfo;
-import market.zy.com.myapplication.db.UserInfoDao;
+import market.zy.com.myapplication.db.user.UserInfoBean;
+import market.zy.com.myapplication.db.user.UserInfoDao;
 
 /**
  * Created by root on 16-5-9.
@@ -46,7 +46,7 @@ public class UserBottomSheet extends BottomSheetDialogFragment {
     @Bind(R.id.personal_bottom_tag)
     protected TextView mTagText;
 
-    private UserInfo userInfo;
+    private UserInfoBean userInfo;
     @Override
     public void setupDialog(final Dialog dialog, int style) {
         super.setupDialog(dialog, style);

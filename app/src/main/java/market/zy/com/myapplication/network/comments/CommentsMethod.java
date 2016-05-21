@@ -12,7 +12,7 @@ import rx.schedulers.Schedulers;
  * Created by zpauly on 16-5-20.
  */
 public class CommentsMethod {
-    private CommentsMethod instance;
+    private static CommentsMethod instance;
 
     private Retrofit retrofit;
 
@@ -24,7 +24,7 @@ public class CommentsMethod {
         service = retrofit.create(ICommentsService.class);
     }
 
-    private CommentsMethod getInstance() {
+    public static CommentsMethod getInstance() {
         if (instance == null) {
             synchronized (CommentsMethod.class) {
                 if (instance == null) {

@@ -22,7 +22,6 @@
 
                 <TextView
                     android:textSize="30sp"
-                    android:text="111111111111"
                     android:textColor="@android:color/black"
                     android:id="@+id/post_good_name"
                     android:layout_width="match_parent"
@@ -40,7 +39,7 @@
 
                     <TextView
                         android:id="@+id/post_good_buy_time"
-                        android:layout_marginLeft="8dp"
+                        android:layout_marginLeft="16dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -58,7 +57,7 @@
 
                     <TextView
                         android:id="@+id/post_good_quality"
-                        android:layout_marginLeft="8dp"
+                        android:layout_marginLeft="16dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -103,11 +102,14 @@
 
             <LinearLayout
                 android:orientation="vertical"
-                android:padding="16dp"
+                android:paddingTop="16dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <LinearLayout
+                    android:id="@+id/post_comments_layout"
                     android:gravity="center"
                     android:orientation="vertical"
                     android:layout_width="match_parent"
@@ -232,7 +234,7 @@
                     android:text="qpqwkomafa"
                     android:layout_marginLeft="8dp"
                     android:textColor="@android:color/black"
-                    android:id="@+id/pos_seller_name"
+                    android:id="@+id/post_seller_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 

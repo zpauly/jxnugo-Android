@@ -1,7 +1,6 @@
 package market.zy.com.myapplication.activity;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -14,8 +13,8 @@ import android.widget.Toast;
 
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.Constants;
-import market.zy.com.myapplication.db.UserInfo;
-import market.zy.com.myapplication.db.UserInfoDao;
+import market.zy.com.myapplication.db.user.UserInfoBean;
+import market.zy.com.myapplication.db.user.UserInfoDao;
 import market.zy.com.myapplication.utils.SPUtil;
 
 /**
@@ -29,7 +28,7 @@ public class BaseActivity extends AppCompatActivity {
 
     protected SPUtil sp;
 
-    protected UserInfo userInfo;
+    protected UserInfoBean userInfo;
 
     public void setOnBackTwiceToTrue() {
         onBackTwice = true;

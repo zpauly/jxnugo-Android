@@ -20,12 +20,7 @@ import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseActivity;
-import market.zy.com.myapplication.db.UserInfo;
-import market.zy.com.myapplication.db.UserInfoDao;
-import market.zy.com.myapplication.entity.user.UserBasicInfo;
-import market.zy.com.myapplication.network.user.UserInfoMethod;
 import market.zy.com.myapplication.utils.SPUtil;
-import rx.Subscriber;
 
 /**
  * Created by zpauly on 2016/3/11.

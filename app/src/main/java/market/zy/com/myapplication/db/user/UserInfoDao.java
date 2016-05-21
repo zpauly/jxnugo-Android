@@ -1,4 +1,4 @@
-package market.zy.com.myapplication.db;
+package market.zy.com.myapplication.db.user;
 
 import android.content.ContentValues;
 
@@ -11,7 +11,7 @@ import market.zy.com.myapplication.entity.user.UserBasicInfo;
  */
 public class UserInfoDao {
     public static boolean insertUserInfo(UserBasicInfo info) {
-        UserInfo userInfo = new UserInfo();
+        UserInfoBean userInfo = new UserInfoBean();
         userInfo.setAvatar(info.getAvatar());
         userInfo.setAbout_me(info.getAbout_me());
         userInfo.setContactMe(info.getContactMe());
@@ -30,14 +30,14 @@ public class UserInfoDao {
     }
 
     public static int deleteUserInfo() {
-        return DataSupport.deleteAll(UserInfo.class);
+        return DataSupport.deleteAll(UserInfoBean.class);
     }
 
-    public static UserInfo queryUserInfo() {
-        return DataSupport.findFirst(UserInfo.class);
+    public static UserInfoBean queryUserInfo() {
+        return DataSupport.findFirst(UserInfoBean.class);
     }
 
     public static int updateUserInfo(ContentValues values) {
-        return DataSupport.updateAll(UserInfo.class, values);
+        return DataSupport.updateAll(UserInfoBean.class, values);
     }
 }

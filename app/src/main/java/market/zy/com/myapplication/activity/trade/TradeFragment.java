@@ -18,8 +18,11 @@ import butterknife.ButterKnife;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseFragment;
 import market.zy.com.myapplication.adapter.recyclerviewAdapter.TradeListAdapter;
+import market.zy.com.myapplication.db.post.PostDetailDao;
 import market.zy.com.myapplication.entity.post.OnePagePost;
+import market.zy.com.myapplication.entity.post.OneSimplePost;
 import market.zy.com.myapplication.network.post.PagePostsMethod;
+import market.zy.com.myapplication.utils.AuthUtil;
 import market.zy.com.myapplication.utils.SPUtil;
 import rx.Subscriber;
 
@@ -46,6 +49,8 @@ public class TradeFragment extends BaseFragment {
     private LinearLayoutManager manager;
     private TradeListAdapter adapter;
 
+    private int postIdToLoad = 1;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -64,6 +69,9 @@ public class TradeFragment extends BaseFragment {
     }
 
     private void setUpRefreshLayout() {
+        mSwipeRefreshLayout.measure(View.MEASURED_SIZE_MASK, View.MEASURED_HEIGHT_STATE_SHIFT);
+        mSwipeRefreshLayout.setRefreshing(true);
+        loadNewData();
         mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light, android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
@@ -100,6 +108,7 @@ public class TradeFragment extends BaseFragment {
                 } else if (lastVisiableItemPosition == adapter.getItemCount() - 1
                         && adapter.isShowingLoadMore()) {
                     adapter.setShowLoadMore(true);
+                    loadMoreData();
                 } else {
                     adapter.setShowLoadMore(false);
                 }
@@ -147,16 +156,49 @@ public class TradeFragment extends BaseFragment {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
+                mSwipeRefreshLayout.setRefreshing(false);
+                showSnackbarTipShort(getView(), R.string.please_login);
             }
 
             @Override
             public void onNext(OnePagePost onePagePost) {
                 adapter.clearData();
                 adapter.addAllData(onePagePost.getPosts());
+                for (OneSimplePost post : onePagePost.getPosts()) {
+                    PostDetailDao.insertPostDetail(post);
+                }
             }
         };
-        PagePostsMethod.getInstance(SPUtil.getInstance(getContext()).getCurrentUsername()
-                , SPUtil.getInstance(getContext()).getCurrentPassword())
-                .getOnePagePosts(subscriber, 1);
+        postIdToLoad = 1;
+        String auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(getContext()).getCurrentUsername()
+                , SPUtil.getInstance(getContext()).getCurrentPassword());
+        PagePostsMethod.getInstance()
+                .getOnePagePosts(subscriber, auth, postIdToLoad);
+    }
+
+    private void loadMoreData() {
+        Subscriber<OnePagePost> subscriber = new Subscriber<OnePagePost>() {
+            @Override
+            public void onCompleted() {
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(OnePagePost onePagePost) {
+                adapter.addAllData(onePagePost.getPosts());
+                for (OneSimplePost post : onePagePost.getPosts()) {
+                    PostDetailDao.insertPostDetail(post);
+                }
+            }
+        };
+        String auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(getContext()).getCurrentUsername()
+                , SPUtil.getInstance(getContext()).getCurrentPassword());
+        PagePostsMethod.getInstance()
+                .getOnePagePosts(subscriber, auth, ++postIdToLoad);
     }
 }

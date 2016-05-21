@@ -8,14 +8,14 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.Toast;
 
-import market.zy.com.myapplication.db.UserInfo;
-import market.zy.com.myapplication.db.UserInfoDao;
+import market.zy.com.myapplication.db.user.UserInfoBean;
+import market.zy.com.myapplication.db.user.UserInfoDao;
 
 /**
  * Created by dell on 2016/3/8.
  */
 public class BaseFragment extends Fragment {
-    protected UserInfo userInfo;
+    protected UserInfoBean userInfo;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

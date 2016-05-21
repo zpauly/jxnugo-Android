@@ -2,9 +2,10 @@
 <litepal>
     <dbname value="demo" ></dbname>
 
-    <version value="1" ></version>
+    <version value="3" ></version>
 
     <list>
-        <mapping class="market.zy.com.myapplication.db.UserInfo"/>
+        <mapping class="market.zy.com.myapplication.db.user.UserInfoBean"/>
+        <mapping class="market.zy.com.myapplication.db.post.PostDetailBean"/>
     </list>
 </litepal>

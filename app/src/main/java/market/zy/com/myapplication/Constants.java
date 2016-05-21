@@ -59,7 +59,7 @@ public interface Constants {
     /**
      * 双击Back退出APP的双击间隔最长时间
      * */
-    public static final float exitConfirmTime = 1000;
+    public static final float exitConfirmTime = 2000;
 
 
     /**
@@ -70,4 +70,7 @@ public interface Constants {
     public static final long DEFAULT_TIMEOUT =  5000;
 
     public static final String BASE_URL = "http://www.jxnugo.com/api/";
+
+    public static final String PIC_BASE_URL = "http://7xrkww.com1.z0.glb.clouddn.com/";
+
 }

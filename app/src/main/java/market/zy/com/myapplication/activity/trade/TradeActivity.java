@@ -34,6 +34,9 @@ import market.zy.com.myapplication.utils.MonitorUtil;
  * Created by zpauly on 2016/3/10.
  */
 public class TradeActivity extends MaterialDrawerActivity {
+    public static final String POST_ID = "POST_ID";
+    public static final String POST_COVER = "POST_COVER";
+
     @Bind(R.id.trade_toolbar)
     protected Toolbar mToolbar;
 

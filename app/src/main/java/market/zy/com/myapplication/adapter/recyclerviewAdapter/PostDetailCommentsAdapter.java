@@ -6,6 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +29,22 @@ public class PostDetailCommentsAdapter extends RecyclerView.Adapter<CommentsView
         mContext = context;
     }
 
+    public void addData(Comment data) {
+        mData.add(data);
+        notifyDataSetChanged();
+    }
+
+    public void swapData(List<Comment> list) {
+        mData.clear();
+        mData.addAll(list);
+        notifyDataSetChanged();
+    }
+
+    public void addAllData(List<Comment> list) {
+        mData.addAll(list);
+        notifyDataSetChanged();
+    }
+
     @Override
     public CommentsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View mView = LayoutInflater.from(mContext).inflate(R.layout.comments_recyclerview_item, parent, false);
@@ -38,7 +57,11 @@ public class PostDetailCommentsAdapter extends RecyclerView.Adapter<CommentsView
         holder.mUsername.setText(mData.get(position).getAuthor());
         holder.mCommentsTime.setText(mData.get(position).getTimestamp());
         holder.mComments.setText(mData.get(position).getBody());
-        ImageEngine.loadimageFromUrl(mContext, holder.mUserAvatar, mData.get(position).getAuthorAvatar());
+        Glide.with(mContext)
+                .load(mData.get(position).getAuthorAvatar())
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .centerCrop()
+                .into(holder.mUserAvatar);
     }
 
     @Override
