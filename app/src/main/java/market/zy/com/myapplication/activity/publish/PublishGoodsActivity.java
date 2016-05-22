@@ -22,15 +22,30 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
+import com.qiniu.android.http.ResponseInfo;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseActivity;
+import market.zy.com.myapplication.engine.qiniu.UploadImages;
+import market.zy.com.myapplication.entity.post.PhotoKey;
+import market.zy.com.myapplication.entity.publish.NewPost;
+import market.zy.com.myapplication.entity.publish.PublishSuccess;
+import market.zy.com.myapplication.entity.qiniu.QiniuUploadToken;
+import market.zy.com.myapplication.network.publish.PublishNewPostMethod;
+import market.zy.com.myapplication.network.qiniu.upload.OnUploadListener;
+import market.zy.com.myapplication.network.qiniu.uploadtoken.TokenMethod;
 import market.zy.com.myapplication.utils.PhotoUtil;
+import market.zy.com.myapplication.utils.SPUtil;
+import rx.Subscriber;
 
 /**
  * Created by zpauly on 16-3-27.
@@ -71,6 +86,12 @@ public class PublishGoodsActivity extends BaseActivity {
     @Bind(R.id.publish_contact)
     protected EditText mConnect;
 
+    @Bind(R.id.publish_location)
+    protected EditText mLocation;
+
+    @Bind(R.id.publish_num)
+    protected EditText mNum;
+
     @Bind(R.id.publish_type_select)
     protected Spinner mSelectSpinner;
 
@@ -86,15 +107,35 @@ public class PublishGoodsActivity extends BaseActivity {
     private LinearLayout addingLayout;
 
     private Uri coverUri;
-    private List<Uri> imageUris;
+
+    private String title;
+    private String content;
+    private double price;
+    private String quality;
+    private String buyTime;
+    private String contract;
+    private int goodTag;
+    private int num;
+    private String location;
+
+    private MaterialDialog confirmDialog;
+    private MaterialDialog uploadDialog;
+
+    private ImageView mChangeImage;
+    private boolean needChangeImage = false;
+    private Map<ImageView, Integer> imageIdListMap = new HashMap<>();
+    private int imageId;
 
     private int imageLine = 1;
     private int imageCount = 0;
     private List<String> selectedImagePath = new ArrayList<>();
-    private List<Uri> selectedImageUri = new ArrayList<>();
-    private Uri uri;
     private boolean isCoverImage;
     private boolean isButtonsHide;
+
+
+    private Subscriber<QiniuUploadToken> tokenSubscriber;
+    private Subscriber<PublishSuccess> uploadSubscriber;
+    private List<PhotoKey> imageKeys = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,28 +149,59 @@ public class PublishGoodsActivity extends BaseActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        unsubscribe();
+        super.onDestroy();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == SELECT_PICTURE) {
                 Uri imageUri = data.getData();
-                selectedImageUri.add(imageUri);
-                uri = imageUri;
                 if (isCoverImage) {
                     Glide.with(this)
                             .load(imageUri)
+                            .crossFade()
                             .centerCrop()
                             .thumbnail(0.2f)
                             .into(mImageCover);
                     coverUri = imageUri;
+                    imageIdListMap.put(mImageCover, 0);
+                    String path = PhotoUtil.getPath(this, imageUri);
+                    if (selectedImagePath.size() == 0)
+                        selectedImagePath.add(path);
+                    else
+                        selectedImagePath.set(0, path);
                 } else {
-                    addImageViewDynamiclly(addingLayout, imageUri);
-                    imageUris.add(imageUri);
-                    imageCount++;
+                    if (needChangeImage) {
+                        Glide.with(this)
+                                .load(imageUri)
+                                .centerCrop()
+                                .crossFade()
+                                .thumbnail(0.2f)
+                                .into(mChangeImage);
+                        String path = PhotoUtil.getPath(this, imageUri);
+                        int id = imageIdListMap.get(mChangeImage);
+                        selectedImagePath.set(id, path);
+                    } else {
+                        addImageViewDynamiclly(addingLayout, imageUri);
+                        imageCount++;
+                        imageIdListMap.put(mImageCover, imageId++);
+                        String path = PhotoUtil.getPath(this, imageUri);
+                        selectedImagePath.add(path);
+                    }
                 }
-                String path = PhotoUtil.getPath(this, imageUri);
-                Toast.makeText(PublishGoodsActivity.this, path, Toast.LENGTH_SHORT).show();
-                selectedImagePath.add(path);
             }
+        }
+    }
+
+    private void unsubscribe() {
+        if (uploadSubscriber != null) {
+            uploadSubscriber.unsubscribe();
+        }
+        if (tokenSubscriber != null) {
+            tokenSubscriber.unsubscribe();
         }
     }
 
@@ -137,7 +209,6 @@ public class PublishGoodsActivity extends BaseActivity {
         isCoverImage = true;
         isButtonsHide = true;
         addingLayout = mAddLayout;
-        imageUris = new ArrayList<>();
 
         setUpToolbar();
 
@@ -204,15 +275,16 @@ public class PublishGoodsActivity extends BaseActivity {
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isContentCompleted())
+                if (!isContentCompleted())
                     return;
-                MaterialDialog dialog = new MaterialDialog.Builder(PublishGoodsActivity.this)
+                confirmDialog = new MaterialDialog.Builder(PublishGoodsActivity.this)
                         .title(R.string.upload)
                         .content(R.string.can_upload)
                         .positiveText(R.string.yes)
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                getText();
                                 upload();
                             }
                         })
@@ -236,14 +308,25 @@ public class PublishGoodsActivity extends BaseActivity {
         mSelectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+                goodTag = position;
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
+                goodTag = 0;
             }
         });
+    }
+
+    private void getText() {
+        title = mTitle.getText().toString();
+        content = mContent.getText().toString();
+        price = Double.parseDouble(mPrice.getText().toString());
+        quality = mQuality.getText().toString();
+        buyTime = mBuyTime.getText().toString();
+        contract = mConnect.getText().toString();
+        location = mLocation.getText().toString();
+        num = Integer.parseInt(mNum.getText().toString());
     }
 
     private void startPicSelect() {
@@ -255,7 +338,7 @@ public class PublishGoodsActivity extends BaseActivity {
     }
 
     private void addImageViewDynamiclly(ViewGroup mViewGroup, Uri path) {
-        ImageView newImageView = new ImageView(PublishGoodsActivity.this);
+        final ImageView newImageView = new ImageView(PublishGoodsActivity.this);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(160, 160);
         layoutParams.setMargins(16, 0, 0, 0);
         Glide.with(this)
@@ -263,6 +346,14 @@ public class PublishGoodsActivity extends BaseActivity {
                 .centerCrop()
                 .thumbnail(0.2f)
                 .into(newImageView);
+        newImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                needChangeImage = true;
+                mChangeImage = newImageView;
+                startPicSelect();
+            }
+        });
         mViewGroup.addView(newImageView, -1, layoutParams);
     }
 
@@ -275,46 +366,108 @@ public class PublishGoodsActivity extends BaseActivity {
         return layout;
     }
 
-    private void uploadImages(final MaterialDialog dialog) {
-//        new UploadStategy().uploadImages(this, selectedImagePath.get(0), dialog);
-    }
-
-    private void uploadOthers(final MaterialDialog dialog) {
-        /*dialog.show();*/
-    }
-
     private void upload() {
-        final MaterialDialog imageUploadDialog = new MaterialDialog.Builder(this)
-                .title(R.string.uploading_images)
+        uploadImages();
+    }
+
+    private void uploadImages() {
+        uploadDialog = new MaterialDialog.Builder(this)
+                .title(R.string.uploading)
                 .content(R.string.please_wait)
                 .progress(true, 0)
                 .build();
+        for (final String path : selectedImagePath) {
+            tokenSubscriber = new Subscriber<QiniuUploadToken>() {
+                @Override
+                public void onCompleted() {
 
-        final MaterialDialog otherUploadDialog = new MaterialDialog.Builder(this)
-                .title(R.string.uploading_others)
-                .content(R.string.please_wait)
-                .progress(true, 0)
-                .build();
+                }
 
-        imageUploadDialog.show();
-        uploadImages(imageUploadDialog);
+                @Override
+                public void onError(Throwable e) {
 
-        if (!imageUploadDialog.isShowing()) {
-            uploadOthers(otherUploadDialog);
+                }
+
+                @Override
+                public void onNext(QiniuUploadToken qiniuUploadToken) {
+                    UploadImages.getInstance().uploadImages(path, qiniuUploadToken.getUptoken()
+                            , new OnUploadListener() {
+                                @Override
+                                public void onCompleted(String key, ResponseInfo info, JSONObject response) {
+                                    if (info.isOK()) {
+                                        PhotoKey photoKey = new PhotoKey();
+                                        photoKey.setKey(key);
+                                        imageKeys.add(photoKey);
+                                        if (imageKeys.size() == selectedImagePath.size()) {
+                                            uploadOthers();
+                                        }
+                                    } else {
+                                        uploadDialog.dismiss();
+                                        showSnackbarTipShort(getCurrentFocus(), R.string.error_upload);
+                                    }
+                                }
+
+                                @Override
+                                public void onProcessing(String key, double percent) {
+
+                                }
+
+                                @Override
+                                public boolean onCancelled() {
+                                    return false;
+                                }
+                            });
+                }
+            };
+            TokenMethod.getInstance().getUploadToken(tokenSubscriber);
         }
     }
 
+    private void uploadOthers() {
+        NewPost newPost = new NewPost();
+        newPost.setGoodName(title);
+        newPost.setBody(content);
+        newPost.setGoodPrice(price);
+        newPost.setPhotos(imageKeys);
+        newPost.setContact(contract);
+        newPost.setGoodBuyTime(buyTime);
+        newPost.setGoodLocation(location);
+        newPost.setGoodQuality(quality);
+        newPost.setGoodNum(num);
+        newPost.setGoodTag(goodTag);
+        newPost.setUserId(String.valueOf(SPUtil.getInstance(this).getCurrentUserId()));
+        uploadSubscriber = new Subscriber<PublishSuccess>() {
+            @Override
+            public void onCompleted() {
+                uploadDialog.dismiss();
+                showSnackbarTipShort(getCurrentFocus(), R.string.upload_successly);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(PublishSuccess publishSuccess) {
+
+            }
+        };
+        PublishNewPostMethod.getInstance().publishNewPost(uploadSubscriber, newPost);
+    }
+
     private boolean isContentCompleted() {
-        if (mBuyTime.getText().toString() != "" && mBuyTime.getText().toString() != null
-                && mConnect.getText().toString() != "" && mConnect.getText().toString() != null
-                && mContent.getText().toString() != "" && mContent.getText().toString() != null
-                && mPrice.getText().toString() != "" && mPrice.getText().toString() != null
-                && mQuality.getText().toString() != "" && mQuality.getText().toString() != null
-                && mTitle.getText().toString() != "" && mTitle.getText().toString() != null) {
-            return true;
-        } else {
+        if (null == mNum.getText() || mNum.getText().toString().equals("")
+                ||null == mBuyTime.getText() || mBuyTime.getText().toString().equals("")
+                || null == mConnect.getText() || mConnect.getText().toString().equals("")
+                || null == mContent.getText() || mContent.getText().toString().equals("")
+                || null == mPrice.getText() || mPrice.getText().toString().equals("")
+                || null == mQuality.getText() || mQuality.getText().toString().equals("")
+                || null == mTitle.getText() || mTitle.getText().toString().equals("")) {
             showSnackbarTipShort(getCurrentFocus(), R.string.please_complete_info);
             return false;
+        } else {
+            return true;
         }
     }
 }

@@ -16,7 +16,7 @@
             android:id="@+id/trade_list_image"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:background="@color/colorPrimary"/>
+            android:background="@color/secondary_background"/>
 
         <LinearLayout
             android:layout_margin="10dp"

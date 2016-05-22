@@ -8,10 +8,13 @@
     <string name="enter_password">请输入密码</string>
     <string name="confirm">确认密码</string>
     <string name="passowrd_different">两次输入密码不相同</string>
+    <string name="enter_username">请输入用户名</string>
     <string name="third_party_login">第三方登录</string>
     <string name="users_login">账号管理</string>
     <string name="login_username">请输入账号登录</string>
     <string name="login_password">请输入密码登录</string>
+    <string name="registe_success">注册成功，请前往邮箱验证</string>
+    <string name="wrong_email">邮箱格式错误</string>
     <string name="settings">设置</string>
     <string name="please_login">请登录</string>
     <string name="exit_after_backpressed">再按一次后退键退出</string>
@@ -43,8 +46,9 @@
     <string name="good_buy_time">入手时间</string>
     <string name="good_quality">物品成色</string>
     <string name="good_location">联系地址</string>
+    <string name="not_necessary">(非必填)</string>
     <string name="good_details">物品详情</string>
-    <string name="please_complete_info">请完成所有信息</string>
+    <string name="please_complete_info">请完成所有必填信息</string>
     <string-array name="goods_types">
         <item>生活用品</item>
         <item>数码科技</item>
@@ -53,6 +57,7 @@
         <item>其它</item>
     </string-array>
     <string name="quality">成色</string>
+    <string name="num">数量</string>
     <string name="new_or_old">新旧程度</string>
     <string name="buy_time">入手时间</string>
     <string name="date_input_type">格式:1997-01-01</string>
@@ -69,14 +74,15 @@
     <string name="add_text">添加文字</string>
     <string name="price">价格</string>
     <string name="price_unit">单位:人民币</string>
+    <string name="good_num">物品数量</string>
     <string name="choose_type">选择分类</string>
     <string name="upload_successly">上传成功</string>
-    <string name="uploading_images">正在上传图片</string>
-    <string name="uploading_others">正在上传文字</string>
+    <string name="uploading">正在上传</string>
     <string name="upload">上传</string>
     <string name="can_upload">是否确认上传内容</string>
     <string name="yes">是</string>
     <string name="no">否</string>
+    <string name="error_upload">上传发生错误，请重试</string>
     <string name="please_wait">请等待</string>
 
     <string name="search_hint">搜索</string>

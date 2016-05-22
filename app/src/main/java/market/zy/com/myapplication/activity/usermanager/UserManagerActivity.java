@@ -64,7 +64,6 @@ public class UserManagerActivity extends MaterialDrawerActivity {
             UserManagerFragmentAdapter adapter = new UserManagerFragmentAdapter(getSupportFragmentManager());
             adapter.addFragments(new LoginFragment(), getString(R.string.login));
             adapter.addFragments(new RegisteFragment(), getString(R.string.registe));
-            adapter.addFragments(new UsersLoginFragment(), getString(R.string.users_login));
             mViewPager.setAdapter(adapter);
             mTabLayout.setupWithViewPager(mViewPager);
         }

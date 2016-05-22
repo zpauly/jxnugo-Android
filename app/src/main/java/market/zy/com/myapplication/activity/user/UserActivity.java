@@ -118,7 +118,7 @@ public class UserActivity extends BaseActivity {
                     mBottomSheet = new UserBottomSheet();
                     mBottomSheet.show(getSupportFragmentManager(), mBottomSheet.getTag());
                 } else {
-                    showSnackbarTipShort(getCurrentFocus(), R.string.please_login);
+                    showSnackbarTipShort(mToolbar, R.string.please_login);
                 }
                 break;
             default :
