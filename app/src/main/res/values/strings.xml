@@ -37,11 +37,27 @@
 
     <string name="add_shopping_card">加入购物车</string>
     <string name="call_seller">与卖家联系</string>
+    <string name="connect_ways">联系方式</string>
+    <string name="phone_or_qq">手机、QQ等</string>
     <string name="good_price">卖方出价</string>
     <string name="good_buy_time">入手时间</string>
     <string name="good_quality">物品成色</string>
+    <string name="good_location">联系地址</string>
     <string name="good_details">物品详情</string>
+    <string name="please_complete_info">请完成所有信息</string>
+    <string-array name="goods_types">
+        <item>生活用品</item>
+        <item>数码科技</item>
+        <item>服饰箱包</item>
+        <item>图书音像</item>
+        <item>其它</item>
+    </string-array>
+    <string name="quality">成色</string>
+    <string name="new_or_old">新旧程度</string>
+    <string name="buy_time">入手时间</string>
+    <string name="date_input_type">格式:1997-01-01</string>
     <string name="all_comments">查看所有评论</string>
+    <string name="no_more">没有了</string>
     <string name="seller">卖方</string>
 
     <string name="publish">发布</string>

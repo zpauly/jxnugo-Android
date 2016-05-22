@@ -52,11 +52,14 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             holder2.mCircleProgressBar.setColorSchemeResources(android.R.color.holo_blue_bright,
                     android.R.color.holo_green_light, android.R.color.holo_orange_light,
                     android.R.color.holo_red_light);
-            if (showLoadMore) {
+            holder2.mCircleProgressBar.setVisibility(View.GONE);
+            holder2.mNoMoreText.setVisibility(View.VISIBLE);
+            /*if (showLoadMore) {
                 holder2.itemView.setVisibility(View.VISIBLE);
             } else {
                 holder2.itemView.setVisibility(View.GONE);
-            }
+            }*/
+
             return;
         }
         CommentsViewHolder myViewHolder1 = (CommentsViewHolder) holder;

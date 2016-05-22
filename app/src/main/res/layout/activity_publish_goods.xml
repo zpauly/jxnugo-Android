@@ -32,28 +32,9 @@
     </android.support.v4.widget.NestedScrollView>
 
     <android.support.design.widget.FloatingActionButton
-        app:fabSize="mini"
         app:rippleColor="@android:color/white"
         android:id="@+id/send_floating_button"
         android:src="@mipmap/ic_send_white_36dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/mini_fab_margin"/>
-
-    <android.support.design.widget.FloatingActionButton
-        app:fabSize="mini"
-        app:rippleColor="@android:color/white"
-        android:id="@+id/save_floating_button"
-        android:src="@mipmap/ic_save_white_36dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/mini_fab_margin"/>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/edit_floating_button"
-        android:src="@mipmap/ic_mode_edit_white_36dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"

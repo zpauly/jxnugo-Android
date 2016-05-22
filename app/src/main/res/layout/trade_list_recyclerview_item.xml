@@ -64,8 +64,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/trade_list_item_time"
-                android:text="eeeeeeeeee"
+                android:id="@+id/trade_list_item_goodtime"
                 android:layout_centerVertical="true"
                 android:layout_alignParentEnd="true"
                 android:layout_width="wrap_content"

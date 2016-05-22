@@ -26,7 +26,7 @@ public class TradeListViewHolder extends RecyclerView.ViewHolder {
     @Bind(R.id.trade_list_item_avatar)
     public CircleImageView mAvatar;
 
-    @Bind(R.id.trade_list_item_time)
+    @Bind(R.id.trade_list_item_goodtime)
     public TextView mTime;
 
     public TradeListViewHolder(View itemView) {

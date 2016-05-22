@@ -18,7 +18,7 @@
             android:layout_height="wrap_content">
 
             <EditText
-                android:id="@+id/goods_title"
+                android:id="@+id/publish_goods_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/title"/>
@@ -26,7 +26,7 @@
         </android.support.design.widget.TextInputLayout>
 
         <EditText
-            android:id="@+id/goods_content"
+            android:id="@+id/publish_goods_content"
             android:gravity="top|left"
             android:layout_marginTop="16dp"
             android:layout_width="match_parent"

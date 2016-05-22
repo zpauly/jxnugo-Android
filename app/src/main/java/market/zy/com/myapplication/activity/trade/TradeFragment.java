@@ -68,12 +68,12 @@ public class TradeFragment extends BaseFragment {
         return mView;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
+    /*@Override
+    public void onResume() {
+        super.onResume();
         mSwipeRefreshLayout.setRefreshing(true);
         loadNewData();
-    }
+    }*/
 
     @Override
     public void onDestroy() {
@@ -175,6 +175,7 @@ public class TradeFragment extends BaseFragment {
 
     private void loadNewData() {
         PhotosDao.deletePhotoBean();
+        PostDetailDao.deletePostDetail();
         newSubscriber = new Subscriber<OnePagePost>() {
             @Override
             public void onCompleted() {

@@ -2,6 +2,7 @@ package market.zy.com.myapplication.activity.viewholder;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
 import com.lsjwzh.widget.materialloadingprogressbar.CircleProgressBar;
 
@@ -16,6 +17,9 @@ public class LoadMoreViewHolder extends RecyclerView.ViewHolder {
 
     @Bind(R.id.load_more_progressbar)
     public CircleProgressBar mCircleProgressBar;
+
+    @Bind(R.id.no_more)
+    public TextView mNoMoreText;
 
     public LoadMoreViewHolder(View itemView) {
         super(itemView);

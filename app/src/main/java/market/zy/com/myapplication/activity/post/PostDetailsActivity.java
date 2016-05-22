@@ -6,10 +6,12 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -73,6 +75,9 @@ public class PostDetailsActivity extends BaseActivity {
     @Bind(R.id.post_good_price)
     protected TextView mPostGoodPrice;
 
+    @Bind(R.id.post_good_location)
+    protected TextView mPostGoodLocation;
+
     @Bind(R.id.post_good_details)
     protected TextView mPostGoodDetails;
 
@@ -85,6 +90,15 @@ public class PostDetailsActivity extends BaseActivity {
     @Bind(R.id.post_comments_all)
     protected TextView mPostCommentsAll;
 
+    @Bind(R.id.post_detail_add_shopping)
+    protected ImageView mPostDetailAddShopping;
+
+    @Bind(R.id.post_detail_share)
+    protected ImageView mPostDetailShare;
+
+    @Bind(R.id.post_detail_connect)
+    protected ImageView mPostDetailConnect;
+
     @Bind(R.id.post_seller_avatar)
     protected CircleImageView mPostSellerAvatar;
 
@@ -96,6 +110,9 @@ public class PostDetailsActivity extends BaseActivity {
 
     @Bind(R.id.post_comments_layout)
     protected LinearLayout mCommentsLayout;
+
+    @Bind(R.id.post_detail_layout)
+    protected NestedScrollView mNestedScrollView;
 
     private PostDetailCommentsAdapter mCommentsAdapter;
     private PostDetailPhotosAdapter mPhotosAdapter;
@@ -142,6 +159,8 @@ public class PostDetailsActivity extends BaseActivity {
         setUpCommentsLayout();
 
         setUpPhotosRecyclerView();
+
+        setUpImageButtons();
     }
 
     private void setUpToolbar() {
@@ -157,18 +176,28 @@ public class PostDetailsActivity extends BaseActivity {
         });
     }
 
+    private void setUpImageButtons() {
+        mPostDetailShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                /*String shareBody = "Here is the share content body";
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);*/
+                startActivity(Intent.createChooser(sharingIntent, "Share via"));
+            }
+        });
+
+    }
+
     private void setUpPhotosRecyclerView() {
         mPhotosAdapter = new PostDetailPhotosAdapter(this);
         loadPhotosData();
         mPostGoodPhotosRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         mPostGoodPhotosRecyclerView.setAdapter(mPhotosAdapter);
-        /*mPostGoodPhotosRecyclerView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
+        mPostGoodPhotosRecyclerView.getLayoutManager();
 
-                return false;
-            }
-        });*/
     }
 
     private void setUpCommentsRecyclerView() {
@@ -252,10 +281,18 @@ public class PostDetailsActivity extends BaseActivity {
         mPostGoodPrice.setText(mPostGoodPrice.getText().toString() + "   " +postDetail.getGoodPrice());
         mPostGoodDetails.setText(postDetail.getBody());
         mPostGoodQuality.setText(postDetail.getGoodQuality());
+        mPostGoodLocation.setText(postDetail.getGoodLocation());
+        Glide.with(this)
+                .load(postDetail.getPostUserAvator())
+                .crossFade()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .centerCrop()
+                .into(mPostSellerAvatar);
         String key = getIntent().getStringExtra(TradeActivity.POST_COVER);
         Glide.with(this)
                 .load(Constants.PIC_BASE_URL
                         + key)
+                .crossFade()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .centerCrop()
                 .into(mPostHeaderImage);

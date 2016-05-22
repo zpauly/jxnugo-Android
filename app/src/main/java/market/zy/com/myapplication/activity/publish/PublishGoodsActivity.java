@@ -11,16 +11,17 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
-import com.nineoldandroids.view.ViewPropertyAnimator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseActivity;
-import market.zy.com.myapplication.engine.qiniu.UploadStategy;
 import market.zy.com.myapplication.utils.PhotoUtil;
 
 /**
@@ -44,12 +44,6 @@ public class PublishGoodsActivity extends BaseActivity {
     @Bind(R.id.goods_title_layout)
     protected TextInputLayout mTitleLayout;
 
-    @Bind(R.id.goods_title)
-    protected EditText mTitleEditText;
-
-    @Bind(R.id.goods_content)
-    protected EditText mContentEditText;
-
     @Bind(R.id.goods_cover)
     protected ImageView mImageCover;
 
@@ -59,20 +53,29 @@ public class PublishGoodsActivity extends BaseActivity {
     @Bind(R.id.goods_add_layout)
     protected LinearLayout mAddLayout;
 
-    @Bind(R.id.goods_price)
-    protected TextView mPriceTextView;
+    @Bind(R.id.publish_goods_title)
+    protected EditText mTitle;
 
-    @Bind(R.id.goods_choose_type)
-    protected TextView mChooseTypeTextView;
+    @Bind(R.id.publish_goods_content)
+    protected EditText mContent;
+
+    @Bind(R.id.publish_goods_price)
+    protected EditText mPrice;
+
+    @Bind(R.id.publish_goods_buy_time)
+    protected EditText mBuyTime;
+
+    @Bind(R.id.publish_goods_quality)
+    protected EditText mQuality;
+
+    @Bind(R.id.publish_contact)
+    protected EditText mConnect;
+
+    @Bind(R.id.publish_type_select)
+    protected Spinner mSelectSpinner;
 
     @Bind(R.id.goods_add_outer_layout)
     protected LinearLayout mOuterLayout;
-
-    @Bind(R.id.edit_floating_button)
-    protected FloatingActionButton mEditButton;
-
-    @Bind(R.id.save_floating_button)
-    protected FloatingActionButton mSaveButton;
 
     @Bind(R.id.send_floating_button)
     protected FloatingActionButton mSendButton;
@@ -113,7 +116,7 @@ public class PublishGoodsActivity extends BaseActivity {
                 uri = imageUri;
                 if (isCoverImage) {
                     Glide.with(this)
-                            .load(selectedImageUri)
+                            .load(imageUri)
                             .centerCrop()
                             .thumbnail(0.2f)
                             .into(mImageCover);
@@ -143,6 +146,8 @@ public class PublishGoodsActivity extends BaseActivity {
         setUpImage();
 
         setUpButtons();
+
+        setUpSpinner();
     }
 
     private void setUpText() {
@@ -196,56 +201,11 @@ public class PublishGoodsActivity extends BaseActivity {
     }
 
     private void setUpButtons() {
-        mSendButton.setEnabled(false);
-        mSaveButton.setEnabled(false);
-        mEditButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isButtonsHide) {
-                    isButtonsHide = false;
-                    mView.setEnabled(false);
-                    mSendButton.setEnabled(true);
-                    mSaveButton.setEnabled(true);
-                    mEditButton.setImageResource(R.mipmap.ic_close_white_36dp);
-                    showButtons();
-                } else {
-                    mView.setEnabled(true);
-                    isButtonsHide =true;
-                    mSendButton.setEnabled(false);
-                    mSaveButton.setEnabled(false);
-                    mEditButton.setImageResource(R.mipmap.ic_mode_edit_white_36dp);
-                    hideButtons();
-                }
-            }
-        });
-
-        mSaveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MaterialDialog dialog = new MaterialDialog.Builder(PublishGoodsActivity.this)
-                        .title(R.string.upload)
-                        .content(R.string.can_upload)
-                        .positiveText(R.string.yes)
-                        .onPositive(new MaterialDialog.SingleButtonCallback() {
-                            @Override
-                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                upload();
-                            }
-                        })
-                        .negativeText(R.string.no)
-                        .onNegative(new MaterialDialog.SingleButtonCallback() {
-                            @Override
-                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .show();
-            }
-        });
-
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (isContentCompleted())
+                    return;
                 MaterialDialog dialog = new MaterialDialog.Builder(PublishGoodsActivity.this)
                         .title(R.string.upload)
                         .content(R.string.can_upload)
@@ -264,6 +224,24 @@ public class PublishGoodsActivity extends BaseActivity {
                             }
                         })
                         .show();
+            }
+        });
+    }
+
+    private void setUpSpinner() {
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.goods_types, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSelectSpinner.setAdapter(adapter);
+        mSelectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
     }
@@ -280,7 +258,6 @@ public class PublishGoodsActivity extends BaseActivity {
         ImageView newImageView = new ImageView(PublishGoodsActivity.this);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(160, 160);
         layoutParams.setMargins(16, 0, 0, 0);
-        newImageView.setElevation(7f);
         Glide.with(this)
                 .load(path)
                 .centerCrop()
@@ -298,32 +275,8 @@ public class PublishGoodsActivity extends BaseActivity {
         return layout;
     }
 
-    private void showButtons() {
-        ViewPropertyAnimator.animate(mSendButton)
-                .rotation(-720f)
-                .translationY(-mEditButton.getHeight())
-                .setDuration(500);
-
-        ViewPropertyAnimator.animate(mSaveButton)
-                .rotation(-720f)
-                .translationY(-mEditButton.getHeight() * 2)
-                .setDuration(500);
-    }
-
-    private void hideButtons() {
-        ViewPropertyAnimator.animate(mSendButton)
-                .rotation(0f)
-                .translationY(0)
-                .setDuration(500);
-
-        ViewPropertyAnimator.animate(mSaveButton)
-                .rotation(0f)
-                .translationY(0)
-                .setDuration(500);
-    }
-
     private void uploadImages(final MaterialDialog dialog) {
-        new UploadStategy().uploadImages(this, selectedImagePath.get(0), dialog);
+//        new UploadStategy().uploadImages(this, selectedImagePath.get(0), dialog);
     }
 
     private void uploadOthers(final MaterialDialog dialog) {
@@ -348,6 +301,20 @@ public class PublishGoodsActivity extends BaseActivity {
 
         if (!imageUploadDialog.isShowing()) {
             uploadOthers(otherUploadDialog);
+        }
+    }
+
+    private boolean isContentCompleted() {
+        if (mBuyTime.getText().toString() != "" && mBuyTime.getText().toString() != null
+                && mConnect.getText().toString() != "" && mConnect.getText().toString() != null
+                && mContent.getText().toString() != "" && mContent.getText().toString() != null
+                && mPrice.getText().toString() != "" && mPrice.getText().toString() != null
+                && mQuality.getText().toString() != "" && mQuality.getText().toString() != null
+                && mTitle.getText().toString() != "" && mTitle.getText().toString() != null) {
+            return true;
+        } else {
+            showSnackbarTipShort(getCurrentFocus(), R.string.please_complete_info);
+            return false;
         }
     }
 }

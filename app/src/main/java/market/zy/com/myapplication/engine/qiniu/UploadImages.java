@@ -1,13 +1,13 @@
 package market.zy.com.myapplication.engine.qiniu;
 
-import com.qiniu.android.storage.UpCompletionHandler;
-import com.qiniu.android.storage.UploadOptions;
+import java.io.IOException;
 
 import market.zy.com.myapplication.network.qiniu.upload.IFileUploadService;
+import market.zy.com.myapplication.network.qiniu.upload.OnUploadListener;
 import market.zy.com.myapplication.network.qiniu.upload.SimpleUploadService;
 
 /**
- * Created by root on 16-5-4.
+ * Created by zpauly on 16-5-4.
  */
 public class UploadImages {
     private static UploadImages uploadImages = null;
@@ -15,7 +15,7 @@ public class UploadImages {
     private IFileUploadService uploadService;
 
     private UploadImages() {
-        uploadService = new SimpleUploadService();
+        uploadService = SimpleUploadService.getInstance();
     }
 
     public static UploadImages getInstance() {
@@ -29,10 +29,8 @@ public class UploadImages {
         return uploadImages;
     }
 
-    public void uploadImages(String imagePath, String key,
-                             UpCompletionHandler upCompletionHandler, UploadOptions uploadOptions) {
-        uploadService.putData(imagePath)
-                .putKey(key)
-                .upload(upCompletionHandler, uploadOptions);
+    public void uploadImages(String path, String token, OnUploadListener listener) {
+        uploadService.setOnUploadListener(listener);
+        uploadService.putDataByPath(path, null, token);
     }
 }

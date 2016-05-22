@@ -1,14 +1,12 @@
 package market.zy.com.myapplication.engine.qiniu;
 
 import android.content.Context;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.qiniu.android.http.ResponseInfo;
-import com.qiniu.android.storage.UpCompletionHandler;
 
-import org.json.JSONObject;
+import market.zy.com.myapplication.entity.qiniu.QiniuUploadToken;
+import market.zy.com.myapplication.network.qiniu.uploadtoken.TokenMethod;
+import rx.Observer;
 
 /**
  * Created by root on 16-5-8.
@@ -17,8 +15,9 @@ public class UploadStategy {
 
     private String key;
 
-    public void uploadImages(final Context context, final String path, final MaterialDialog dialog) {
-        UploadImages.getInstance().uploadImages(path, null, new UpCompletionHandler() {
+    public void uploadImages(Observer<QiniuUploadToken> observer, final Context context, final String path, final MaterialDialog dialog) {
+        TokenMethod.getInstance().getUploadToken(observer);
+        /*UploadImages.getInstance().uploadImages(path, null, new UpCompletionHandler() {
             @Override
             public void complete(String key, ResponseInfo info, JSONObject response) {
                 Log.i("qiniu", key + ",\r\n " + info + ",\r\n " + response);
@@ -30,7 +29,7 @@ public class UploadStategy {
                     dialog.dismiss();
                 }
             }
-        }, null);
+        }, null);*/
         /*KeyMethod.getInstance().getKey(new Observer<QiniuKey>() {
             @Override
             public void onCompleted() {
