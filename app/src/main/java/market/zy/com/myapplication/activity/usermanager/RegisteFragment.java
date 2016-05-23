@@ -2,7 +2,6 @@ package market.zy.com.myapplication.activity.usermanager;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -20,16 +19,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseFragment;
-import market.zy.com.myapplication.db.user.UserInfoDao;
-import market.zy.com.myapplication.entity.login.LoginTokenSuccess;
-import market.zy.com.myapplication.entity.registe.RegisteSuccess;
-import market.zy.com.myapplication.entity.registe.RegisterInfo;
 import market.zy.com.myapplication.entity.user.UserBasicInfo;
-import market.zy.com.myapplication.network.login_register.LoginMethod;
-import market.zy.com.myapplication.network.login_register.RegisteMethod;
-import market.zy.com.myapplication.network.user.UserInfoMethod;
-import market.zy.com.myapplication.utils.AuthUtil;
-import market.zy.com.myapplication.utils.SPUtil;
+import market.zy.com.myapplication.entity.user.login.LoginTokenSuccess;
+import market.zy.com.myapplication.entity.user.registe.RegisteSuccess;
+import market.zy.com.myapplication.entity.user.registe.RegisterInfo;
+import market.zy.com.myapplication.network.JxnuGoNetMethod;
 import rx.Subscriber;
 
 /**
@@ -121,7 +115,7 @@ public class RegisteFragment extends BaseFragment {
 
             }
         };
-        RegisteMethod.getInstance().registe(registeSubscriber, info);
+        JxnuGoNetMethod.getInstance().registe(registeSubscriber, info);
     }
 
     private boolean verifyEmail(EditText emailEt) {

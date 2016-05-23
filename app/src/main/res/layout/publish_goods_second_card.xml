@@ -210,7 +210,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/classify"/>
 
-                <Spinner
+                <android.support.v7.widget.AppCompatSpinner
                     android:layout_marginLeft="32dp"
                     android:id="@+id/publish_type_select"
                     android:layout_width="wrap_content"

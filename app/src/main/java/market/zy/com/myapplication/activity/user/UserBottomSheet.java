@@ -1,6 +1,7 @@
 package market.zy.com.myapplication.activity.user;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
@@ -17,6 +18,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import market.zy.com.myapplication.R;
+import market.zy.com.myapplication.activity.amend.AmendActivity;
 import market.zy.com.myapplication.db.user.UserInfoBean;
 import market.zy.com.myapplication.db.user.UserInfoDao;
 
@@ -34,8 +36,8 @@ public class UserBottomSheet extends BottomSheetDialogFragment {
     @Bind(R.id.personal_bottom_avater)
     protected CircleImageView mAvatar;
 
-    @Bind(R.id.personal_bottom_email)
-    protected TextView mEmailText;
+    @Bind(R.id.personal_bottom_location)
+    protected TextView mLocationText;
 
     @Bind(R.id.personal_bottom_phone)
     protected TextView mPhoneText;
@@ -68,6 +70,9 @@ public class UserBottomSheet extends BottomSheetDialogFragment {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.personal_bottom_edit :
+                        Intent editIntent = new Intent();
+                        editIntent.setClass(getActivity(), AmendActivity.class);
+                        startActivity(editIntent);
                         break;
                 }
                 return true;
@@ -112,6 +117,7 @@ public class UserBottomSheet extends BottomSheetDialogFragment {
                 .centerCrop()
                 .into(mAvatar);
         mToolbar.setTitle(userInfo.getUserName());
+        mLocationText.setText(userInfo.getLocation());
         mPhoneText.setText(userInfo.getContactMe());
         mSexText.setText(userInfo.getSex());
         mTagText.setText(userInfo.getAbout_me());

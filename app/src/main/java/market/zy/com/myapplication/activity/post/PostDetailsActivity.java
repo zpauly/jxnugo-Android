@@ -11,7 +11,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -36,8 +35,8 @@ import market.zy.com.myapplication.db.post.PhotoBean;
 import market.zy.com.myapplication.db.post.PhotosDao;
 import market.zy.com.myapplication.db.post.PostDetailBean;
 import market.zy.com.myapplication.db.post.PostDetailDao;
-import market.zy.com.myapplication.entity.comments.AllComments;
-import market.zy.com.myapplication.network.comments.CommentsMethod;
+import market.zy.com.myapplication.entity.post.comments.AllComments;
+import market.zy.com.myapplication.network.JxnuGoNetMethod;
 import market.zy.com.myapplication.utils.AuthUtil;
 import market.zy.com.myapplication.utils.SPUtil;
 import rx.Observable;
@@ -242,7 +241,7 @@ public class PostDetailsActivity extends BaseActivity {
         };
         String auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(this).getCurrentUsername()
                 ,SPUtil.getInstance(this).getCurrentPassword());
-        CommentsMethod.getInstance().getAllComments(subscriber, auth, postId);
+        JxnuGoNetMethod.getInstance().getAllComments(subscriber, auth, postId);
     }
 
     private void loadPhotosData() {
@@ -263,7 +262,7 @@ public class PostDetailsActivity extends BaseActivity {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        
                     }
 
                     @Override

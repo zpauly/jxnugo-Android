@@ -28,10 +28,9 @@ import market.zy.com.myapplication.Constants;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseFragment;
 import market.zy.com.myapplication.db.user.UserInfoDao;
-import market.zy.com.myapplication.entity.login.LoginTokenSuccess;
 import market.zy.com.myapplication.entity.user.UserBasicInfo;
-import market.zy.com.myapplication.network.login_register.LoginMethod;
-import market.zy.com.myapplication.network.user.UserInfoMethod;
+import market.zy.com.myapplication.entity.user.login.LoginTokenSuccess;
+import market.zy.com.myapplication.network.JxnuGoNetMethod;
 import market.zy.com.myapplication.utils.AccessTokenKeeper;
 import market.zy.com.myapplication.utils.AuthUtil;
 import market.zy.com.myapplication.utils.SPUtil;
@@ -165,7 +164,7 @@ public class LoginFragment extends BaseFragment {
                 String username = mEditText.getText().toString();
                 String password = mPasswordEditText.getText().toString();
                 String auth = AuthUtil.getAuthFromUsernameAndPassword(username, password);
-                LoginMethod.getInstance()
+                JxnuGoNetMethod.getInstance()
                         .login(loginSubscriber, auth, username, password);
             }
         });
@@ -189,8 +188,9 @@ public class LoginFragment extends BaseFragment {
             }
         };
         SPUtil sp = SPUtil.getInstance(getContext());
-        UserInfoMethod.getInstance(sp.getCurrentUsername(), sp.getCurrentPassword())
-                .getUserInfo(userinfoSubscriber, sp.getCurrentUserId());
+        String auth = AuthUtil.getAuthFromUsernameAndPassword(sp.getCurrentUsername(), sp.getCurrentPassword());
+        JxnuGoNetMethod.getInstance()
+                .getUserInfo(userinfoSubscriber, auth, sp.getCurrentUserId());
     }
 
     private void setQQLogin() {

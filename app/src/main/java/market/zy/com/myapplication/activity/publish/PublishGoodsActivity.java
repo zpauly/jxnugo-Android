@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +17,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -37,12 +36,13 @@ import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseActivity;
 import market.zy.com.myapplication.engine.qiniu.UploadImages;
 import market.zy.com.myapplication.entity.post.PhotoKey;
-import market.zy.com.myapplication.entity.publish.NewPost;
-import market.zy.com.myapplication.entity.publish.PublishSuccess;
+import market.zy.com.myapplication.entity.post.publish.NewPost;
+import market.zy.com.myapplication.entity.post.publish.PublishSuccess;
 import market.zy.com.myapplication.entity.qiniu.QiniuUploadToken;
-import market.zy.com.myapplication.network.publish.PublishNewPostMethod;
+import market.zy.com.myapplication.network.JxnuGoNetMethod;
 import market.zy.com.myapplication.network.qiniu.upload.OnUploadListener;
 import market.zy.com.myapplication.network.qiniu.uploadtoken.TokenMethod;
+import market.zy.com.myapplication.utils.AuthUtil;
 import market.zy.com.myapplication.utils.PhotoUtil;
 import market.zy.com.myapplication.utils.SPUtil;
 import rx.Subscriber;
@@ -93,7 +93,7 @@ public class PublishGoodsActivity extends BaseActivity {
     protected EditText mNum;
 
     @Bind(R.id.publish_type_select)
-    protected Spinner mSelectSpinner;
+    protected AppCompatSpinner mSelectSpinner;
 
     @Bind(R.id.goods_add_outer_layout)
     protected LinearLayout mOuterLayout;
@@ -453,7 +453,9 @@ public class PublishGoodsActivity extends BaseActivity {
 
             }
         };
-        PublishNewPostMethod.getInstance().publishNewPost(uploadSubscriber, newPost);
+        String auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(this).getCurrentUsername()
+                ,SPUtil.getInstance(this).getCurrentPassword());
+        JxnuGoNetMethod.getInstance().publishNewPost(uploadSubscriber, auth, newPost);
     }
 
     private boolean isContentCompleted() {

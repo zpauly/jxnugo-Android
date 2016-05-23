@@ -15,7 +15,7 @@ import market.zy.com.myapplication.adapter.recyclerviewAdapter.ClassifyNavAdapte
 import market.zy.com.myapplication.ui.support.DividerItemDecoration;
 
 /**
- * Created by dell on 2016/3/14.
+ * Created by zpauly on 2016/3/14.
  */
 public class ClassifyActivity extends BaseActivity {
     @Bind(R.id.classify_toolbar)

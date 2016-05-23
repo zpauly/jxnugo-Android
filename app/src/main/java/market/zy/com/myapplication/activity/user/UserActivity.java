@@ -60,6 +60,13 @@ public class UserActivity extends BaseActivity {
         initView();
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        if (mBottomSheet != null)
+        mBottomSheet.dismiss();
+        super.onSaveInstanceState(outState);
+    }
+
     private void initView() {
         fm = getSupportFragmentManager();
         ft = fm.beginTransaction();

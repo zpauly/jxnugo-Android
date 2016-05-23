@@ -95,7 +95,7 @@ public class TradeActivity extends MaterialDrawerActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                mSearchView.setSuggestions(getResources().getStringArray(R.array.demo));
+
                 return false;
             }
         });

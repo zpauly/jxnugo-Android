@@ -1,4 +1,4 @@
-package market.zy.com.myapplication.entity.publish;
+package market.zy.com.myapplication.entity.post.publish;
 
 /**
  * Created by zpauly on 16-5-22.

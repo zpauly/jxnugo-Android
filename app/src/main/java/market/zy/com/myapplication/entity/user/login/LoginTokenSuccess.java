@@ -1,4 +1,4 @@
-package market.zy.com.myapplication.entity.login;
+package market.zy.com.myapplication.entity.user.login;
 
 /**
  * Created by zpauly on 16-5-17.

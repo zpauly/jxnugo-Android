@@ -1,4 +1,4 @@
-package market.zy.com.myapplication.entity.comments;
+package market.zy.com.myapplication.entity.post.comments;
 
 import java.util.List;
 

@@ -14,8 +14,8 @@ import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseActivity;
 import market.zy.com.myapplication.activity.trade.TradeActivity;
 import market.zy.com.myapplication.adapter.recyclerviewAdapter.CommentsAdapter;
-import market.zy.com.myapplication.entity.comments.AllComments;
-import market.zy.com.myapplication.network.comments.CommentsMethod;
+import market.zy.com.myapplication.entity.post.comments.AllComments;
+import market.zy.com.myapplication.network.JxnuGoNetMethod;
 import market.zy.com.myapplication.ui.support.DividerItemDecoration;
 import market.zy.com.myapplication.utils.AuthUtil;
 import market.zy.com.myapplication.utils.SPUtil;
@@ -130,7 +130,7 @@ public class CommentsActivity extends BaseActivity {
         };
         String auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(this).getCurrentUsername()
                 ,SPUtil.getInstance(this).getCurrentPassword());
-        CommentsMethod.getInstance().getAllComments(subscriber, auth, postId);
+        JxnuGoNetMethod.getInstance().getAllComments(subscriber, auth, postId);
     }
 
     private void getPostId() {

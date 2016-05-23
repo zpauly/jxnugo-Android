@@ -1,4 +1,4 @@
-package market.zy.com.myapplication.entity.publish;
+package market.zy.com.myapplication.entity.post.publish;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package market.zy.com.myapplication.entity.comments;
+package market.zy.com.myapplication.entity.post.comments;
 
 /**
  * Created by zpauly on 16-5-10.

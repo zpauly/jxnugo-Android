@@ -1,4 +1,4 @@
-package market.zy.com.myapplication.entity.registe;
+package market.zy.com.myapplication.entity.user.registe;
 
 /**
  * Created by zpauly on 16-5-22.

@@ -14,8 +14,7 @@ import java.util.List;
 
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.viewholder.CommentsViewHolder;
-import market.zy.com.myapplication.engine.ImageEngine;
-import market.zy.com.myapplication.entity.comments.Comment;
+import market.zy.com.myapplication.entity.post.comments.Comment;
 
 /**
  * Created by zpauly on 16-5-20.

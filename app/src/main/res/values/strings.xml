@@ -93,6 +93,14 @@
     <string name="collected_false">取消收藏</string>
     <string name="share">分享到...</string>
 
+    <string name="amend_avatar">点击更换头像</string>
+    <string name="amend_success">修改成功</string>
+    <string name="amend_user_info">修改个人资料</string>
+    <string name="amend_user_tag">编辑个性签名</string>
+    <string name="amend_username">编辑用户名</string>
+    <string name="amend_contract">编辑联系方式</string>
+    <string name="amend_location">编辑联系地址</string>
+
     <string name="comments">评论</string>
 
     <string-array name="classify">
@@ -100,17 +108,12 @@
         <item>衣服</item>
     </string-array>
 
-    <string-array name="demo">
-        <item>JAVA</item>
-        <item>SCALA</item>
-        <item>KOTLIN</item>
-        <item>GROOVY</item>
-        <item>C</item>
-        <item>C++</item>
-        <item>a1</item>
-        <item>a2</item>
-        <item>a3</item>
+    <string-array name="sex">
+        <item>男</item>
+        <item>女</item>
     </string-array>
+    <string name="male">男</string>
+    <string name="female">女</string>
 
     <!--新浪微博 -->
     <string name="no_weibo_app">请先下载最新版本的微博客户端</string>
