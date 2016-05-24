@@ -274,15 +274,15 @@ public class PostDetailsActivity extends BaseActivity {
 
     private void loadPostData() {
         PostDetailBean postDetail = PostDetailDao.queryPostDetail(postId).get(0);
-        mPostGoodName.setText(postDetail.getGoodName());
-        mPostGoodBuyTime.setText(postDetail.getGoodBuyTime());
-        mPostSellerName.setText(postDetail.getPostUserName());
-        mPostGoodPrice.setText(mPostGoodPrice.getText().toString() + "   " +postDetail.getGoodPrice());
+        mPostGoodName.setText(postDetail.getGoodsName());
+        mPostGoodBuyTime.setText(postDetail.getGoodsBuyTime());
+        mPostSellerName.setText(postDetail.getPostNickName());
+        mPostGoodPrice.setText(mPostGoodPrice.getText().toString() + "   " +postDetail.getGoodsPrice());
         mPostGoodDetails.setText(postDetail.getBody());
-        mPostGoodQuality.setText(postDetail.getGoodQuality());
-        mPostGoodLocation.setText(postDetail.getGoodLocation());
+        mPostGoodQuality.setText(postDetail.getGoodsQuality());
+        mPostGoodLocation.setText(postDetail.getGoodsLocation());
         Glide.with(this)
-                .load(postDetail.getPostUserAvator())
+                .load(postDetail.getPostUserAvatar())
                 .crossFade()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .centerCrop()

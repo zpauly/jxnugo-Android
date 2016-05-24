@@ -21,16 +21,16 @@ public class OnePagePost {
      * body : Pellentesque viverra pede ac diam. Morbi sem mauris, laoreet ut, rhoncus aliquet, pulvinar sed, nisl.
      * commentsCount : 0
      * contact : 1144728202
-     * goodBuyTime : 2016-04-26
-     * goodLocation : 78 Anhalt Parkway
-     * goodName : Rental & Leasing Services
-     * goodPrice : 1239.12
-     * goodQuality : 9成新
-     * goodTag : 4
+     * goodsBuyTime : 2016-04-26
+     * goodsLocation : 78 Anhalt Parkway
+     * goodsName : Rental & Leasing Services
+     * goodsPrice : 1239.12
+     * goodsQuality : 9成新
+     * goodsTag : 4
      * photos : null
      * postId : 1
-     * postUserAvator : http://7xrkww.com1.z0.glb.clouddn.com/84BE7838-E41C-4E60-A1B8-CA95DBEE326B.png
-     * postUserName : nicole71
+     * postUserAvatar : http://7xrkww.com1.z0.glb.clouddn.com/84BE7838-E41C-4E60-A1B8-CA95DBEE326B.png
+     * postNickName : nicole71
      * timestamp : 2016-05-07 00:00:00
      * url : http://127.0.0.1:5000/api/posts/1
      */

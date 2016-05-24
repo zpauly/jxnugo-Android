@@ -6,8 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -21,14 +19,7 @@ import market.zy.com.myapplication.activity.post.PostDetailsActivity;
 import market.zy.com.myapplication.activity.trade.TradeActivity;
 import market.zy.com.myapplication.activity.viewholder.LoadMoreViewHolder;
 import market.zy.com.myapplication.activity.viewholder.TradeListViewHolder;
-import market.zy.com.myapplication.db.user.OthersInfoBean;
-import market.zy.com.myapplication.db.user.OthersinfoDao;
 import market.zy.com.myapplication.entity.post.OneSimplePost;
-import market.zy.com.myapplication.entity.user.UserBasicInfo;
-import market.zy.com.myapplication.network.JxnuGoNetMethod;
-import market.zy.com.myapplication.utils.AuthUtil;
-import market.zy.com.myapplication.utils.SPUtil;
-import rx.Subscriber;
 
 /**
  * Created by zpauly on 2016/3/12.
@@ -116,16 +107,13 @@ public class TradeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 .centerCrop()
                 .into(viewHolder.mImageView);
         Glide.with(mContext)
-                .load(mData.get(position).getPostUserAvator())
+                .load(mData.get(position).getPostUserAvatar())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .crossFade()
                 .centerCrop()
                 .into(viewHolder.mAvatar);
-        String[] str = mData.get(position).getAuthor().split("/");
-        int id = Integer.parseInt(str[str.length - 1]);
-        OthersInfoBean bean = OthersinfoDao.queryUserInfoByUsername(mData.get(position).getPostUserName()).get(0);
-        viewHolder.mUsername.setText(mData.get(position).getAuthor());
-        viewHolder.mGoodname.setText(mData.get(position).getGoodName());
+        viewHolder.mUsername.setText(mData.get(position).getPostNickName());
+        viewHolder.mGoodname.setText(mData.get(position).getGoodsName());
         viewHolder.mTime.setText(mData.get(position).getTimestamp());
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

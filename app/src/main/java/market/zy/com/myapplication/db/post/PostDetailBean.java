@@ -34,16 +34,16 @@ public class PostDetailBean extends DataSupport {
     private String body;
     private int commentsCount;
     private String contact;
-    private String goodBuyTime;
-    private String goodLocation;
-    private String goodName;
-    private double goodPrice;
-    private String goodQuality;
-    private int goodTag;
+    private String goodsBuyTime;
+    private String goodsLocation;
+    private String goodsName;
+    private double goodsPrice;
+    private String goodsQuality;
+    private int goodsTag;
     private String cover;
     private int postId;
-    private String postUserAvator;
-    private String postUserName;
+    private String postUserAvatar;
+    private String postNickName;
     private String timestamp;
     private String url;
 
@@ -87,52 +87,52 @@ public class PostDetailBean extends DataSupport {
         this.contact = contact;
     }
 
-    public String getGoodBuyTime() {
-        return goodBuyTime;
+    public String getGoodsBuyTime() {
+        return goodsBuyTime;
     }
 
-    public void setGoodBuyTime(String goodBuyTime) {
-        this.goodBuyTime = goodBuyTime;
+    public void setGoodsBuyTime(String goodsBuyTime) {
+        this.goodsBuyTime = goodsBuyTime;
     }
 
-    public String getGoodLocation() {
-        return goodLocation;
+    public String getGoodsLocation() {
+        return goodsLocation;
     }
 
-    public void setGoodLocation(String goodLocation) {
-        this.goodLocation = goodLocation;
+    public void setGoodsLocation(String goodsLocation) {
+        this.goodsLocation = goodsLocation;
     }
 
-    public String getGoodName() {
-        return goodName;
+    public String getGoodsName() {
+        return goodsName;
     }
 
-    public void setGoodName(String goodName) {
-        this.goodName = goodName;
+    public void setGoodsName(String goodsName) {
+        this.goodsName = goodsName;
     }
 
-    public double getGoodPrice() {
-        return goodPrice;
+    public double getGoodsPrice() {
+        return goodsPrice;
     }
 
-    public void setGoodPrice(double goodPrice) {
-        this.goodPrice = goodPrice;
+    public void setGoodsPrice(double goodsPrice) {
+        this.goodsPrice = goodsPrice;
     }
 
-    public String getGoodQuality() {
-        return goodQuality;
+    public String getGoodsQuality() {
+        return goodsQuality;
     }
 
-    public void setGoodQuality(String goodQuality) {
-        this.goodQuality = goodQuality;
+    public void setGoodsQuality(String goodsQuality) {
+        this.goodsQuality = goodsQuality;
     }
 
-    public int getGoodTag() {
-        return goodTag;
+    public int getGoodsTag() {
+        return goodsTag;
     }
 
-    public void setGoodTag(int goodTag) {
-        this.goodTag = goodTag;
+    public void setGoodsTag(int goodsTag) {
+        this.goodsTag = goodsTag;
     }
 
     public int getPostId() {
@@ -143,20 +143,20 @@ public class PostDetailBean extends DataSupport {
         this.postId = postId;
     }
 
-    public String getPostUserAvator() {
-        return postUserAvator;
+    public String getPostUserAvatar() {
+        return postUserAvatar;
     }
 
-    public void setPostUserAvator(String postUserAvator) {
-        this.postUserAvator = postUserAvator;
+    public void setPostUserAvatar(String postUserAvatar) {
+        this.postUserAvatar = postUserAvatar;
     }
 
-    public String getPostUserName() {
-        return postUserName;
+    public String getPostNickName() {
+        return postNickName;
     }
 
-    public void setPostUserName(String postUserName) {
-        this.postUserName = postUserName;
+    public void setPostNickName(String postNickName) {
+        this.postNickName = postNickName;
     }
 
     public String getTimestamp() {

@@ -425,16 +425,16 @@ public class PublishGoodsActivity extends BaseActivity {
 
     private void uploadOthers() {
         NewPost newPost = new NewPost();
-        newPost.setGoodName(title);
+        newPost.setGoodsName(title);
         newPost.setBody(content);
-        newPost.setGoodPrice(price);
+        newPost.setGoodsPrice(price);
         newPost.setPhotos(imageKeys);
         newPost.setContact(contract);
-        newPost.setGoodBuyTime(buyTime);
-        newPost.setGoodLocation(location);
-        newPost.setGoodQuality(quality);
-        newPost.setGoodNum(num);
-        newPost.setGoodTag(goodTag);
+        newPost.setGoodsBuyTime(buyTime);
+        newPost.setGoodsLocation(location);
+        newPost.setGoodsQuality(quality);
+        newPost.setGoodsNum(num);
+        newPost.setGoodsTag(goodTag);
         newPost.setUserId(String.valueOf(SPUtil.getInstance(this).getCurrentUserId()));
         uploadSubscriber = new Subscriber<PublishSuccess>() {
             @Override

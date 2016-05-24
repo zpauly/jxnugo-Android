@@ -6,42 +6,52 @@ import java.util.List;
  * Created by zpauly on 16-5-19.
  */
 public class OneSimplePost {
-
     /**
-     * author : http://127.0.0.1:5000/api/user/2
-     * body : Pellentesque viverra pede ac diam. Morbi sem mauris, laoreet ut, rhoncus aliquet, pulvinar sed, nisl.
+     * author : http://www.jxnugo.com/api/user/160
+     * author_id : 160
+     * body : Aenean sit amet justo. Vivamus vel nulla eget eros elementum pellentesque.
      * commentsCount : 0
-     * contact : 1144728202
-     * goodBuyTime : 2016-04-26
-     * goodLocation : 78 Anhalt Parkway
-     * goodName : Rental & Leasing Services
-     * goodPrice : 1239.12
-     * goodQuality : 9成新
-     * goodTag : 4
-     * photos : null
-     * postId : 1
-     * postUserAvator : http://7xrkww.com1.z0.glb.clouddn.com/84BE7838-E41C-4E60-A1B8-CA95DBEE326B.png
-     * postUserName : nicole71
-     * timestamp : 2016-05-07 00:00:00
-     * url : http://127.0.0.1:5000/api/posts/1
+     * contact : 1083007150
+     * goodsBuyTime : 2016-05-01
+     * goodsLocation : 9371 Roxbury Lane
+     * goodsName : Manufactured Housing
+     * goodsPrice : 1239.12
+     * goodsQuality : 9成新
+     * goodsTag : 4
+     * photos : [{"key":"FsEAykjBT4VlaqS934nGjd7GbmLu"},{"key":"Fn5e3ZfrHJ4GbfPmlaAjhfYAxiFn"}]
+     * postId : 2
+     * postUserAvatar : http://7xrkww.com1.z0.glb.clouddn.com/84BE7838-E41C-4E60-A1B8-CA95DBEE326B.png
+     * postNickName : carol89
+     * timestamp : 2016-05-16 08:00:00
+     * url : http://www.jxnugo.com/api/posts/2
      */
 
     private String author;
+    private int author_id;
     private String body;
     private int commentsCount;
     private String contact;
-    private String goodBuyTime;
-    private String goodLocation;
-    private String goodName;
-    private double goodPrice;
-    private String goodQuality;
-    private int goodTag;
-    private List<PhotoKey> photos;
+    private String goodsBuyTime;
+    private String goodsLocation;
+    private String goodsName;
+    private double goodsPrice;
+    private String goodsQuality;
+    private int goodsTag;
     private int postId;
-    private String postUserAvator;
-    private String postUserName;
+    private String postUserAvatar;
+    private String postNickName;
     private String timestamp;
     private String url;
+
+    private List<PhotoKey> photos;
+
+    public List<PhotoKey> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<PhotoKey> photoKs) {
+        this.photos = photoKs;
+    }
 
     public String getAuthor() {
         return author;
@@ -49,6 +59,14 @@ public class OneSimplePost {
 
     public void setAuthor(String author) {
         this.author = author;
+    }
+
+    public int getAuthor_id() {
+        return author_id;
+    }
+
+    public void setAuthor_id(int author_id) {
+        this.author_id = author_id;
     }
 
     public String getBody() {
@@ -75,60 +93,52 @@ public class OneSimplePost {
         this.contact = contact;
     }
 
-    public String getGoodBuyTime() {
-        return goodBuyTime;
+    public String getGoodsBuyTime() {
+        return goodsBuyTime;
     }
 
-    public void setGoodBuyTime(String goodBuyTime) {
-        this.goodBuyTime = goodBuyTime;
+    public void setGoodsBuyTime(String goodsBuyTime) {
+        this.goodsBuyTime = goodsBuyTime;
     }
 
-    public String getGoodLocation() {
-        return goodLocation;
+    public String getGoodsLocation() {
+        return goodsLocation;
     }
 
-    public void setGoodLocation(String goodLocation) {
-        this.goodLocation = goodLocation;
+    public void setGoodsLocation(String goodsLocation) {
+        this.goodsLocation = goodsLocation;
     }
 
-    public String getGoodName() {
-        return goodName;
+    public String getGoodsName() {
+        return goodsName;
     }
 
-    public void setGoodName(String goodName) {
-        this.goodName = goodName;
+    public void setGoodsName(String goodsName) {
+        this.goodsName = goodsName;
     }
 
-    public double getGoodPrice() {
-        return goodPrice;
+    public double getGoodsPrice() {
+        return goodsPrice;
     }
 
-    public void setGoodPrice(double goodPrice) {
-        this.goodPrice = goodPrice;
+    public void setGoodsPrice(double goodsPrice) {
+        this.goodsPrice = goodsPrice;
     }
 
-    public String getGoodQuality() {
-        return goodQuality;
+    public String getGoodsQuality() {
+        return goodsQuality;
     }
 
-    public void setGoodQuality(String goodQuality) {
-        this.goodQuality = goodQuality;
+    public void setGoodsQuality(String goodsQuality) {
+        this.goodsQuality = goodsQuality;
     }
 
-    public int getGoodTag() {
-        return goodTag;
+    public int getGoodsTag() {
+        return goodsTag;
     }
 
-    public void setGoodTag(int goodTag) {
-        this.goodTag = goodTag;
-    }
-
-    public List<PhotoKey> getPhotos() {
-        return photos;
-    }
-
-    public void setPhotos(List<PhotoKey> photos) {
-        this.photos = photos;
+    public void setGoodsTag(int goodsTag) {
+        this.goodsTag = goodsTag;
     }
 
     public int getPostId() {
@@ -139,20 +149,20 @@ public class OneSimplePost {
         this.postId = postId;
     }
 
-    public String getPostUserAvator() {
-        return postUserAvator;
+    public String getPostUserAvatar() {
+        return postUserAvatar;
     }
 
-    public void setPostUserAvator(String postUserAvator) {
-        this.postUserAvator = postUserAvator;
+    public void setPostUserAvatar(String postUserAvatar) {
+        this.postUserAvatar = postUserAvatar;
     }
 
-    public String getPostUserName() {
-        return postUserName;
+    public String getPostNickName() {
+        return postNickName;
     }
 
-    public void setPostUserName(String postUserName) {
-        this.postUserName = postUserName;
+    public void setPostNickName(String postNickName) {
+        this.postNickName = postNickName;
     }
 
     public String getTimestamp() {

@@ -11,26 +11,26 @@ public class NewPost {
     /**
      * userId : 1
      * body : 二手笔记本，成色非常好，见鲁大师，见鲁大师二手笔记本，成色非常好，见鲁大师，见鲁大师二手笔记本，成色非常好，见鲁大师，见鲁大师二手笔记本，
-     * goodName : 戴尔灵越5537
-     * goodNum : 1
-     * goodPrice : 2000
-     * goodLocation : 一栋N204
-     * goodQuality : 7成新
-     * goodBuyTime : 2014年6月
-     * goodTag : 1
+     * goodsName : 戴尔灵越5537
+     * goodsNum : 1
+     * goodsPrice : 2000
+     * goodsLocation : 一栋N204
+     * goodsQuality : 7成新
+     * goodsBuyTime : 2014年6月
+     * goodsTag : 1
      * contact : 13361640744
      * photos : [{"key":"84BE7838-E41C-4E60-A1B8-CA95DBEE326B"},{"key":"84BE7838-E41C-4E60-A1B8-CA95DBEE326B"},{"key":"84BE7838-E41C-4E60-A1B8-CA95DBEE326B"}]
      */
 
     private String userId;
     private String body;
-    private String goodName;
-    private int goodNum;
-    private double goodPrice;
-    private String goodLocation;
-    private String goodQuality;
-    private String goodBuyTime;
-    private int goodTag;
+    private String goodsName;
+    private int goodsNum;
+    private double goodsPrice;
+    private String goodsLocation;
+    private String goodsQuality;
+    private String goodsBuyTime;
+    private int goodsTag;
     private String contact;
 
     private List<PhotoKey> photos;
@@ -59,60 +59,60 @@ public class NewPost {
         this.body = body;
     }
 
-    public String getGoodName() {
-        return goodName;
+    public String getGoodsName() {
+        return goodsName;
     }
 
-    public void setGoodName(String goodName) {
-        this.goodName = goodName;
+    public void setGoodsName(String goodName) {
+        this.goodsName = goodName;
     }
 
-    public int getGoodNum() {
-        return goodNum;
+    public int getGoodsNum() {
+        return goodsNum;
     }
 
-    public void setGoodNum(int goodNum) {
-        this.goodNum = goodNum;
+    public void setGoodsNum(int goodNum) {
+        this.goodsNum = goodNum;
     }
 
-    public double getGoodPrice() {
-        return goodPrice;
+    public double getGoodsPrice() {
+        return goodsPrice;
     }
 
-    public void setGoodPrice(double goodPrice) {
-        this.goodPrice = goodPrice;
+    public void setGoodsPrice(double goodPrice) {
+        this.goodsPrice = goodPrice;
     }
 
-    public String getGoodLocation() {
-        return goodLocation;
+    public String getGoodsLocation() {
+        return goodsLocation;
     }
 
-    public void setGoodLocation(String goodLocation) {
-        this.goodLocation = goodLocation;
+    public void setGoodsLocation(String goodLocation) {
+        this.goodsLocation = goodLocation;
     }
 
-    public String getGoodQuality() {
-        return goodQuality;
+    public String getGoodsQuality() {
+        return goodsQuality;
     }
 
-    public void setGoodQuality(String goodQuality) {
-        this.goodQuality = goodQuality;
+    public void setGoodsQuality(String goodQuality) {
+        this.goodsQuality = goodQuality;
     }
 
-    public String getGoodBuyTime() {
-        return goodBuyTime;
+    public String getGoodsBuyTime() {
+        return goodsBuyTime;
     }
 
-    public void setGoodBuyTime(String goodBuyTime) {
-        this.goodBuyTime = goodBuyTime;
+    public void setGoodsBuyTime(String goodBuyTime) {
+        this.goodsBuyTime = goodBuyTime;
     }
 
-    public int getGoodTag() {
-        return goodTag;
+    public int getGoodsTag() {
+        return goodsTag;
     }
 
-    public void setGoodTag(int goodTag) {
-        this.goodTag = goodTag;
+    public void setGoodsTag(int goodTag) {
+        this.goodsTag = goodTag;
     }
 
     public String getContact() {

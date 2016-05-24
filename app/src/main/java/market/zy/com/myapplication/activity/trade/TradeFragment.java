@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -17,16 +18,11 @@ import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseFragment;
 import market.zy.com.myapplication.adapter.recyclerviewAdapter.TradeListAdapter;
 import market.zy.com.myapplication.db.post.PhotosDao;
-import market.zy.com.myapplication.db.post.PostDetailBean;
 import market.zy.com.myapplication.db.post.PostDetailDao;
-import market.zy.com.myapplication.db.user.OthersinfoDao;
 import market.zy.com.myapplication.entity.post.OnePagePost;
 import market.zy.com.myapplication.entity.post.OneSimplePost;
 import market.zy.com.myapplication.entity.post.PhotoKey;
-import market.zy.com.myapplication.entity.user.UserBasicInfo;
 import market.zy.com.myapplication.network.JxnuGoNetMethod;
-import market.zy.com.myapplication.utils.AuthUtil;
-import market.zy.com.myapplication.utils.SPUtil;
 import rx.Subscriber;
 
 /**
@@ -54,12 +50,8 @@ public class TradeFragment extends BaseFragment {
 
     private int postIdToLoad = 1;
 
-
     private Subscriber<OnePagePost> newSubscriber;
     private Subscriber<OnePagePost> moreSubscriber;
-    private Subscriber<UserBasicInfo> othersInfoSubscriber;
-
-    private String auth;
 
     @Nullable
     @Override
@@ -69,8 +61,6 @@ public class TradeFragment extends BaseFragment {
 
         initView();
 
-        auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(getContext()).getCurrentUsername()
-                , SPUtil.getInstance(getContext()).getCurrentPassword());
         return mView;
     }
 
@@ -92,9 +82,6 @@ public class TradeFragment extends BaseFragment {
             newSubscriber.unsubscribe();
         if (moreSubscriber != null)
             moreSubscriber.unsubscribe();
-        if (othersInfoSubscriber != null) {
-            othersInfoSubscriber.unsubscribe();
-        }
     }
 
     private void initView() {
@@ -183,24 +170,18 @@ public class TradeFragment extends BaseFragment {
     }
 
     private void loadNewData() {
-        OthersinfoDao.deleteAllUserInfo();
         PhotosDao.deletePhotoBean();
         PostDetailDao.deletePostDetail();
-
         newSubscriber = new Subscriber<OnePagePost>() {
             @Override
             public void onCompleted() {
-                for (PostDetailBean post : PostDetailDao.queryPostDetail(postIdToLoad)) {
-                    loadOthersInfo(post.getAuthor(), auth);
-                }
                 mSwipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
                 mSwipeRefreshLayout.setRefreshing(false);
-                showSnackbarTipShort(getView(), R.string.please_login);
+                e.printStackTrace();
             }
 
             @Override
@@ -236,35 +217,14 @@ public class TradeFragment extends BaseFragment {
             public void onNext(OnePagePost onePagePost) {
                 for (OneSimplePost post : onePagePost.getPosts()) {
                     PostDetailDao.insertPostDetail(post);
-                    loadOthersInfo(post.getAuthor(), auth);
+                    for (PhotoKey key : post.getPhotos()) {
+                        PhotosDao.insertPhotos(key, post.getPostId());
+                    }
                 }
                 adapter.addAllData(onePagePost.getPosts());
             }
         };
         JxnuGoNetMethod.getInstance()
                 .getOnePagePosts(moreSubscriber, ++postIdToLoad);
-    }
-
-    private void loadOthersInfo(String url, String auth) {
-        String[] str = url.split("/");
-        int id = Integer.parseInt(str[str.length - 1]);
-        othersInfoSubscriber = new Subscriber<UserBasicInfo>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(UserBasicInfo userBasicInfo) {
-                OthersinfoDao.insertUserInfo(userBasicInfo);
-            }
-        };
-        JxnuGoNetMethod.getInstance()
-                .getUserInfo(othersInfoSubscriber, auth, id);
     }
 }
