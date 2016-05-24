@@ -116,7 +116,6 @@ public class UserBottomSheet extends BottomSheetDialogFragment {
                 .crossFade()
                 .centerCrop()
                 .into(mAvatar);
-        mToolbar.setTitle(userInfo.getUserName());
         mLocationText.setText(userInfo.getLocation());
         mPhoneText.setText(userInfo.getContactMe());
         mSexText.setText(userInfo.getSex());

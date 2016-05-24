@@ -134,6 +134,12 @@ public class PostDetailsActivity extends BaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        initViews();
+    }
+
+    @Override
     protected void onDestroy() {
         unsubscribe();
         super.onDestroy();

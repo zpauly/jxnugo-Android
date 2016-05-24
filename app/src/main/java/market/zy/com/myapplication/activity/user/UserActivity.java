@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -54,9 +55,8 @@ public class UserActivity extends BaseActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-
+    protected void onResume() {
+        super.onResume();
         initView();
     }
 
@@ -96,7 +96,7 @@ public class UserActivity extends BaseActivity {
 
     private void setUpToolbar() {
         if (isCurrentUsing()) {
-            mToolbar.setTitle(userInfo.getUserName());
+            mToolbar.setTitle(userInfo.getName());
         } else {
             mToolbar.setTitle(R.string.user_info);
         }

@@ -14,22 +14,32 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.qiniu.android.http.ResponseInfo;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
+import market.zy.com.myapplication.Constants;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseActivity;
 import market.zy.com.myapplication.db.user.UserInfoDao;
+import market.zy.com.myapplication.engine.qiniu.UploadImages;
+import market.zy.com.myapplication.entity.qiniu.QiniuUploadToken;
 import market.zy.com.myapplication.entity.user.UserBasicInfo;
 import market.zy.com.myapplication.entity.user.amend.AmendSuccess;
 import market.zy.com.myapplication.entity.user.amend.AmendUseInfo;
 import market.zy.com.myapplication.network.JxnuGoNetMethod;
+import market.zy.com.myapplication.network.qiniu.upload.OnUploadListener;
+import market.zy.com.myapplication.network.qiniu.uploadtoken.TokenMethod;
 import market.zy.com.myapplication.utils.AuthUtil;
 import market.zy.com.myapplication.utils.PhotoUtil;
 import market.zy.com.myapplication.utils.SPUtil;
@@ -78,8 +88,12 @@ public class AmendActivity extends BaseActivity {
     private AmendUseInfo amendUserInfo;
 
     private Subscriber<AmendSuccess> amendSubscriber;
+    private Subscriber<QiniuUploadToken> tokenSubscriber;
+
+    private String token;
 
     private MaterialDialog confirmDialog;
+    private MaterialDialog uploadDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -122,7 +136,7 @@ public class AmendActivity extends BaseActivity {
     private void initText() {
         avatarPath = userInfo.getAvatar();
         userTag = userInfo.getAbout_me();
-        nickname = userInfo.getUserName();
+        nickname = userInfo.getName();
         contract = userInfo.getContactMe();
         location = userInfo.getLocation();
         sex = userInfo.getSex();
@@ -137,10 +151,13 @@ public class AmendActivity extends BaseActivity {
         mUsername.setText(nickname);
         mContract.setText(contract);
         mLocation.setText(location);
-        if (!sex.equals("") && sex != null) {
+        if (sex != null && !sex.equals("")) {
             ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>) mSexSeleter.getAdapter();
             int position = adapter.getPosition(sex);
             mSexSeleter.setSelection(position);
+        }
+        if (sex.length() > 5) {
+            sex = getString(R.string.male);
         }
     }
 
@@ -182,10 +199,11 @@ public class AmendActivity extends BaseActivity {
         });
     }
 
-    private void amend() {
+    private void amend(final String key) {
         amendSubscriber = new Subscriber<AmendSuccess>() {
             @Override
             public void onCompleted() {
+                uploadDialog.dismiss();
                 showSnackbarTipShort(getCurrentFocus(), R.string.amend_success);
                 UserBasicInfo info = new UserBasicInfo();
                 info.setUserId(userInfo.getUserId());
@@ -197,7 +215,7 @@ public class AmendActivity extends BaseActivity {
                 info.setPostCount(userInfo.getPostCount());
                 info.setUserName(userInfo.getUserName());
                 info.setName(nickname);
-                info.setAvatar(avatarPath);
+                info.setAvatar(key);
                 info.setAbout_me(userTag);
                 info.setContactMe(contract);
                 info.setLocation(location);
@@ -209,6 +227,8 @@ public class AmendActivity extends BaseActivity {
 
             @Override
             public void onError(Throwable e) {
+                e.printStackTrace();
+                uploadDialog.dismiss();
                 showSnackbarTipShort(getCurrentFocus(), R.string.error_upload);
             }
 
@@ -217,6 +237,7 @@ public class AmendActivity extends BaseActivity {
 
             }
         };
+        getTextContent(key);
         String auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(this).getCurrentUsername()
                 , SPUtil.getInstance(this).getCurrentPassword());
         JxnuGoNetMethod.getInstance().amendUserInfo(amendSubscriber, auth, amendUserInfo);
@@ -233,7 +254,16 @@ public class AmendActivity extends BaseActivity {
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                getTextContent();
+                                uploadDialog = new MaterialDialog.Builder(AmendActivity.this)
+                                        .title(R.string.uploading)
+                                        .content(R.string.please_wait)
+                                        .progress(true, 0)
+                                        .build();
+                                uploadDialog.show();
+                                if (!avatarPath.equals(userInfo.getAvatar()))
+                                    uploadAvatar();
+                                else
+                                    amend(userInfo.getAvatar());
                             }
                         })
                         .negativeText(R.string.no)
@@ -255,13 +285,57 @@ public class AmendActivity extends BaseActivity {
         });
     }
 
-    private void getTextContent() {
+    private void uploadAvatar() {
+        tokenSubscriber = new Subscriber<QiniuUploadToken>() {
+            @Override
+            public void onCompleted() {
+                UploadImages.getInstance().uploadImages(avatarPath, token
+                        , new OnUploadListener() {
+                            @Override
+                            public void onCompleted(String key, ResponseInfo info, JSONObject response) {
+                                if (info.isOK()) {
+                                    try {
+                                        String photoKey = response.getString("key");
+                                        amend(Constants.PIC_BASE_URL + photoKey);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                } else {
+                                }
+                            }
+
+                            @Override
+                            public void onProcessing(String key, double percent) {
+
+                            }
+
+                            @Override
+                            public boolean onCancelled() {
+                                return false;
+                            }
+                        });
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(QiniuUploadToken qiniuUploadToken) {
+                token = qiniuUploadToken.getUptoken();
+            }
+        };
+        TokenMethod.getInstance().getUploadToken(tokenSubscriber);
+    }
+
+    private void getTextContent(String avatar) {
         nickname = mUsername.getText().toString();
         userTag = mUserTag.getText().toString();
         contract = mContract.getText().toString();
         location = mLocation.getText().toString();
         amendUserInfo = new AmendUseInfo();
-        amendUserInfo.setAvatar("");
+        amendUserInfo.setAvatar(avatar);
         amendUserInfo.setAbout_me(userTag);
         amendUserInfo.setContact(contract);
         amendUserInfo.setLocation(location);

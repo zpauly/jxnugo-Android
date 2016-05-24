@@ -3,6 +3,8 @@ package market.zy.com.myapplication.network;
 import market.zy.com.myapplication.Constants;
 import market.zy.com.myapplication.entity.post.OnePagePost;
 import market.zy.com.myapplication.entity.post.comments.AllComments;
+import market.zy.com.myapplication.entity.post.comments.NewComment;
+import market.zy.com.myapplication.entity.post.comments.NewCommentSuccess;
 import market.zy.com.myapplication.entity.post.publish.NewPost;
 import market.zy.com.myapplication.entity.post.publish.PublishSuccess;
 import market.zy.com.myapplication.entity.user.UserBasicInfo;
@@ -47,13 +49,6 @@ public class JxnuGoNetMethod {
         return this;
     }
 
-    public void getOthersInfo(Observer<UserBasicInfo> observer, String auth) {
-        service.getOthersInfo(auth)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(observer);
-    }
-
     public void getUserInfo(Observer<UserBasicInfo> observer, String auth, int userId) {
         service.getUserInfo(auth, userId)
                 .subscribeOn(Schedulers.io())
@@ -82,13 +77,6 @@ public class JxnuGoNetMethod {
                 .subscribe(observer);
     }
 
-    public void getOnePagePosts(Observer<OnePagePost> observer, String auth, int pageId) {
-        service.getOnePagePost(auth, pageId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(observer);
-    }
-
     public void getOnePagePosts(Observer<OnePagePost> observer, int pageId) {
         service.getOnePagePost(pageId)
                 .subscribeOn(Schedulers.io())
@@ -105,6 +93,13 @@ public class JxnuGoNetMethod {
 
     public void getAllComments(Observer<AllComments> observer, String auth, int postId) {
         service.getAllComments(auth, postId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
+
+    public void addNewComments(Observer<NewCommentSuccess> observer, String auth, NewComment newComment) {
+        service.addNewComment(auth, newComment)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);

@@ -11,12 +11,14 @@
     <string name="enter_username">请输入用户名</string>
     <string name="third_party_login">第三方登录</string>
     <string name="users_login">账号管理</string>
+    <string name="login_email">请输入邮箱登录</string>
     <string name="login_username">请输入账号登录</string>
     <string name="login_password">请输入密码登录</string>
     <string name="registe_success">注册成功，请前往邮箱验证</string>
     <string name="wrong_email">邮箱格式错误</string>
     <string name="settings">设置</string>
     <string name="please_login">请登录</string>
+    <string name="say_something">说点什么吧</string>
     <string name="exit_after_backpressed">再按一次后退键退出</string>
 
     <string name="my_draft">我的草稿</string>
@@ -73,6 +75,7 @@
     <string name="add_pic">添加图片</string>
     <string name="add_text">添加文字</string>
     <string name="price">价格</string>
+    <string name="no_comment">没有输入任何评论</string>
     <string name="price_unit">单位:人民币</string>
     <string name="good_num">物品数量</string>
     <string name="choose_type">选择分类</string>

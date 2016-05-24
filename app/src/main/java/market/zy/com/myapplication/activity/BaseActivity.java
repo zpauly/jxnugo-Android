@@ -1,6 +1,8 @@
 package market.zy.com.myapplication.activity;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -10,6 +12,8 @@ import android.transition.Slide;
 import android.transition.TransitionInflater;
 import android.view.View;
 import android.widget.Toast;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.Constants;
@@ -38,6 +42,7 @@ public class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sp = SPUtil.getInstance(this);
+
         loadUserInfo();
     }
 
@@ -89,21 +94,25 @@ public class BaseActivity extends AppCompatActivity {
         Toast.makeText(context, getResources().getString(resourceId), Toast.LENGTH_LONG);
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void setUpWindowExitSlideAnimations() {
         Slide slide = (Slide) TransitionInflater.from(getApplicationContext()).inflateTransition(R.transition.activity_slide);
         getWindow().setExitTransition(slide);
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void setUpWindowEnterSlideAnimations() {
         Slide slide = (Slide) TransitionInflater.from(getApplicationContext()).inflateTransition(R.transition.activity_slide);
         getWindow().setEnterTransition(slide);
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void setupWindowEnterFadeAnimations() {
         Fade fade = (Fade) TransitionInflater.from(this).inflateTransition(R.transition.activity_fade);
         getWindow().setEnterTransition(fade);
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void setupWindowExitFadeAnimations() {
         Fade fade = (Fade) TransitionInflater.from(this).inflateTransition(R.transition.activity_fade);
         getWindow().setExitTransition(fade);

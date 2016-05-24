@@ -1,20 +1,32 @@
 package market.zy.com.myapplication.activity.comments;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.nineoldandroids.animation.ValueAnimator;
+import com.nineoldandroids.view.ViewPropertyAnimator;
 
 import butterknife.Bind;
+import butterknife.BindDimen;
 import butterknife.ButterKnife;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseActivity;
 import market.zy.com.myapplication.activity.trade.TradeActivity;
 import market.zy.com.myapplication.adapter.recyclerviewAdapter.CommentsAdapter;
 import market.zy.com.myapplication.entity.post.comments.AllComments;
+import market.zy.com.myapplication.entity.post.comments.NewComment;
+import market.zy.com.myapplication.entity.post.comments.NewCommentSuccess;
 import market.zy.com.myapplication.network.JxnuGoNetMethod;
 import market.zy.com.myapplication.ui.support.DividerItemDecoration;
 import market.zy.com.myapplication.utils.AuthUtil;
@@ -31,12 +43,24 @@ public class CommentsActivity extends BaseActivity {
     @Bind(R.id.comments_recyclerview)
     protected RecyclerView mRecyclerView;
 
+    @Bind(R.id.add_comment_layout)
+    protected RelativeLayout mAddCommentLayout;
+
+    @Bind(R.id.comments_add_comment)
+    protected EditText mAddCommentEditText;
+
+    @Bind(R.id.comments_send_comment)
+    protected ImageView mSendCommentButton;
+
     private CommentsAdapter mRAdapter;
 
     private int postId;
 
+    private MaterialDialog uploadDialog;
+    private MaterialDialog confirmDialog;
 
     private Subscriber<AllComments> subscriber;
+    private Subscriber<NewCommentSuccess> newCommentSuccessSubscriber;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,11 +87,15 @@ public class CommentsActivity extends BaseActivity {
     private void initView() {
         setUpToolbar();
         setUpRecyclerView();
+        setUpButton();
     }
 
     private void unsubscribe() {
         if (subscriber != null)
             subscriber.unsubscribe();
+        if (newCommentSuccessSubscriber != null) {
+            newCommentSuccessSubscriber.unsubscribe();
+        }
     }
 
     private void setUpToolbar() {
@@ -81,6 +109,70 @@ public class CommentsActivity extends BaseActivity {
                 onBackPressed();
             }
         });
+    }
+
+    private void setUpButton() {
+        mSendCommentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mAddCommentEditText.getText() == null || mAddCommentEditText.getText().toString().equals("")) {
+                    showSnackbarTipShort(getCurrentFocus(), R.string.no_comment);
+                    return;
+                }
+                confirmDialog = new MaterialDialog.Builder(CommentsActivity.this)
+                        .title(R.string.upload)
+                        .content(R.string.can_upload)
+                        .positiveText(R.string.yes)
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                putNewComment();
+                                uploadDialog = new MaterialDialog.Builder(CommentsActivity.this)
+                                        .title(R.string.uploading)
+                                        .content(R.string.please_wait)
+                                        .progress(true, 0)
+                                        .show();
+                            }
+                        })
+                        .negativeText(R.string.no)
+                        .onNegative(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .show();
+            }
+        });
+    }
+
+    private void putNewComment() {
+        NewComment newComment = new NewComment();
+        newComment.setBody(mAddCommentEditText.getText().toString());
+        newComment.setPostId(postId);
+        newComment.setUserId(userInfo.getUserId());
+        newCommentSuccessSubscriber = new Subscriber<NewCommentSuccess>() {
+            @Override
+            public void onCompleted() {
+                uploadDialog.dismiss();
+                showSnackbarTipShort(getCurrentFocus(), R.string.upload_successly);
+                initView();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                uploadDialog.dismiss();
+                showSnackbarTipShort(getCurrentFocus(), R.string.error_upload);
+            }
+
+            @Override
+            public void onNext(NewCommentSuccess newCommentSuccess) {
+
+            }
+        };
+        String auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(this).getCurrentUsername()
+                ,SPUtil.getInstance(this).getCurrentPassword());
+        JxnuGoNetMethod.getInstance().addNewComments(newCommentSuccessSubscriber, auth, newComment);
     }
 
     private void setUpRecyclerView() {
@@ -97,6 +189,11 @@ public class CommentsActivity extends BaseActivity {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0) {
+                    ViewPropertyAnimator.animate(mAddCommentLayout).translationY(mAddCommentLayout.getHeight());
+                } else if (dy < 0) {
+                    ViewPropertyAnimator.animate(mAddCommentLayout).translationY(0);
+                }
                 int lastItemPosition =  layoutManager.findLastVisibleItemPosition();
                 if (lastItemPosition == mRAdapter.getItemCount() - 2) {
                     mRAdapter.setShowLoadMore(true);
@@ -125,6 +222,7 @@ public class CommentsActivity extends BaseActivity {
 
             @Override
             public void onNext(AllComments allComments) {
+                mRAdapter.clearData();
                 mRAdapter.addAllData(allComments.getComments());
             }
         };

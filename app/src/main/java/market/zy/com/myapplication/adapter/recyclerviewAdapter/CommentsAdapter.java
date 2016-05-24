@@ -94,6 +94,11 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return 1;
     }
 
+    public void clearData() {
+        mData.clear();
+        notifyDataSetChanged();
+    }
+
     public void addData(Comment comment) {
         mData.add(comment);
         notifyDataSetChanged();

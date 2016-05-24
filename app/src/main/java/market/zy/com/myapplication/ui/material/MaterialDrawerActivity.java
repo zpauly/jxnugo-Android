@@ -32,7 +32,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
- * Created by dell on 2016/3/10.
+ * Created by zpauly on 2016/3/10.
  */
 public class MaterialDrawerActivity extends BaseActivity {
     private static AccountHeader mAccountHeader;
@@ -74,7 +74,7 @@ public class MaterialDrawerActivity extends BaseActivity {
                 .withAccountHeader(mAccountHeader)
                 .addDrawerItems(
                         new PrimaryDrawerItem()
-                                .withName(R.string.trade_list).withIcon(GoogleMaterial.Icon.gmd_label).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                                .withName(R.string.trade_list).withIcon(GoogleMaterial.Icon.gmd_shopping_cart).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                             @Override
                             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                                 if (identifier != Constants.TRADEACTIVITY) {
@@ -153,7 +153,7 @@ public class MaterialDrawerActivity extends BaseActivity {
                     @Override
                     public void onNext(Bitmap bitmap) {
                         ProfileDrawerItem mProfileDrawerItem = new ProfileDrawerItem()
-                                .withName(userInfo.getUserName())
+                                .withName(userInfo.getName())
                                 .withEmail(userInfo.getContactMe())
                                 .withIcon(bitmap);
                         mAccountHeader.clear();
