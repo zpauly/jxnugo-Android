@@ -16,7 +16,7 @@ public class PersonalViewHolder extends RecyclerView.ViewHolder {
     @Bind(R.id.personal_item_textview)
     public TextView mTextView;
 
-    @Bind(R.id.personal_item_arrow_right)
+    @Bind(R.id.personal_item_imageview)
     public ImageView mImageView;
 
     public PersonalViewHolder(View itemView) {

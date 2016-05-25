@@ -43,7 +43,7 @@ public class ClassifyNavAdapter extends RecyclerView.Adapter<ClassifyNavAdapter.
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         mView = LayoutInflater.from(mContext)
-                .inflate(R.layout.classify_nav_recyclerview_item, parent, false);
+                .inflate(R.layout.recyclerview_item_classify_nav, parent, false);
         viewHolder = new MyViewHolder(mView);
         mParent = parent;
         return viewHolder;

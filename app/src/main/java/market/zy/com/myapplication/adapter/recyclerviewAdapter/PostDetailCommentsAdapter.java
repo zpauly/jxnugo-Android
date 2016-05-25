@@ -46,7 +46,7 @@ public class PostDetailCommentsAdapter extends RecyclerView.Adapter<CommentsView
 
     @Override
     public CommentsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View mView = LayoutInflater.from(mContext).inflate(R.layout.comments_recyclerview_item, parent, false);
+        View mView = LayoutInflater.from(mContext).inflate(R.layout.recyclerview_item_comments, parent, false);
         CommentsViewHolder viewHolder = new CommentsViewHolder(mView);
         return viewHolder;
     }

@@ -20,7 +20,7 @@ public class PleaseLoginFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View mView = inflater.inflate(R.layout.please_login_fragment, container, false);
+        View mView = inflater.inflate(R.layout.fragment_please_login, container, false);
         Button mButton = (Button) mView.findViewById(R.id.login_button);
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override

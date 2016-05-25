@@ -78,7 +78,7 @@ public class TradeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             return viewHolder;
         } else {
             mView = LayoutInflater.from(mContext)
-                    .inflate(R.layout.trade_list_recyclerview_item, parent, false);
+                    .inflate(R.layout.recyclerview_item_trade_list, parent, false);
             TradeListViewHolder viewHolder = new TradeListViewHolder(mView);
             return viewHolder;
         }
