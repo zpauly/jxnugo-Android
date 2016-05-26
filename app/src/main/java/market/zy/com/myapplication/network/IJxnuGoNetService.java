@@ -1,11 +1,13 @@
 package market.zy.com.myapplication.network;
 
 import market.zy.com.myapplication.entity.post.OnePagePost;
+import market.zy.com.myapplication.entity.post.collection.CollectionPosts;
 import market.zy.com.myapplication.entity.post.comments.AllComments;
 import market.zy.com.myapplication.entity.post.comments.NewComment;
 import market.zy.com.myapplication.entity.post.comments.NewCommentSuccess;
 import market.zy.com.myapplication.entity.post.publish.NewPost;
 import market.zy.com.myapplication.entity.post.publish.PublishSuccess;
+import market.zy.com.myapplication.entity.post.user.UserPosts;
 import market.zy.com.myapplication.entity.user.UserBasicInfo;
 import market.zy.com.myapplication.entity.user.amend.AmendSuccess;
 import market.zy.com.myapplication.entity.user.amend.AmendUseInfo;
@@ -94,4 +96,22 @@ public interface IJxnuGoNetService {
      */
     @POST("new_comment")
     Observable<NewCommentSuccess> addNewComment(@Header("Authorization") String auth, @Body NewComment newComment);
+
+    /**
+     * 获取某个用户收藏的帖子
+     * @param auth
+     * @param userId
+     * @return
+     */
+    @GET("user_collectionpost/{id}")
+    Observable<CollectionPosts> getCollectionPosts(@Header("Authorization") String auth, @Path("id") int userId);
+
+    /**
+     * 获取某个用户发布的帖子
+     * @param auth
+     * @param userId
+     * @return
+     */
+    @GET("user_posts/{id}")
+    Observable<UserPosts> getUserPosts(@Header("Authorization") String auth, @Path("id") int userId);
 }

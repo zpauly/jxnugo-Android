@@ -1,12 +1,16 @@
 package market.zy.com.myapplication.network;
 
+import android.database.Observable;
+
 import market.zy.com.myapplication.Constants;
 import market.zy.com.myapplication.entity.post.OnePagePost;
+import market.zy.com.myapplication.entity.post.collection.CollectionPosts;
 import market.zy.com.myapplication.entity.post.comments.AllComments;
 import market.zy.com.myapplication.entity.post.comments.NewComment;
 import market.zy.com.myapplication.entity.post.comments.NewCommentSuccess;
 import market.zy.com.myapplication.entity.post.publish.NewPost;
 import market.zy.com.myapplication.entity.post.publish.PublishSuccess;
+import market.zy.com.myapplication.entity.post.user.UserPosts;
 import market.zy.com.myapplication.entity.user.UserBasicInfo;
 import market.zy.com.myapplication.entity.user.amend.AmendSuccess;
 import market.zy.com.myapplication.entity.user.amend.AmendUseInfo;
@@ -100,6 +104,20 @@ public class JxnuGoNetMethod {
 
     public void addNewComments(Observer<NewCommentSuccess> observer, String auth, NewComment newComment) {
         service.addNewComment(auth, newComment)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
+
+    public void getCollectionPosts(Observer<CollectionPosts> observer, String auth, int userId) {
+        service.getCollectionPosts(auth, userId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
+
+    public void getUserPosts(Observer<UserPosts> observer, String auth, int userId) {
+        service.getUserPosts(auth, userId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);
