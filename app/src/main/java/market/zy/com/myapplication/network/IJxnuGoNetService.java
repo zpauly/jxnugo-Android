@@ -1,7 +1,13 @@
 package market.zy.com.myapplication.network;
 
 import market.zy.com.myapplication.entity.post.OnePagePost;
+import market.zy.com.myapplication.entity.post.collection.CollectPost;
+import market.zy.com.myapplication.entity.post.collection.CollectSuccess;
 import market.zy.com.myapplication.entity.post.collection.CollectionPosts;
+import market.zy.com.myapplication.entity.post.collection.JudgeCollectPost;
+import market.zy.com.myapplication.entity.post.collection.JudgeCollectSuccess;
+import market.zy.com.myapplication.entity.post.collection.UncollectPost;
+import market.zy.com.myapplication.entity.post.collection.UncollectSuccess;
 import market.zy.com.myapplication.entity.post.comments.AllComments;
 import market.zy.com.myapplication.entity.post.comments.NewComment;
 import market.zy.com.myapplication.entity.post.comments.NewCommentSuccess;
@@ -11,6 +17,8 @@ import market.zy.com.myapplication.entity.post.user.UserPosts;
 import market.zy.com.myapplication.entity.user.UserBasicInfo;
 import market.zy.com.myapplication.entity.user.amend.AmendSuccess;
 import market.zy.com.myapplication.entity.user.amend.AmendUseInfo;
+import market.zy.com.myapplication.entity.user.follow.UserFollowed;
+import market.zy.com.myapplication.entity.user.follow.UserFollowers;
 import market.zy.com.myapplication.entity.user.login.LoginTokenSuccess;
 import market.zy.com.myapplication.entity.user.registe.RegisteSuccess;
 import market.zy.com.myapplication.entity.user.registe.RegisterInfo;
@@ -114,4 +122,49 @@ public interface IJxnuGoNetService {
      */
     @GET("user_posts/{id}")
     Observable<UserPosts> getUserPosts(@Header("Authorization") String auth, @Path("id") int userId);
+
+    /**
+     * 获取某个用户关注的人
+     * @param auth
+     * @param userId
+     * @return
+     */
+    @GET("user_followed/{id}")
+    Observable<UserFollowed> getUserFollowed(@Header("Authorization") String auth, @Path("id") int userId);
+
+    /**
+     * 获取某个用户的粉丝
+     * @param auth
+     * @param userId
+     * @return
+     */
+    @GET("user_followers/{id}")
+    Observable<UserFollowers> getUserFollowers(@Header("Authorization") String auth, @Path("id") int userId);
+
+    /**
+     * 收藏某篇帖子
+     * @param auth
+     * @param collectPost
+     * @return
+     */
+    @POST("collect")
+    Observable<CollectSuccess> collectOnePost(@Header("Authorization") String auth, @Body CollectPost collectPost);
+
+    /**
+     * 取消收藏某篇帖子
+     * @param auth
+     * @param uncollectPost
+     * @return
+     */
+    @POST("uncollect")
+    Observable<UncollectSuccess> uncollectPost(@Header("Authorization") String auth, @Body UncollectPost uncollectPost);
+
+    /**
+     * 判断用户是否已经收藏过某篇帖子
+     * @param auth
+     * @param judgeCollectPost
+     * @return
+     */
+    @POST("judge_collect")
+    Observable<JudgeCollectSuccess> judgeCollectPost(@Header("Authorization") String auth, @Body JudgeCollectPost judgeCollectPost);
 }

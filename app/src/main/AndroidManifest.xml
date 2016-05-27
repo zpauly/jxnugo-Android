@@ -34,6 +34,7 @@
         <activity android:name=".activity.post.PostDetailsActivity"/>
         <activity android:name=".activity.photos.PhotoActivity"/>
         <activity android:name=".activity.amend.AmendActivity"/>
+        <activity android:name=".activity.userinfo.UserinfoActivity"/>
 
         <activity android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
             android:configChanges="keyboardHidden|orientation"

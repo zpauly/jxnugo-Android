@@ -8,12 +8,19 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Toast;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseActivity;
 import market.zy.com.myapplication.adapter.recyclerviewAdapter.PostCollectionAdapter;
+import market.zy.com.myapplication.entity.post.collection.CollectionPosts;
+import market.zy.com.myapplication.entity.post.user.UserPosts;
+import market.zy.com.myapplication.network.JxnuGoNetMethod;
+import market.zy.com.myapplication.utils.AuthUtil;
+import market.zy.com.myapplication.utils.SPUtil;
+import rx.Subscriber;
 
 /**
  * Created by zpauly on 16-5-25.
@@ -40,6 +47,11 @@ public class UserinfoActivity extends BaseActivity {
 
     private RecyclerView.Adapter mAdapter;
 
+    private String auth;
+
+    private Subscriber<CollectionPosts> collectionPostsSubscriber;
+    private Subscriber<UserPosts> userPostsSubscriber;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +66,16 @@ public class UserinfoActivity extends BaseActivity {
         initViews();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setUpRecyclerView();
+    }
+
     private void initViews() {
+        auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(this).getCurrentUsername()
+                ,SPUtil.getInstance(this).getCurrentPassword());
+
         setUpToolbar();
 
         setUpRecyclerView();
@@ -96,9 +117,13 @@ public class UserinfoActivity extends BaseActivity {
         switch (pageId) {
             case MY_POST :
                 mAdapter = new PostCollectionAdapter(this);
+                mRecyclerView.setAdapter(mAdapter);
+                loadPostsData((PostCollectionAdapter) mAdapter);
                 break;
             case MY_COLLECTION :
                 mAdapter = new PostCollectionAdapter(this);
+                mRecyclerView.setAdapter(mAdapter);
+                loadCollectionData((PostCollectionAdapter) mAdapter);
                 break;
             case MY_FOLLOWING :
                 break;
@@ -107,11 +132,43 @@ public class UserinfoActivity extends BaseActivity {
         }
     }
 
-    private void loadPostsData() {
+    private void loadPostsData(final PostCollectionAdapter adapter) {
+        userPostsSubscriber = new Subscriber<UserPosts>() {
+            @Override
+            public void onCompleted() {
 
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(UserPosts userPosts) {
+                adapter.addAllData(userPosts.getUserPosts());
+            }
+        };
+        JxnuGoNetMethod.getInstance().getUserPosts(userPostsSubscriber, auth, userInfo.getUserId());
     }
 
-    private void loadCollectionData() {
+    private void loadCollectionData(final PostCollectionAdapter adapter) {
+        collectionPostsSubscriber = new Subscriber<CollectionPosts>() {
+            @Override
+            public void onCompleted() {
 
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(CollectionPosts collectionPosts) {
+                adapter.addAllData(collectionPosts.getCollectionPost());
+            }
+        };
+        JxnuGoNetMethod.getInstance().getCollectionPosts(collectionPostsSubscriber, auth, userInfo.getUserId());
     }
 }

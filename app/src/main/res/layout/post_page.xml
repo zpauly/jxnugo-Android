@@ -198,7 +198,7 @@
 
                         <ImageView
                             android:id="@+id/post_detail_add_shopping"
-                            android:src="@drawable/ic_add_shopping_cart_black_24dp"
+                            android:src="@drawable/ic_favorite_border_black_24dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
 

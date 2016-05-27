@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -35,6 +36,12 @@ import market.zy.com.myapplication.db.post.PhotoBean;
 import market.zy.com.myapplication.db.post.PhotosDao;
 import market.zy.com.myapplication.db.post.PostDetailBean;
 import market.zy.com.myapplication.db.post.PostDetailDao;
+import market.zy.com.myapplication.entity.post.collection.CollectPost;
+import market.zy.com.myapplication.entity.post.collection.CollectSuccess;
+import market.zy.com.myapplication.entity.post.collection.JudgeCollectPost;
+import market.zy.com.myapplication.entity.post.collection.JudgeCollectSuccess;
+import market.zy.com.myapplication.entity.post.collection.UncollectPost;
+import market.zy.com.myapplication.entity.post.collection.UncollectSuccess;
 import market.zy.com.myapplication.entity.post.comments.AllComments;
 import market.zy.com.myapplication.network.JxnuGoNetMethod;
 import market.zy.com.myapplication.utils.AuthUtil;
@@ -118,9 +125,13 @@ public class PostDetailsActivity extends BaseActivity {
 
     private int postId;
 
+    private boolean isCollected = false;
 
     private Subscriber<AllComments> subscriber;
     private Observable<List<PhotoBean>> observable;
+    private Subscriber<JudgeCollectSuccess> judgeSubscriber;
+    private Subscriber<CollectSuccess> collectSubscriber;
+    private Subscriber<UncollectSuccess> uncollectSubsriber;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -136,7 +147,8 @@ public class PostDetailsActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        initViews();
+        loadCommentData();
+        isPostCollected();
     }
 
     @Override
@@ -150,6 +162,9 @@ public class PostDetailsActivity extends BaseActivity {
             subscriber.unsubscribe();
         if (observable != null)
             observable.unsubscribeOn(Schedulers.immediate());
+        if (judgeSubscriber != null) {
+            judgeSubscriber.unsubscribe();
+        }
     }
 
     private void initViews() {
@@ -166,6 +181,8 @@ public class PostDetailsActivity extends BaseActivity {
         setUpPhotosRecyclerView();
 
         setUpImageButtons();
+
+        isPostCollected();
     }
 
     private void setUpToolbar() {
@@ -193,7 +210,16 @@ public class PostDetailsActivity extends BaseActivity {
                 startActivity(Intent.createChooser(sharingIntent, "Share via"));
             }
         });
-
+        mPostDetailAddShopping.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isCollected) {
+                    uncollect();
+                } else {
+                    collect();
+                }
+            }
+        });
     }
 
     private void setUpPhotosRecyclerView() {
@@ -283,7 +309,7 @@ public class PostDetailsActivity extends BaseActivity {
         mPostGoodName.setText(postDetail.getGoodsName());
         mPostGoodBuyTime.setText(postDetail.getGoodsBuyTime());
         mPostSellerName.setText(postDetail.getPostNickName());
-        mPostGoodPrice.setText(mPostGoodPrice.getText().toString() + "   " +postDetail.getGoodsPrice());
+        mPostGoodPrice.setText(mPostGoodPrice.getText().toString() + "   " + postDetail.getGoodsPrice());
         mPostGoodDetails.setText(postDetail.getBody());
         mPostGoodQuality.setText(postDetail.getGoodsQuality());
         mPostGoodLocation.setText(postDetail.getGoodsLocation());
@@ -301,5 +327,88 @@ public class PostDetailsActivity extends BaseActivity {
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .centerCrop()
                 .into(mPostHeaderImage);
+    }
+
+    private void isPostCollected() {
+        judgeSubscriber = new Subscriber<JudgeCollectSuccess>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(JudgeCollectSuccess judgeCollectSuccess) {
+                if (judgeCollectSuccess.getCollectInfo() == 0) {
+                    mPostDetailAddShopping.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                    isCollected = false;
+                } else if (judgeCollectSuccess.getCollectInfo() == 1) {
+                    mPostDetailAddShopping.setImageResource(R.drawable.ic_favorite_black_24dp);
+                    isCollected = true;
+                }
+            }
+        };
+        String auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(this).getCurrentUsername()
+                , SPUtil.getInstance(this).getCurrentPassword());
+        JudgeCollectPost post = new JudgeCollectPost();
+        post.setPostId(postId);
+        post.setUserId(userInfo.getUserId());
+        JxnuGoNetMethod.getInstance().judgeCollectPost(judgeSubscriber, auth, post);
+    }
+
+    private void collect() {
+        collectSubscriber = new Subscriber<CollectSuccess>() {
+            @Override
+            public void onCompleted() {
+                showSnackbarTipShort(getCurrentFocus(), R.string.collected_true);
+                isPostCollected();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(CollectSuccess collectSuccess) {
+
+            }
+        };
+        String auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(this).getCurrentUsername()
+                , SPUtil.getInstance(this).getCurrentPassword());
+        CollectPost post = new CollectPost();
+        post.setPostId(postId);
+        post.setUserId(userInfo.getUserId());
+        JxnuGoNetMethod.getInstance().collectOnePost(collectSubscriber, auth, post);
+    }
+
+    private void uncollect() {
+        uncollectSubsriber = new Subscriber<UncollectSuccess>() {
+            @Override
+            public void onCompleted() {
+                showSnackbarTipShort(getCurrentFocus(), R.string.collected_false);
+                isPostCollected();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(UncollectSuccess uncollectSuccess) {
+
+            }
+        };
+        String auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(this).getCurrentUsername()
+                , SPUtil.getInstance(this).getCurrentPassword());
+        UncollectPost post = new UncollectPost();
+        post.setUserId(userInfo.getUserId());
+        post.setPostId(postId);
+        JxnuGoNetMethod.getInstance().uncollectPost(uncollectSubsriber, auth, post);
     }
 }

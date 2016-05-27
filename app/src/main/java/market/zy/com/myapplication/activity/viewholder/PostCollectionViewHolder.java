@@ -19,7 +19,7 @@ public class PostCollectionViewHolder extends RecyclerView.ViewHolder {
     public ImageView mDeleteImageView;
 
     @Bind(R.id.post_collection_delete_layout)
-    public FrameLayout mDeleteLayout;
+    public LinearLayout mDeleteLayout;
 
     @Bind(R.id.post_collection_layout)
     public LinearLayout mLayout;
@@ -36,5 +36,8 @@ public class PostCollectionViewHolder extends RecyclerView.ViewHolder {
     public PostCollectionViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
+//        mDeleteImageView = (ImageView) itemView.findViewById(R.id.post_collection_delete_imageview);
+//        mDeleteLayout = (FrameLayout) itemView.findViewById(R.id.post_collection_delete_layout);
+
     }
 }
