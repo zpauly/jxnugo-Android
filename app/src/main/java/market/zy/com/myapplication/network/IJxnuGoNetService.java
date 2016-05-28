@@ -2,25 +2,31 @@ package market.zy.com.myapplication.network;
 
 import market.zy.com.myapplication.entity.post.OnePagePost;
 import market.zy.com.myapplication.entity.post.collection.CollectPost;
-import market.zy.com.myapplication.entity.post.collection.CollectSuccess;
+import market.zy.com.myapplication.entity.post.collection.CollectStates;
 import market.zy.com.myapplication.entity.post.collection.CollectionPosts;
 import market.zy.com.myapplication.entity.post.collection.JudgeCollectPost;
-import market.zy.com.myapplication.entity.post.collection.JudgeCollectSuccess;
+import market.zy.com.myapplication.entity.post.collection.JudgeCollectStates;
 import market.zy.com.myapplication.entity.post.collection.UncollectPost;
-import market.zy.com.myapplication.entity.post.collection.UncollectSuccess;
+import market.zy.com.myapplication.entity.post.collection.UncollectStates;
 import market.zy.com.myapplication.entity.post.comments.AllComments;
 import market.zy.com.myapplication.entity.post.comments.NewComment;
-import market.zy.com.myapplication.entity.post.comments.NewCommentSuccess;
+import market.zy.com.myapplication.entity.post.comments.NewCommentStates;
+import market.zy.com.myapplication.entity.post.delete.DeletePost;
+import market.zy.com.myapplication.entity.post.delete.DeleteStates;
 import market.zy.com.myapplication.entity.post.publish.NewPost;
-import market.zy.com.myapplication.entity.post.publish.PublishSuccess;
+import market.zy.com.myapplication.entity.post.publish.PublishStates;
 import market.zy.com.myapplication.entity.post.user.UserPosts;
 import market.zy.com.myapplication.entity.user.UserBasicInfo;
-import market.zy.com.myapplication.entity.user.amend.AmendSuccess;
+import market.zy.com.myapplication.entity.user.amend.AmendStates;
 import market.zy.com.myapplication.entity.user.amend.AmendUseInfo;
+import market.zy.com.myapplication.entity.user.follow.Follow;
+import market.zy.com.myapplication.entity.user.follow.FollowStates;
+import market.zy.com.myapplication.entity.user.follow.JudgeFollowStates;
+import market.zy.com.myapplication.entity.user.follow.UnfollowStates;
 import market.zy.com.myapplication.entity.user.follow.UserFollowed;
 import market.zy.com.myapplication.entity.user.follow.UserFollowers;
 import market.zy.com.myapplication.entity.user.login.LoginTokenSuccess;
-import market.zy.com.myapplication.entity.user.registe.RegisteSuccess;
+import market.zy.com.myapplication.entity.user.registe.RegisteStates;
 import market.zy.com.myapplication.entity.user.registe.RegisterInfo;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -49,7 +55,7 @@ public interface IJxnuGoNetService {
      * @return
      */
     @POST("register")
-    Observable<RegisteSuccess> registe(@Body RegisterInfo info);
+    Observable<RegisteStates> registe(@Body RegisterInfo info);
 
     /**
      * 请求七牛云上传token
@@ -68,7 +74,7 @@ public interface IJxnuGoNetService {
      * @return
      */
     @POST("update_userInfo")
-    Observable<AmendSuccess> amendUsetInfo(@Header("Authorization") String auth, @Body AmendUseInfo amendUseInfo);
+    Observable<AmendStates> amendUsetInfo(@Header("Authorization") String auth, @Body AmendUseInfo amendUseInfo);
 
     /**
      * 获取某个帖子的评论
@@ -86,7 +92,7 @@ public interface IJxnuGoNetService {
      * @return
      */
     @POST("new_post")
-    Observable<PublishSuccess> postNewPost(@Header("Authorization") String auth, @Body NewPost newPost);
+    Observable<PublishStates> postNewPost(@Header("Authorization") String auth, @Body NewPost newPost);
 
     /**
      * 获取一个页面的帖子的信息
@@ -103,7 +109,7 @@ public interface IJxnuGoNetService {
      * @return
      */
     @POST("new_comment")
-    Observable<NewCommentSuccess> addNewComment(@Header("Authorization") String auth, @Body NewComment newComment);
+    Observable<NewCommentStates> addNewComment(@Header("Authorization") String auth, @Body NewComment newComment);
 
     /**
      * 获取某个用户收藏的帖子
@@ -148,7 +154,7 @@ public interface IJxnuGoNetService {
      * @return
      */
     @POST("collect")
-    Observable<CollectSuccess> collectOnePost(@Header("Authorization") String auth, @Body CollectPost collectPost);
+    Observable<CollectStates> collectOnePost(@Header("Authorization") String auth, @Body CollectPost collectPost);
 
     /**
      * 取消收藏某篇帖子
@@ -157,7 +163,7 @@ public interface IJxnuGoNetService {
      * @return
      */
     @POST("uncollect")
-    Observable<UncollectSuccess> uncollectPost(@Header("Authorization") String auth, @Body UncollectPost uncollectPost);
+    Observable<UncollectStates> uncollectPost(@Header("Authorization") String auth, @Body UncollectPost uncollectPost);
 
     /**
      * 判断用户是否已经收藏过某篇帖子
@@ -166,5 +172,41 @@ public interface IJxnuGoNetService {
      * @return
      */
     @POST("judge_collect")
-    Observable<JudgeCollectSuccess> judgeCollectPost(@Header("Authorization") String auth, @Body JudgeCollectPost judgeCollectPost);
+    Observable<JudgeCollectStates> judgeCollectPost(@Header("Authorization") String auth, @Body JudgeCollectPost judgeCollectPost);
+
+    /**
+     * 关注某个用户
+     * @param auth
+     * @param follow
+     * @return
+     */
+    @POST("follow")
+    Observable<FollowStates> followUser(@Header("Authorization") String auth, @Body Follow follow);
+
+    /**
+     * 取消关注
+     * @param auth
+     * @param follow
+     * @return
+     */
+    @POST("unfollow")
+    Observable<UnfollowStates> unfollowUser(@Header("Authorization") String auth, @Body Follow follow);
+
+    /**
+     * 判断用户是否已经关注了某个用户
+     * @param auth
+     * @param follow
+     * @return
+     */
+    @POST("judge_follow")
+    Observable<JudgeFollowStates> judgeFollowUser(@Header("Authorization") String auth, @Body Follow follow);
+
+    /**
+     * 删除帖子
+     * @param auth
+     * @param post
+     * @return
+     */
+    @POST("delete_post")
+    Observable<DeleteStates> deletePost(@Header("Authorization") String auth, @Body DeletePost post);
 }

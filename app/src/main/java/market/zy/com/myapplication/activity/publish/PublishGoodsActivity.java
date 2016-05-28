@@ -37,7 +37,7 @@ import market.zy.com.myapplication.activity.BaseActivity;
 import market.zy.com.myapplication.engine.qiniu.UploadImages;
 import market.zy.com.myapplication.entity.post.PhotoKey;
 import market.zy.com.myapplication.entity.post.publish.NewPost;
-import market.zy.com.myapplication.entity.post.publish.PublishSuccess;
+import market.zy.com.myapplication.entity.post.publish.PublishStates;
 import market.zy.com.myapplication.entity.qiniu.QiniuUploadToken;
 import market.zy.com.myapplication.network.JxnuGoNetMethod;
 import market.zy.com.myapplication.network.qiniu.upload.OnUploadListener;
@@ -134,7 +134,7 @@ public class PublishGoodsActivity extends BaseActivity {
 
 
     private Subscriber<QiniuUploadToken> tokenSubscriber;
-    private Subscriber<PublishSuccess> uploadSubscriber;
+    private Subscriber<PublishStates> uploadSubscriber;
     private List<PhotoKey> imageKeys = new ArrayList<>();
 
     @Override
@@ -436,7 +436,7 @@ public class PublishGoodsActivity extends BaseActivity {
         newPost.setGoodsNum(num);
         newPost.setGoodsTag(goodTag);
         newPost.setUserId(String.valueOf(SPUtil.getInstance(this).getCurrentUserId()));
-        uploadSubscriber = new Subscriber<PublishSuccess>() {
+        uploadSubscriber = new Subscriber<PublishStates>() {
             @Override
             public void onCompleted() {
                 uploadDialog.dismiss();
@@ -449,7 +449,7 @@ public class PublishGoodsActivity extends BaseActivity {
             }
 
             @Override
-            public void onNext(PublishSuccess publishSuccess) {
+            public void onNext(PublishStates publishSuccess) {
 
             }
         };

@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -37,11 +36,11 @@ import market.zy.com.myapplication.db.post.PhotosDao;
 import market.zy.com.myapplication.db.post.PostDetailBean;
 import market.zy.com.myapplication.db.post.PostDetailDao;
 import market.zy.com.myapplication.entity.post.collection.CollectPost;
-import market.zy.com.myapplication.entity.post.collection.CollectSuccess;
+import market.zy.com.myapplication.entity.post.collection.CollectStates;
 import market.zy.com.myapplication.entity.post.collection.JudgeCollectPost;
-import market.zy.com.myapplication.entity.post.collection.JudgeCollectSuccess;
+import market.zy.com.myapplication.entity.post.collection.JudgeCollectStates;
 import market.zy.com.myapplication.entity.post.collection.UncollectPost;
-import market.zy.com.myapplication.entity.post.collection.UncollectSuccess;
+import market.zy.com.myapplication.entity.post.collection.UncollectStates;
 import market.zy.com.myapplication.entity.post.comments.AllComments;
 import market.zy.com.myapplication.network.JxnuGoNetMethod;
 import market.zy.com.myapplication.utils.AuthUtil;
@@ -129,9 +128,9 @@ public class PostDetailsActivity extends BaseActivity {
 
     private Subscriber<AllComments> subscriber;
     private Observable<List<PhotoBean>> observable;
-    private Subscriber<JudgeCollectSuccess> judgeSubscriber;
-    private Subscriber<CollectSuccess> collectSubscriber;
-    private Subscriber<UncollectSuccess> uncollectSubsriber;
+    private Subscriber<JudgeCollectStates> judgeSubscriber;
+    private Subscriber<CollectStates> collectSubscriber;
+    private Subscriber<UncollectStates> uncollectSubsriber;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -330,7 +329,7 @@ public class PostDetailsActivity extends BaseActivity {
     }
 
     private void isPostCollected() {
-        judgeSubscriber = new Subscriber<JudgeCollectSuccess>() {
+        judgeSubscriber = new Subscriber<JudgeCollectStates>() {
             @Override
             public void onCompleted() {
 
@@ -342,7 +341,7 @@ public class PostDetailsActivity extends BaseActivity {
             }
 
             @Override
-            public void onNext(JudgeCollectSuccess judgeCollectSuccess) {
+            public void onNext(JudgeCollectStates judgeCollectSuccess) {
                 if (judgeCollectSuccess.getCollectInfo() == 0) {
                     mPostDetailAddShopping.setImageResource(R.drawable.ic_favorite_border_black_24dp);
                     isCollected = false;
@@ -361,7 +360,7 @@ public class PostDetailsActivity extends BaseActivity {
     }
 
     private void collect() {
-        collectSubscriber = new Subscriber<CollectSuccess>() {
+        collectSubscriber = new Subscriber<CollectStates>() {
             @Override
             public void onCompleted() {
                 showSnackbarTipShort(getCurrentFocus(), R.string.collected_true);
@@ -374,7 +373,7 @@ public class PostDetailsActivity extends BaseActivity {
             }
 
             @Override
-            public void onNext(CollectSuccess collectSuccess) {
+            public void onNext(CollectStates collectSuccess) {
 
             }
         };
@@ -387,7 +386,7 @@ public class PostDetailsActivity extends BaseActivity {
     }
 
     private void uncollect() {
-        uncollectSubsriber = new Subscriber<UncollectSuccess>() {
+        uncollectSubsriber = new Subscriber<UncollectStates>() {
             @Override
             public void onCompleted() {
                 showSnackbarTipShort(getCurrentFocus(), R.string.collected_false);
@@ -400,7 +399,7 @@ public class PostDetailsActivity extends BaseActivity {
             }
 
             @Override
-            public void onNext(UncollectSuccess uncollectSuccess) {
+            public void onNext(UncollectStates uncollectSuccess) {
 
             }
         };

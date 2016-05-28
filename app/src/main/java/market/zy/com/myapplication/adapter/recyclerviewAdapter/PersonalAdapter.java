@@ -63,7 +63,8 @@ public class PersonalAdapter extends RecyclerView.Adapter<PersonalViewHolder> {
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        intent.putExtra(UserinfoActivity.USERINFO_PAGE, UserinfoActivity.MY_FOLLOWING);
+                        mContext.startActivity(intent);
                     }
                 });
                 break;
@@ -73,7 +74,8 @@ public class PersonalAdapter extends RecyclerView.Adapter<PersonalViewHolder> {
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        intent.putExtra(UserinfoActivity.USERINFO_PAGE, UserinfoActivity.MY_FOLLOWERS);
+                        mContext.startActivity(intent);
                     }
                 });
                 break;

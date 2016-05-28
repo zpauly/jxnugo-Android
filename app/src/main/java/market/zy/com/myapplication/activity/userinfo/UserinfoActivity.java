@@ -8,15 +8,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Toast;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseActivity;
+import market.zy.com.myapplication.adapter.recyclerviewAdapter.FollowerFollowingAdapter;
 import market.zy.com.myapplication.adapter.recyclerviewAdapter.PostCollectionAdapter;
 import market.zy.com.myapplication.entity.post.collection.CollectionPosts;
 import market.zy.com.myapplication.entity.post.user.UserPosts;
+import market.zy.com.myapplication.entity.user.follow.UserFollowed;
+import market.zy.com.myapplication.entity.user.follow.UserFollowers;
 import market.zy.com.myapplication.network.JxnuGoNetMethod;
 import market.zy.com.myapplication.utils.AuthUtil;
 import market.zy.com.myapplication.utils.SPUtil;
@@ -51,6 +53,8 @@ public class UserinfoActivity extends BaseActivity {
 
     private Subscriber<CollectionPosts> collectionPostsSubscriber;
     private Subscriber<UserPosts> userPostsSubscriber;
+    private Subscriber<UserFollowed> followedSubscirber;
+    private Subscriber<UserFollowers> followersSubscriber;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,6 +68,27 @@ public class UserinfoActivity extends BaseActivity {
         pageId = getIntent().getIntExtra(USERINFO_PAGE, -1);
 
         initViews();
+    }
+
+    @Override
+    protected void onDestroy() {
+        unsubscribe();
+        super.onDestroy();
+    }
+
+    private void unsubscribe() {
+        if (collectionPostsSubscriber != null) {
+            collectionPostsSubscriber.unsubscribe();
+        }
+        if (userPostsSubscriber != null) {
+            userPostsSubscriber.unsubscribe();
+        }
+        if (followedSubscirber != null) {
+            followedSubscirber.unsubscribe();
+        }
+        if (followersSubscriber != null) {
+            followersSubscriber.unsubscribe();
+        }
     }
 
     @Override
@@ -126,8 +151,14 @@ public class UserinfoActivity extends BaseActivity {
                 loadCollectionData((PostCollectionAdapter) mAdapter);
                 break;
             case MY_FOLLOWING :
+                mAdapter = new FollowerFollowingAdapter(this);
+                mRecyclerView.setAdapter(mAdapter);
+                loadFollowedData((FollowerFollowingAdapter) mAdapter);
                 break;
             case MY_FOLLOWERS :
+                mAdapter = new FollowerFollowingAdapter(this);
+                mRecyclerView.setAdapter(mAdapter);
+                loadFollowersData((FollowerFollowingAdapter) mAdapter);
                 break;
         }
     }
@@ -170,5 +201,45 @@ public class UserinfoActivity extends BaseActivity {
             }
         };
         JxnuGoNetMethod.getInstance().getCollectionPosts(collectionPostsSubscriber, auth, userInfo.getUserId());
+    }
+
+    private void loadFollowersData(final FollowerFollowingAdapter adapter) {
+        followersSubscriber = new Subscriber<UserFollowers>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(UserFollowers userFollowers) {
+                adapter.addAllData(userFollowers.getFollowers());
+            }
+        };
+        JxnuGoNetMethod.getInstance().getUserFollowers(followersSubscriber, auth, userInfo.getUserId());
+    }
+
+    private void loadFollowedData(final FollowerFollowingAdapter adapter) {
+        followedSubscirber = new Subscriber<UserFollowed>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(UserFollowed userFollowed) {
+                adapter.addAllData(userFollowed.getFollowed());
+            }
+        };
+        JxnuGoNetMethod.getInstance().getUserFollowed(followedSubscirber, auth, userInfo.getUserId());
     }
 }

@@ -21,7 +21,7 @@ import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseFragment;
 import market.zy.com.myapplication.entity.user.UserBasicInfo;
 import market.zy.com.myapplication.entity.user.login.LoginTokenSuccess;
-import market.zy.com.myapplication.entity.user.registe.RegisteSuccess;
+import market.zy.com.myapplication.entity.user.registe.RegisteStates;
 import market.zy.com.myapplication.entity.user.registe.RegisterInfo;
 import market.zy.com.myapplication.network.JxnuGoNetMethod;
 import rx.Subscriber;
@@ -45,7 +45,7 @@ public class RegisteFragment extends BaseFragment {
     @Bind(R.id.confirm)
     protected Button registeButton;
 
-    private Subscriber<RegisteSuccess> registeSubscriber;
+    private Subscriber<RegisteStates> registeSubscriber;
     private Subscriber<LoginTokenSuccess> loginSubscriber;
     private Subscriber<UserBasicInfo> userinfoSubscriber;
 
@@ -98,7 +98,7 @@ public class RegisteFragment extends BaseFragment {
         info.setUserEmail(mRegisteEmail.getText().toString());
         info.setPassWord(mRegistePassword.getText().toString());
 
-        registeSubscriber = new Subscriber<RegisteSuccess>() {
+        registeSubscriber = new Subscriber<RegisteStates>() {
             @Override
             public void onCompleted() {
                 showSnackbarTipShort(mRegisteUsername, R.string.registe_success);
@@ -111,7 +111,7 @@ public class RegisteFragment extends BaseFragment {
             }
 
             @Override
-            public void onNext(RegisteSuccess registeSuccess) {
+            public void onNext(RegisteStates registeSuccess) {
 
             }
         };

@@ -14,7 +14,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -35,7 +34,7 @@ import market.zy.com.myapplication.db.user.UserInfoDao;
 import market.zy.com.myapplication.engine.qiniu.UploadImages;
 import market.zy.com.myapplication.entity.qiniu.QiniuUploadToken;
 import market.zy.com.myapplication.entity.user.UserBasicInfo;
-import market.zy.com.myapplication.entity.user.amend.AmendSuccess;
+import market.zy.com.myapplication.entity.user.amend.AmendStates;
 import market.zy.com.myapplication.entity.user.amend.AmendUseInfo;
 import market.zy.com.myapplication.network.JxnuGoNetMethod;
 import market.zy.com.myapplication.network.qiniu.upload.OnUploadListener;
@@ -87,7 +86,7 @@ public class AmendActivity extends BaseActivity {
 
     private AmendUseInfo amendUserInfo;
 
-    private Subscriber<AmendSuccess> amendSubscriber;
+    private Subscriber<AmendStates> amendSubscriber;
     private Subscriber<QiniuUploadToken> tokenSubscriber;
 
     private String token;
@@ -200,7 +199,7 @@ public class AmendActivity extends BaseActivity {
     }
 
     private void amend(final String key) {
-        amendSubscriber = new Subscriber<AmendSuccess>() {
+        amendSubscriber = new Subscriber<AmendStates>() {
             @Override
             public void onCompleted() {
                 uploadDialog.dismiss();
@@ -233,7 +232,7 @@ public class AmendActivity extends BaseActivity {
             }
 
             @Override
-            public void onNext(AmendSuccess amendSuccess) {
+            public void onNext(AmendStates amendSuccess) {
 
             }
         };

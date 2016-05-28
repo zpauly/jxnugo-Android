@@ -14,11 +14,9 @@ import android.widget.RelativeLayout;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.nineoldandroids.animation.ValueAnimator;
 import com.nineoldandroids.view.ViewPropertyAnimator;
 
 import butterknife.Bind;
-import butterknife.BindDimen;
 import butterknife.ButterKnife;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseActivity;
@@ -26,7 +24,7 @@ import market.zy.com.myapplication.activity.trade.TradeActivity;
 import market.zy.com.myapplication.adapter.recyclerviewAdapter.CommentsAdapter;
 import market.zy.com.myapplication.entity.post.comments.AllComments;
 import market.zy.com.myapplication.entity.post.comments.NewComment;
-import market.zy.com.myapplication.entity.post.comments.NewCommentSuccess;
+import market.zy.com.myapplication.entity.post.comments.NewCommentStates;
 import market.zy.com.myapplication.network.JxnuGoNetMethod;
 import market.zy.com.myapplication.ui.support.DividerItemDecoration;
 import market.zy.com.myapplication.utils.AuthUtil;
@@ -60,7 +58,7 @@ public class CommentsActivity extends BaseActivity {
     private MaterialDialog confirmDialog;
 
     private Subscriber<AllComments> subscriber;
-    private Subscriber<NewCommentSuccess> newCommentSuccessSubscriber;
+    private Subscriber<NewCommentStates> newCommentSuccessSubscriber;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -151,7 +149,7 @@ public class CommentsActivity extends BaseActivity {
         newComment.setBody(mAddCommentEditText.getText().toString());
         newComment.setPostId(postId);
         newComment.setUserId(userInfo.getUserId());
-        newCommentSuccessSubscriber = new Subscriber<NewCommentSuccess>() {
+        newCommentSuccessSubscriber = new Subscriber<NewCommentStates>() {
             @Override
             public void onCompleted() {
                 uploadDialog.dismiss();
@@ -166,7 +164,7 @@ public class CommentsActivity extends BaseActivity {
             }
 
             @Override
-            public void onNext(NewCommentSuccess newCommentSuccess) {
+            public void onNext(NewCommentStates newCommentSuccess) {
 
             }
         };
