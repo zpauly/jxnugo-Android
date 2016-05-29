@@ -1,16 +1,16 @@
 package market.zy.com.myapplication.entity.user.follow;
 
 /**
- * Created by zpauly on 16-5-28.
+ * Created by zpauly on 16-5-29.
  */
-public class Follow {
+public class UnFollow {
     /**
      * userId : 101
-     * followedId : 58
+     * unfollowedId : 58
      */
 
     private int userId;
-    private int followedId;
+    private int unfollowedId;
 
     public int getUserId() {
         return userId;
@@ -20,11 +20,11 @@ public class Follow {
         this.userId = userId;
     }
 
-    public int getFollowedId() {
-        return followedId;
+    public int getUnfollowedId() {
+        return unfollowedId;
     }
 
-    public void setFollowedId(int followedId) {
-        this.followedId = followedId;
+    public void setUnfollowedId(int unfollowedId) {
+        this.unfollowedId = unfollowedId;
     }
 }

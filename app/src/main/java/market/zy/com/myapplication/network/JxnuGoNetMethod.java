@@ -22,7 +22,9 @@ import market.zy.com.myapplication.entity.user.amend.AmendStates;
 import market.zy.com.myapplication.entity.user.amend.AmendUseInfo;
 import market.zy.com.myapplication.entity.user.follow.Follow;
 import market.zy.com.myapplication.entity.user.follow.FollowStates;
+import market.zy.com.myapplication.entity.user.follow.JudgeFollow;
 import market.zy.com.myapplication.entity.user.follow.JudgeFollowStates;
+import market.zy.com.myapplication.entity.user.follow.UnFollow;
 import market.zy.com.myapplication.entity.user.follow.UnfollowStates;
 import market.zy.com.myapplication.entity.user.follow.UserFollowed;
 import market.zy.com.myapplication.entity.user.follow.UserFollowers;
@@ -184,14 +186,14 @@ public class JxnuGoNetMethod {
                 .subscribe(observer);
     }
 
-    public void unfollowUser(Observer<UnfollowStates> observer, String auth, Follow follow) {
+    public void unfollowUser(Observer<UnfollowStates> observer, String auth, UnFollow follow) {
         service.unfollowUser(auth, follow)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);
     }
 
-    public void judgeFollowUser(Observer<JudgeFollowStates> observer, String auth, Follow follow) {
+    public void judgeFollowUser(Observer<JudgeFollowStates> observer, String auth, JudgeFollow follow) {
         service.judgeFollowUser(auth, follow)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

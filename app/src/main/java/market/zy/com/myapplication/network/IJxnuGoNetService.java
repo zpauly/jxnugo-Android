@@ -21,7 +21,9 @@ import market.zy.com.myapplication.entity.user.amend.AmendStates;
 import market.zy.com.myapplication.entity.user.amend.AmendUseInfo;
 import market.zy.com.myapplication.entity.user.follow.Follow;
 import market.zy.com.myapplication.entity.user.follow.FollowStates;
+import market.zy.com.myapplication.entity.user.follow.JudgeFollow;
 import market.zy.com.myapplication.entity.user.follow.JudgeFollowStates;
+import market.zy.com.myapplication.entity.user.follow.UnFollow;
 import market.zy.com.myapplication.entity.user.follow.UnfollowStates;
 import market.zy.com.myapplication.entity.user.follow.UserFollowed;
 import market.zy.com.myapplication.entity.user.follow.UserFollowers;
@@ -190,7 +192,7 @@ public interface IJxnuGoNetService {
      * @return
      */
     @POST("unfollow")
-    Observable<UnfollowStates> unfollowUser(@Header("Authorization") String auth, @Body Follow follow);
+    Observable<UnfollowStates> unfollowUser(@Header("Authorization") String auth, @Body UnFollow follow);
 
     /**
      * 判断用户是否已经关注了某个用户
@@ -199,7 +201,7 @@ public interface IJxnuGoNetService {
      * @return
      */
     @POST("judge_follow")
-    Observable<JudgeFollowStates> judgeFollowUser(@Header("Authorization") String auth, @Body Follow follow);
+    Observable<JudgeFollowStates> judgeFollowUser(@Header("Authorization") String auth, @Body JudgeFollow follow);
 
     /**
      * 删除帖子

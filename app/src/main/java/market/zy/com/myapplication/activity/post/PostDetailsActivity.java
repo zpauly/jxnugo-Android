@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -42,6 +43,12 @@ import market.zy.com.myapplication.entity.post.collection.JudgeCollectStates;
 import market.zy.com.myapplication.entity.post.collection.UncollectPost;
 import market.zy.com.myapplication.entity.post.collection.UncollectStates;
 import market.zy.com.myapplication.entity.post.comments.AllComments;
+import market.zy.com.myapplication.entity.user.follow.Follow;
+import market.zy.com.myapplication.entity.user.follow.FollowStates;
+import market.zy.com.myapplication.entity.user.follow.JudgeFollow;
+import market.zy.com.myapplication.entity.user.follow.JudgeFollowStates;
+import market.zy.com.myapplication.entity.user.follow.UnFollow;
+import market.zy.com.myapplication.entity.user.follow.UnfollowStates;
 import market.zy.com.myapplication.network.JxnuGoNetMethod;
 import market.zy.com.myapplication.utils.AuthUtil;
 import market.zy.com.myapplication.utils.SPUtil;
@@ -101,8 +108,8 @@ public class PostDetailsActivity extends BaseActivity {
     @Bind(R.id.post_detail_share)
     protected ImageView mPostDetailShare;
 
-    @Bind(R.id.post_detail_connect)
-    protected ImageView mPostDetailConnect;
+    @Bind(R.id.post_detail_follow)
+    protected ImageView mPostDetailFollow;
 
     @Bind(R.id.post_seller_avatar)
     protected CircleImageView mPostSellerAvatar;
@@ -123,14 +130,20 @@ public class PostDetailsActivity extends BaseActivity {
     private PostDetailPhotosAdapter mPhotosAdapter;
 
     private int postId;
+    private String auth;
+    private PostDetailBean postDetail;
 
     private boolean isCollected = false;
+    private boolean isFollowed = false;
 
     private Subscriber<AllComments> subscriber;
     private Observable<List<PhotoBean>> observable;
-    private Subscriber<JudgeCollectStates> judgeSubscriber;
+    private Subscriber<JudgeCollectStates> judgeCollectSubscriber;
     private Subscriber<CollectStates> collectSubscriber;
     private Subscriber<UncollectStates> uncollectSubsriber;
+    private Subscriber<JudgeFollowStates> judgeFollowSubscriber;
+    private Subscriber<FollowStates> followSubscriber;
+    private Subscriber<UnfollowStates> unfollowSubscriber;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -139,6 +152,9 @@ public class PostDetailsActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         setOnBackTwiceToTrue();
+
+        auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(this).getCurrentUsername()
+                , SPUtil.getInstance(this).getCurrentPassword());
 
         initViews();
     }
@@ -161,8 +177,23 @@ public class PostDetailsActivity extends BaseActivity {
             subscriber.unsubscribe();
         if (observable != null)
             observable.unsubscribeOn(Schedulers.immediate());
-        if (judgeSubscriber != null) {
-            judgeSubscriber.unsubscribe();
+        if (judgeCollectSubscriber != null) {
+            judgeCollectSubscriber.unsubscribe();
+        }
+        if (collectSubscriber != null) {
+            collectSubscriber.unsubscribe();
+        }
+        if (uncollectSubsriber != null) {
+            uncollectSubsriber.unsubscribe();
+        }
+        if (followSubscriber != null) {
+            followSubscriber.unsubscribe();
+        }
+        if (unfollowSubscriber != null) {
+            unfollowSubscriber.unsubscribe();
+        }
+        if (judgeFollowSubscriber != null) {
+            judgeFollowSubscriber.unsubscribe();
         }
     }
 
@@ -182,6 +213,7 @@ public class PostDetailsActivity extends BaseActivity {
         setUpImageButtons();
 
         isPostCollected();
+        isAuthorFollowed();
     }
 
     private void setUpToolbar() {
@@ -216,6 +248,16 @@ public class PostDetailsActivity extends BaseActivity {
                     uncollect();
                 } else {
                     collect();
+                }
+            }
+        });
+        mPostDetailFollow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isFollowed) {
+                    unfollow();
+                } else {
+                    follow();
                 }
             }
         });
@@ -270,8 +312,6 @@ public class PostDetailsActivity extends BaseActivity {
                 mCommentsAdapter.swapData(allComments.getComments());
             }
         };
-        String auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(this).getCurrentUsername()
-                ,SPUtil.getInstance(this).getCurrentPassword());
         JxnuGoNetMethod.getInstance().getAllComments(subscriber, auth, postId);
     }
 
@@ -304,7 +344,7 @@ public class PostDetailsActivity extends BaseActivity {
     }
 
     private void loadPostData() {
-        PostDetailBean postDetail = PostDetailDao.queryPostDetail(postId).get(0);
+        postDetail = PostDetailDao.queryPostDetail(postId).get(0);
         mPostGoodName.setText(postDetail.getGoodsName());
         mPostGoodBuyTime.setText(postDetail.getGoodsBuyTime());
         mPostSellerName.setText(postDetail.getPostNickName());
@@ -329,7 +369,7 @@ public class PostDetailsActivity extends BaseActivity {
     }
 
     private void isPostCollected() {
-        judgeSubscriber = new Subscriber<JudgeCollectStates>() {
+        judgeCollectSubscriber = new Subscriber<JudgeCollectStates>() {
             @Override
             public void onCompleted() {
 
@@ -351,12 +391,10 @@ public class PostDetailsActivity extends BaseActivity {
                 }
             }
         };
-        String auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(this).getCurrentUsername()
-                , SPUtil.getInstance(this).getCurrentPassword());
         JudgeCollectPost post = new JudgeCollectPost();
         post.setPostId(postId);
         post.setUserId(userInfo.getUserId());
-        JxnuGoNetMethod.getInstance().judgeCollectPost(judgeSubscriber, auth, post);
+        JxnuGoNetMethod.getInstance().judgeCollectPost(judgeCollectSubscriber, auth, post);
     }
 
     private void collect() {
@@ -377,8 +415,6 @@ public class PostDetailsActivity extends BaseActivity {
 
             }
         };
-        String auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(this).getCurrentUsername()
-                , SPUtil.getInstance(this).getCurrentPassword());
         CollectPost post = new CollectPost();
         post.setPostId(postId);
         post.setUserId(userInfo.getUserId());
@@ -403,11 +439,93 @@ public class PostDetailsActivity extends BaseActivity {
 
             }
         };
-        String auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(this).getCurrentUsername()
-                , SPUtil.getInstance(this).getCurrentPassword());
         UncollectPost post = new UncollectPost();
         post.setUserId(userInfo.getUserId());
         post.setPostId(postId);
         JxnuGoNetMethod.getInstance().uncollectPost(uncollectSubsriber, auth, post);
+    }
+
+    private void follow() {
+        followSubscriber = new Subscriber<FollowStates>() {
+            @Override
+            public void onCompleted() {
+                isAuthorFollowed();
+                showSnackbarTipShort(getCurrentFocus(), R.string.follow_true);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(FollowStates followStates) {
+
+            }
+        };
+        Follow follow = new Follow();
+        follow.setUserId(userInfo.getUserId());
+        String str[] = postDetail.getAuthor().split("/");
+        int followId = Integer.parseInt(str[str.length - 1]);
+        follow.setFollowedId(followId);
+        JxnuGoNetMethod.getInstance().followUser(followSubscriber, auth, follow);
+    }
+
+    private void unfollow() {
+        unfollowSubscriber = new Subscriber<UnfollowStates>() {
+            @Override
+            public void onCompleted() {
+                isAuthorFollowed();
+                showSnackbarTipShort(getCurrentFocus(), R.string.follow_false);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(UnfollowStates unfollowStates) {
+
+            }
+        };
+        UnFollow follow = new UnFollow();
+        follow.setUserId(userInfo.getUserId());
+        String str[] = postDetail.getAuthor().split("/");
+        int followId = Integer.parseInt(str[str.length - 1]);
+        follow.setUnfollowedId(followId);
+        JxnuGoNetMethod.getInstance().unfollowUser(unfollowSubscriber, auth, follow);
+    }
+
+    private void isAuthorFollowed() {
+        judgeFollowSubscriber = new Subscriber<JudgeFollowStates>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(JudgeFollowStates judgeFollowStates) {
+                if (judgeFollowStates.getJudgeInfo() == 0) {
+                    mPostDetailFollow.setImageResource(R.drawable.ic_person_outline_black_24dp);
+                    isFollowed = false;
+                }
+                if (judgeFollowStates.getJudgeInfo() == 1) {
+                    mPostDetailFollow.setImageResource(R.drawable.ic_person_black_24dp);
+                    isFollowed = true;
+                }
+            }
+        };
+        JudgeFollow follow = new JudgeFollow();
+        follow.setUserId(userInfo.getUserId());
+        String str[] = postDetail.getAuthor().split("/");
+        int followId = Integer.parseInt(str[str.length - 1]);
+        follow.setFollowerId(followId);
+        JxnuGoNetMethod.getInstance().judgeFollowUser(judgeFollowSubscriber, auth, follow);
     }
 }

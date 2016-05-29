@@ -9,22 +9,22 @@ public class JudgeFollow {
      * followerId : 59
      */
 
-    private String userId;
-    private String followerId;
+    private int userId;
+    private int followerId;
 
-    public String getUserId() {
+    public int getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
-    public String getFollowerId() {
+    public int getFollowerId() {
         return followerId;
     }
 
-    public void setFollowerId(String followerId) {
+    public void setFollowerId(int followerId) {
         this.followerId = followerId;
     }
 }

@@ -27,6 +27,11 @@ import market.zy.com.myapplication.utils.SPUtil;
  * Created by zpauly on 2016/3/11.
  */
 public class UserActivity extends BaseActivity {
+    public static final int SELF = 0;
+    public static final int OTHERS = 1;
+
+    public static final String PERSON = "PERSON";
+
     @Bind(R.id.personal_toolbar)
     protected Toolbar mToolbar;
 
@@ -42,6 +47,8 @@ public class UserActivity extends BaseActivity {
 
     private FragmentManager fm;
     private FragmentTransaction ft;
+
+    private int person;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -113,23 +120,39 @@ public class UserActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.personal_toolbar_menu, menu);
+        if (person == -1)
+            return false;
+        if (person == 0) {
+            getMenuInflater().inflate(R.menu.personal_toolbar_menu, menu);
+        }
+        if (person == 1) {
+
+        }
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.personal_person :
-                if (SPUtil.getInstance(this).getCurrentUsername() != null) {
-                    mBottomSheet = new UserBottomSheet();
-                    mBottomSheet.show(getSupportFragmentManager(), mBottomSheet.getTag());
-                } else {
-                    showSnackbarTipShort(mToolbar, R.string.please_login);
-                }
-                break;
-            default :
-                break;
+        if (person == -1)
+            return super.onOptionsItemSelected(item);
+        if (person == 0) {
+            switch (item.getItemId()) {
+                case R.id.personal_person:
+                    if (SPUtil.getInstance(this).getCurrentUsername() != null) {
+                        mBottomSheet = new UserBottomSheet();
+                        mBottomSheet.show(getSupportFragmentManager(), mBottomSheet.getTag());
+                    } else {
+                        showSnackbarTipShort(mToolbar, R.string.please_login);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        if (person == 1) {
+            switch (item.getItemId()) {
+
+            }
         }
         return super.onOptionsItemSelected(item);
     }
