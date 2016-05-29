@@ -31,6 +31,7 @@ public class UserActivity extends BaseActivity {
     public static final int OTHERS = 1;
 
     public static final String PERSON = "PERSON";
+    public static final String OTHER_ID = "OTHER_ID";
 
     @Bind(R.id.personal_toolbar)
     protected Toolbar mToolbar;
@@ -49,6 +50,7 @@ public class UserActivity extends BaseActivity {
     private FragmentTransaction ft;
 
     private int person;
+    private int otherId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,6 +59,11 @@ public class UserActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         setOnBackTwiceToTrue();
+
+        person = getIntent().getIntExtra(PERSON, SELF);
+        if (person == OTHERS) {
+            otherId = getIntent().getIntExtra(OTHER_ID, -1);
+        }
 
         initView();
     }
@@ -120,40 +127,25 @@ public class UserActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (person == -1)
-            return false;
-        if (person == 0) {
-            getMenuInflater().inflate(R.menu.personal_toolbar_menu, menu);
-        }
-        if (person == 1) {
-
-        }
+        getMenuInflater().inflate(R.menu.personal_toolbar_menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (person == -1)
-            return super.onOptionsItemSelected(item);
-        if (person == 0) {
-            switch (item.getItemId()) {
-                case R.id.personal_person:
-                    if (SPUtil.getInstance(this).getCurrentUsername() != null) {
-                        mBottomSheet = new UserBottomSheet();
-                        mBottomSheet.show(getSupportFragmentManager(), mBottomSheet.getTag());
-                    } else {
-                        showSnackbarTipShort(mToolbar, R.string.please_login);
-                    }
-                    break;
-                default:
-                    break;
-            }
+        switch (item.getItemId()) {
+            case R.id.personal_person:
+                if (SPUtil.getInstance(this).getCurrentUsername() != null) {
+                    mBottomSheet = new UserBottomSheet();
+                    mBottomSheet.show(getSupportFragmentManager(), mBottomSheet.getTag());
+                } else {
+                    showSnackbarTipShort(mToolbar, R.string.please_login);
+                }
+                break;
+            default:
+                break;
         }
-        if (person == 1) {
-            switch (item.getItemId()) {
 
-            }
-        }
         return super.onOptionsItemSelected(item);
     }
 }

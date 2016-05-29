@@ -3,9 +3,9 @@ package market.zy.com.myapplication.db.user;
 import org.litepal.crud.DataSupport;
 
 /**
- * Created by zpauly on 16-5-19.
+ * Created by zpauly on 16-5-29.
  */
-public class UserInfoBean extends DataSupport {
+public class OtherInfoModel extends DataSupport {
     /**
      * about_me : Nulla ac enim.
      * avatar : http://7xrkww.com1.z0.glb.clouddn.com/84BE7838-E41C-4E60-A1B8-CA

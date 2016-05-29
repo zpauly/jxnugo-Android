@@ -19,7 +19,7 @@ import market.zy.com.myapplication.activity.post.PostDetailsActivity;
 import market.zy.com.myapplication.activity.photos.PhotoActivity;
 import market.zy.com.myapplication.activity.trade.TradeActivity;
 import market.zy.com.myapplication.activity.viewholder.HorizontalPhotosViewHolder;
-import market.zy.com.myapplication.db.post.PhotoBean;
+import market.zy.com.myapplication.db.post.PhotoModel;
 
 /**
  * Created by zpauly on 16-5-21.
@@ -27,13 +27,13 @@ import market.zy.com.myapplication.db.post.PhotoBean;
 public class PostDetailPhotosAdapter extends RecyclerView.Adapter<HorizontalPhotosViewHolder> {
     private Context mContext;
 
-    private List<PhotoBean> photoKey = new ArrayList<>();
+    private List<PhotoModel> photoKey = new ArrayList<>();
 
     public PostDetailPhotosAdapter(Context context) {
         mContext = context;
     }
 
-    public void swapData(List<PhotoBean> list) {
+    public void swapData(List<PhotoModel> list) {
         photoKey.clear();
         photoKey.addAll(list);
         notifyDataSetChanged();

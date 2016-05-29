@@ -106,6 +106,21 @@ public class AmendActivity extends BaseActivity {
     }
 
     @Override
+    protected void onPause() {
+        unsubscribe();
+        super.onPause();
+    }
+
+    private void unsubscribe() {
+        if (amendSubscriber != null) {
+            amendSubscriber.unsubscribe();
+        }
+        if (tokenSubscriber != null) {
+            tokenSubscriber.unsubscribe();
+        }
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {

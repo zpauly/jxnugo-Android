@@ -10,7 +10,7 @@ import market.zy.com.myapplication.entity.post.PhotoKey;
 /**
  * Created by zpauly on 16-5-20.
  */
-public class PostDetailBean extends DataSupport {
+public class PostDetailModel extends DataSupport {
     /**
      * author : http://127.0.0.1:5000/api/user/2
      * body : Pellentesque viverra pede ac diam. Morbi sem mauris, laoreet ut, rhoncus aliquet, pulvinar sed, nisl.

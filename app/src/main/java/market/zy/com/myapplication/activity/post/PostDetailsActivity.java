@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -32,9 +31,9 @@ import market.zy.com.myapplication.activity.comments.CommentsActivity;
 import market.zy.com.myapplication.activity.trade.TradeActivity;
 import market.zy.com.myapplication.adapter.recyclerviewAdapter.PostDetailCommentsAdapter;
 import market.zy.com.myapplication.adapter.recyclerviewAdapter.PostDetailPhotosAdapter;
-import market.zy.com.myapplication.db.post.PhotoBean;
+import market.zy.com.myapplication.db.post.PhotoModel;
 import market.zy.com.myapplication.db.post.PhotosDao;
-import market.zy.com.myapplication.db.post.PostDetailBean;
+import market.zy.com.myapplication.db.post.PostDetailModel;
 import market.zy.com.myapplication.db.post.PostDetailDao;
 import market.zy.com.myapplication.entity.post.collection.CollectPost;
 import market.zy.com.myapplication.entity.post.collection.CollectStates;
@@ -131,13 +130,13 @@ public class PostDetailsActivity extends BaseActivity {
 
     private int postId;
     private String auth;
-    private PostDetailBean postDetail;
+    private PostDetailModel postDetail;
 
     private boolean isCollected = false;
     private boolean isFollowed = false;
 
     private Subscriber<AllComments> subscriber;
-    private Observable<List<PhotoBean>> observable;
+    private Observable<List<PhotoModel>> observable;
     private Subscriber<JudgeCollectStates> judgeCollectSubscriber;
     private Subscriber<CollectStates> collectSubscriber;
     private Subscriber<UncollectStates> uncollectSubsriber;
@@ -164,6 +163,12 @@ public class PostDetailsActivity extends BaseActivity {
         super.onResume();
         loadCommentData();
         isPostCollected();
+    }
+
+    @Override
+    protected void onPause() {
+        unsubscribe();
+        super.onPause();
     }
 
     @Override
@@ -316,16 +321,16 @@ public class PostDetailsActivity extends BaseActivity {
     }
 
     private void loadPhotosData() {
-        observable = Observable.create(new Observable.OnSubscribe<List<PhotoBean>>() {
+        observable = Observable.create(new Observable.OnSubscribe<List<PhotoModel>>() {
 
             @Override
-            public void call(Subscriber<? super List<PhotoBean>> subscriber) {
+            public void call(Subscriber<? super List<PhotoModel>> subscriber) {
                 subscriber.onNext(PhotosDao.queryPhoto(postId));
             }
         });
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<PhotoBean>>() {
+                .subscribe(new Subscriber<List<PhotoModel>>() {
                     @Override
                     public void onCompleted() {
 
@@ -337,7 +342,7 @@ public class PostDetailsActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void onNext(List<PhotoBean> photoKeys) {
+                    public void onNext(List<PhotoModel> photoKeys) {
                         mPhotosAdapter.swapData(photoKeys);
                     }
                 });

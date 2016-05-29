@@ -5,7 +5,7 @@ import org.litepal.crud.DataSupport;
 /**
  * Created by zpauly on 16-5-21.
  */
-public class PhotoBean extends DataSupport {
+public class PhotoModel extends DataSupport {
     private String key;
 
     private int postId;

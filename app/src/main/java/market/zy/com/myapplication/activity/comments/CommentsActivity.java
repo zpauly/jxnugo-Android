@@ -77,6 +77,12 @@ public class CommentsActivity extends BaseActivity {
     }
 
     @Override
+    protected void onPause() {
+        unsubscribe();
+        super.onPause();
+    }
+
+    @Override
     protected void onDestroy() {
         unsubscribe();
         super.onDestroy();

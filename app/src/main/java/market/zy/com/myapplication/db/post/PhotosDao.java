@@ -13,25 +13,25 @@ import market.zy.com.myapplication.entity.post.PhotoKey;
  */
 public class PhotosDao {
     public static boolean insertPhotos(PhotoKey photoKey, int postId) {
-        PhotoBean photoBean = new PhotoBean();
+        PhotoModel photoBean = new PhotoModel();
         photoBean.setKey(photoKey.getKey());
         photoBean.setPostId(postId);
         return photoBean.save();
     }
 
-    public static List<PhotoBean> queryPhoto(int postId) {
-        return DataSupport.where("postid = ?", String.valueOf(postId)).find(PhotoBean.class);
+    public static List<PhotoModel> queryPhoto(int postId) {
+        return DataSupport.where("postid = ?", String.valueOf(postId)).find(PhotoModel.class);
     }
 
     public static int deletePhotoBean() {
-        return DataSupport.deleteAll(PhotoBean.class);
+        return DataSupport.deleteAll(PhotoModel.class);
     }
 
     public static int deletePhotoBean(int postId) {
-        return DataSupport.deleteAll(PhotoBean.class, "postid = ?", String.valueOf(postId));
+        return DataSupport.deleteAll(PhotoModel.class, "postid = ?", String.valueOf(postId));
     }
 
     public static int updatePhotoBean(ContentValues values) {
-        return DataSupport.updateAll(PhotoBean.class, values);
+        return DataSupport.updateAll(PhotoModel.class, values);
     }
 }

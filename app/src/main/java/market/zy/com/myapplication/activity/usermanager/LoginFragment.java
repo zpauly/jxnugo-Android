@@ -81,6 +81,12 @@ public class LoginFragment extends BaseFragment {
     }
 
     @Override
+    public void onPause() {
+        unsubscribe();
+        super.onPause();
+    }
+
+    @Override
     public void onDestroy() {
         unsubscribe();
         super.onDestroy();

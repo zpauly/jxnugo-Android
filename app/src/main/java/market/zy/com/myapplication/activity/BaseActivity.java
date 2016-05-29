@@ -13,11 +13,9 @@ import android.transition.TransitionInflater;
 import android.view.View;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.Constants;
-import market.zy.com.myapplication.db.user.UserInfoBean;
+import market.zy.com.myapplication.db.user.UserInfoModel;
 import market.zy.com.myapplication.db.user.UserInfoDao;
 import market.zy.com.myapplication.utils.SPUtil;
 
@@ -32,7 +30,7 @@ public class BaseActivity extends AppCompatActivity {
 
     protected SPUtil sp;
 
-    protected UserInfoBean userInfo;
+    protected UserInfoModel userInfo;
 
     public void setOnBackTwiceToTrue() {
         onBackTwice = true;

@@ -13,7 +13,7 @@ import market.zy.com.myapplication.entity.post.OneSimplePost;
  */
 public class PostDetailDao {
     public static boolean insertPostDetail(OneSimplePost oneSimplePost) {
-        PostDetailBean postDetail = new PostDetailBean();
+        PostDetailModel postDetail = new PostDetailModel();
         postDetail.setAuthor(oneSimplePost.getAuthor());
         postDetail.setBody(oneSimplePost.getBody());
         postDetail.setCommentsCount(oneSimplePost.getCommentsCount());
@@ -34,14 +34,14 @@ public class PostDetailDao {
     }
 
     public static int deletePostDetail() {
-        return DataSupport.deleteAll(PostDetailBean.class);
+        return DataSupport.deleteAll(PostDetailModel.class);
     }
 
-    public static List<PostDetailBean> queryPostDetail(int postId) {
-        return DataSupport.where("postid = ?", String.valueOf(postId)).find(PostDetailBean.class);
+    public static List<PostDetailModel> queryPostDetail(int postId) {
+        return DataSupport.where("postid = ?", String.valueOf(postId)).find(PostDetailModel.class);
     }
 
     public static int updatePostDetail(ContentValues values) {
-        return DataSupport.updateAll(PostDetailBean.class, values);
+        return DataSupport.updateAll(PostDetailModel.class, values);
     }
 }

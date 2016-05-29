@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -14,8 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import market.zy.com.myapplication.Constants;
-import market.zy.com.myapplication.R;
-import market.zy.com.myapplication.db.post.PhotoBean;
+import market.zy.com.myapplication.db.post.PhotoModel;
 import uk.co.senab.photoview.PhotoView;
 
 /**
@@ -24,9 +22,9 @@ import uk.co.senab.photoview.PhotoView;
 public class PhotoAdapter extends PagerAdapter {
     private Context mContext;
 
-    private List<PhotoBean> mData = new ArrayList<>();
+    private List<PhotoModel> mData = new ArrayList<>();
 
-    public PhotoAdapter(Context context, List<PhotoBean> list) {
+    public PhotoAdapter(Context context, List<PhotoModel> list) {
         mContext = context;
         mData = list;
     }

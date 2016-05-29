@@ -46,8 +46,6 @@ public class RegisteFragment extends BaseFragment {
     protected Button registeButton;
 
     private Subscriber<RegisteStates> registeSubscriber;
-    private Subscriber<LoginTokenSuccess> loginSubscriber;
-    private Subscriber<UserBasicInfo> userinfoSubscriber;
 
     @Nullable
     @Override
@@ -55,6 +53,24 @@ public class RegisteFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_register, container, false);
         initView(view);
         return view;
+    }
+
+    @Override
+    public void onPause() {
+        unsubscribe();
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        unsubscribe();
+        super.onDestroy();
+    }
+
+    private void unsubscribe() {
+        if (registeSubscriber != null) {
+            registeSubscriber.unsubscribe();
+        }
     }
 
     private void initView(View view) {

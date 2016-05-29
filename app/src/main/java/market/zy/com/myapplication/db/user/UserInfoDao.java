@@ -11,7 +11,7 @@ import market.zy.com.myapplication.entity.user.UserBasicInfo;
  */
 public class UserInfoDao {
     public static boolean insertUserInfo(UserBasicInfo info) {
-        UserInfoBean userInfo = new UserInfoBean();
+        UserInfoModel userInfo = new UserInfoModel();
         userInfo.setAvatar(info.getAvatar());
         userInfo.setAbout_me(info.getAbout_me());
         userInfo.setContactMe(info.getContactMe());
@@ -30,14 +30,14 @@ public class UserInfoDao {
     }
 
     public static int deleteUserInfo() {
-        return DataSupport.deleteAll(UserInfoBean.class);
+        return DataSupport.deleteAll(UserInfoModel.class);
     }
 
-    public static UserInfoBean queryUserInfo() {
-        return DataSupport.findFirst(UserInfoBean.class);
+    public static UserInfoModel queryUserInfo() {
+        return DataSupport.findFirst(UserInfoModel.class);
     }
 
     public static int updateUserInfo(ContentValues values) {
-        return DataSupport.updateAll(UserInfoBean.class, values);
+        return DataSupport.updateAll(UserInfoModel.class, values);
     }
 }

@@ -12,7 +12,7 @@ import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.post.PostDetailsActivity;
 import market.zy.com.myapplication.activity.trade.TradeActivity;
 import market.zy.com.myapplication.adapter.photoAdapter.PhotoAdapter;
-import market.zy.com.myapplication.db.post.PhotoBean;
+import market.zy.com.myapplication.db.post.PhotoModel;
 import market.zy.com.myapplication.db.post.PhotosDao;
 import market.zy.com.myapplication.ui.support.PhotosViewPager;
 import rx.Observable;
@@ -33,7 +33,7 @@ public class PhotoActivity extends AppCompatActivity {
     private int currentPhoto;
 
 
-    private Observable<List<PhotoBean>> observable;
+    private Observable<List<PhotoModel>> observable;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,6 +48,12 @@ public class PhotoActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        unsubscribe();
+        super.onPause();
+    }
+
+    @Override
     protected void onDestroy() {
         unsubscribe();
         super.onDestroy();
@@ -59,17 +65,17 @@ public class PhotoActivity extends AppCompatActivity {
     }
 
     private void loadPhotosData() {
-        observable = Observable.create(new Observable.OnSubscribe<List<PhotoBean>>() {
+        observable = Observable.create(new Observable.OnSubscribe<List<PhotoModel>>() {
 
             @Override
-            public void call(Subscriber<? super List<PhotoBean>> subscriber) {
+            public void call(Subscriber<? super List<PhotoModel>> subscriber) {
                 subscriber.onNext(PhotosDao.queryPhoto(postId));
                 subscriber.onCompleted();
             }
         });
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<PhotoBean>>() {
+                .subscribe(new Subscriber<List<PhotoModel>>() {
                     @Override
                     public void onCompleted() {
                         mViewPager.setAdapter(mAdapter);
@@ -81,7 +87,7 @@ public class PhotoActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onNext(List<PhotoBean> photoKeys) {
+                    public void onNext(List<PhotoModel> photoKeys) {
                         mAdapter = new PhotoAdapter(PhotoActivity.this, photoKeys);
                     }
                 });
