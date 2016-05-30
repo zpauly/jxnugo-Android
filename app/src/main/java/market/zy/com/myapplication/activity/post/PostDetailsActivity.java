@@ -29,12 +29,15 @@ import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseActivity;
 import market.zy.com.myapplication.activity.comments.CommentsActivity;
 import market.zy.com.myapplication.activity.trade.TradeActivity;
+import market.zy.com.myapplication.activity.user.UserActivity;
 import market.zy.com.myapplication.adapter.recyclerviewAdapter.PostDetailCommentsAdapter;
 import market.zy.com.myapplication.adapter.recyclerviewAdapter.PostDetailPhotosAdapter;
 import market.zy.com.myapplication.db.post.PhotoModel;
 import market.zy.com.myapplication.db.post.PhotosDao;
 import market.zy.com.myapplication.db.post.PostDetailModel;
 import market.zy.com.myapplication.db.post.PostDetailDao;
+import market.zy.com.myapplication.db.user.OtherInfoDao;
+import market.zy.com.myapplication.db.user.OtherInfoModel;
 import market.zy.com.myapplication.entity.post.collection.CollectPost;
 import market.zy.com.myapplication.entity.post.collection.CollectStates;
 import market.zy.com.myapplication.entity.post.collection.JudgeCollectPost;
@@ -42,6 +45,7 @@ import market.zy.com.myapplication.entity.post.collection.JudgeCollectStates;
 import market.zy.com.myapplication.entity.post.collection.UncollectPost;
 import market.zy.com.myapplication.entity.post.collection.UncollectStates;
 import market.zy.com.myapplication.entity.post.comments.AllComments;
+import market.zy.com.myapplication.entity.user.UserBasicInfo;
 import market.zy.com.myapplication.entity.user.follow.Follow;
 import market.zy.com.myapplication.entity.user.follow.FollowStates;
 import market.zy.com.myapplication.entity.user.follow.JudgeFollow;
@@ -140,9 +144,7 @@ public class PostDetailsActivity extends BaseActivity {
     private Subscriber<JudgeCollectStates> judgeCollectSubscriber;
     private Subscriber<CollectStates> collectSubscriber;
     private Subscriber<UncollectStates> uncollectSubsriber;
-    private Subscriber<JudgeFollowStates> judgeFollowSubscriber;
-    private Subscriber<FollowStates> followSubscriber;
-    private Subscriber<UnfollowStates> unfollowSubscriber;
+    private Subscriber<UserBasicInfo> publisheraSubscriber;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -191,15 +193,6 @@ public class PostDetailsActivity extends BaseActivity {
         if (uncollectSubsriber != null) {
             uncollectSubsriber.unsubscribe();
         }
-        if (followSubscriber != null) {
-            followSubscriber.unsubscribe();
-        }
-        if (unfollowSubscriber != null) {
-            unfollowSubscriber.unsubscribe();
-        }
-        if (judgeFollowSubscriber != null) {
-            judgeFollowSubscriber.unsubscribe();
-        }
     }
 
     private void initViews() {
@@ -218,7 +211,8 @@ public class PostDetailsActivity extends BaseActivity {
         setUpImageButtons();
 
         isPostCollected();
-        isAuthorFollowed();
+
+        loadPublisherInfo();
     }
 
     private void setUpToolbar() {
@@ -259,11 +253,13 @@ public class PostDetailsActivity extends BaseActivity {
         mPostDetailFollow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isFollowed) {
-                    unfollow();
-                } else {
-                    follow();
-                }
+                String str[] = postDetail.getAuthor().split("/");
+                int followId = Integer.parseInt(str[str.length - 1]);
+                Intent intent = new Intent();
+                intent.setClass(PostDetailsActivity.this, UserActivity.class);
+                intent.putExtra(UserActivity.PERSON, UserActivity.OTHERS);
+                intent.putExtra(UserActivity.OTHER_ID, followId);
+                startActivity(intent);
             }
         });
     }
@@ -450,60 +446,8 @@ public class PostDetailsActivity extends BaseActivity {
         JxnuGoNetMethod.getInstance().uncollectPost(uncollectSubsriber, auth, post);
     }
 
-    private void follow() {
-        followSubscriber = new Subscriber<FollowStates>() {
-            @Override
-            public void onCompleted() {
-                isAuthorFollowed();
-                showSnackbarTipShort(getCurrentFocus(), R.string.follow_true);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(FollowStates followStates) {
-
-            }
-        };
-        Follow follow = new Follow();
-        follow.setUserId(userInfo.getUserId());
-        String str[] = postDetail.getAuthor().split("/");
-        int followId = Integer.parseInt(str[str.length - 1]);
-        follow.setFollowedId(followId);
-        JxnuGoNetMethod.getInstance().followUser(followSubscriber, auth, follow);
-    }
-
-    private void unfollow() {
-        unfollowSubscriber = new Subscriber<UnfollowStates>() {
-            @Override
-            public void onCompleted() {
-                isAuthorFollowed();
-                showSnackbarTipShort(getCurrentFocus(), R.string.follow_false);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(UnfollowStates unfollowStates) {
-
-            }
-        };
-        UnFollow follow = new UnFollow();
-        follow.setUserId(userInfo.getUserId());
-        String str[] = postDetail.getAuthor().split("/");
-        int followId = Integer.parseInt(str[str.length - 1]);
-        follow.setUnfollowedId(followId);
-        JxnuGoNetMethod.getInstance().unfollowUser(unfollowSubscriber, auth, follow);
-    }
-
-    private void isAuthorFollowed() {
-        judgeFollowSubscriber = new Subscriber<JudgeFollowStates>() {
+    private void loadPublisherInfo() {
+        publisheraSubscriber = new Subscriber<UserBasicInfo>() {
             @Override
             public void onCompleted() {
 
@@ -515,22 +459,12 @@ public class PostDetailsActivity extends BaseActivity {
             }
 
             @Override
-            public void onNext(JudgeFollowStates judgeFollowStates) {
-                if (judgeFollowStates.getJudgeInfo() == 0) {
-                    mPostDetailFollow.setImageResource(R.drawable.ic_person_outline_black_24dp);
-                    isFollowed = false;
-                }
-                if (judgeFollowStates.getJudgeInfo() == 1) {
-                    mPostDetailFollow.setImageResource(R.drawable.ic_person_black_24dp);
-                    isFollowed = true;
-                }
+            public void onNext(UserBasicInfo userBasicInfo) {
+                OtherInfoDao.insertOtherInfo(userBasicInfo);
             }
         };
-        JudgeFollow follow = new JudgeFollow();
-        follow.setUserId(userInfo.getUserId());
         String str[] = postDetail.getAuthor().split("/");
         int followId = Integer.parseInt(str[str.length - 1]);
-        follow.setFollowerId(followId);
-        JxnuGoNetMethod.getInstance().judgeFollowUser(judgeFollowSubscriber, auth, follow);
+        JxnuGoNetMethod.getInstance().getUserInfo(publisheraSubscriber, auth, followId);
     }
 }

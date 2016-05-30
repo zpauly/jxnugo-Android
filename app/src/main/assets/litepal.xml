@@ -2,11 +2,12 @@
 <litepal>
     <dbname value="jxnugo" ></dbname>
 
-    <version value="6" ></version>
+    <version value="7" ></version>
 
     <list>
         <mapping class="market.zy.com.myapplication.db.user.UserInfoModel"/>
         <mapping class="market.zy.com.myapplication.db.post.PostDetailModel"/>
         <mapping class="market.zy.com.myapplication.db.post.PhotoModel"/>
+        <mapping class="market.zy.com.myapplication.db.user.OtherInfoModel"/>
     </list>
 </litepal>

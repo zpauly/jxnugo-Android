@@ -95,6 +95,8 @@
     <string name="click_show_title">点开标题</string>
     <string name="collected_true">成功收藏</string>
     <string name="collected_false">取消收藏</string>
+    <string name="click_to_follow">点击关注</string>
+    <string name="click_to_unfollow">点击取消关注</string>
     <string name="follow_true">关注成功</string>
     <string name="follow_false">取消关注</string>
     <string name="share">分享到...</string>

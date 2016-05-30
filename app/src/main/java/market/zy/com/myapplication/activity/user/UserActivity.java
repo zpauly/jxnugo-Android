@@ -16,11 +16,15 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseActivity;
+import market.zy.com.myapplication.db.user.OtherInfoDao;
+import market.zy.com.myapplication.db.user.OtherInfoModel;
 import market.zy.com.myapplication.utils.SPUtil;
 
 /**
@@ -85,9 +89,8 @@ public class UserActivity extends BaseActivity {
         fm = getSupportFragmentManager();
         ft = fm.beginTransaction();
 
-        selectPage();
-
         setUpToolbar();
+        selectPage();
     }
 
     private void selectPage() {
@@ -99,6 +102,9 @@ public class UserActivity extends BaseActivity {
                     .crossFade()
                     .centerCrop()
                     .into(mAvatarImageView);
+            if (person == OTHERS) {
+                loadOtherInfo();
+            }
             ft.replace(R.id.personal_page, mLoginPage);
             ft.commit();
         } else {
@@ -147,5 +153,23 @@ public class UserActivity extends BaseActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public int getPerson() {
+        return person;
+    }
+
+    public int getOtherId() {
+        return otherId;
+    }
+
+    private void loadOtherInfo() {
+        OtherInfoModel otherInfoModel = OtherInfoDao.queryOtherInfoByUserId(otherId).get(0);
+        Glide.with(UserActivity.this)
+                .load(otherInfoModel.getAvatar())
+                .centerCrop()
+                .crossFade()
+                .into(mAvatarImageView);
+        mToolbar.setTitle(otherInfoModel.getName());
     }
 }
