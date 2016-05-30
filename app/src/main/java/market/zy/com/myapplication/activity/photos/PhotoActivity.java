@@ -3,6 +3,8 @@ package market.zy.com.myapplication.activity.photos;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.ImageView;
 
 import java.util.List;
 
@@ -27,6 +29,9 @@ public class PhotoActivity extends AppCompatActivity {
     @Bind(R.id.photos_viewpager)
     protected PhotosViewPager mViewPager;
 
+    @Bind(R.id.photos_close)
+    protected ImageView mCloseImage;
+
     private PhotoAdapter mAdapter;
 
     private int postId;
@@ -45,6 +50,13 @@ public class PhotoActivity extends AppCompatActivity {
         currentPhoto = getIntent().getIntExtra(PostDetailsActivity.CURRENT_PHOTO, -1);
 
         loadPhotosData();
+
+        mCloseImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     @Override

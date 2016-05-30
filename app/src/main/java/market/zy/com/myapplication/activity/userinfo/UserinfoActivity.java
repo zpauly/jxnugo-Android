@@ -15,6 +15,9 @@ import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseActivity;
 import market.zy.com.myapplication.adapter.recyclerviewAdapter.FollowerFollowingAdapter;
 import market.zy.com.myapplication.adapter.recyclerviewAdapter.PostCollectionAdapter;
+import market.zy.com.myapplication.db.post.PostDetailDao;
+import market.zy.com.myapplication.db.post.PostDetailModel;
+import market.zy.com.myapplication.entity.post.OneSimplePost;
 import market.zy.com.myapplication.entity.post.collection.CollectionPosts;
 import market.zy.com.myapplication.entity.post.user.UserPosts;
 import market.zy.com.myapplication.entity.user.follow.UserFollowed;
@@ -29,6 +32,7 @@ import rx.Subscriber;
  */
 public class UserinfoActivity extends BaseActivity {
     public static final String USERINFO_PAGE = "USERINFO_PAGE";
+    public static final String USER_ID = "USER_ID";
 
     public static final int MY_POST = 1;
     public static final int MY_COLLECTION = 2;
@@ -46,6 +50,7 @@ public class UserinfoActivity extends BaseActivity {
     protected RecyclerView mRecyclerView;
 
     private int pageId;
+    private int userId;
 
     private RecyclerView.Adapter mAdapter;
 
@@ -66,6 +71,7 @@ public class UserinfoActivity extends BaseActivity {
         setOnBackTwiceToTrue();
 
         pageId = getIntent().getIntExtra(USERINFO_PAGE, -1);
+        userId = getIntent().getIntExtra(USER_ID, userInfo.getUserId());
 
         initViews();
     }
@@ -117,16 +123,28 @@ public class UserinfoActivity extends BaseActivity {
         if (pageId != -1) {
             switch (pageId) {
                 case MY_POST:
-                    mToolbar.setTitle(R.string.my_post);
+                    if (userId == userInfo.getUserId())
+                        mToolbar.setTitle(R.string.my_post);
+                    else
+                        mToolbar.setTitle(R.string.other_post);
                     break;
                 case MY_COLLECTION:
-                    mToolbar.setTitle(R.string.my_collection);
+                    if (userId == userInfo.getUserId())
+                        mToolbar.setTitle(R.string.my_collection);
+                    else
+                        mToolbar.setTitle(R.string.other_collection);
                     break;
                 case MY_FOLLOWING:
-                    mToolbar.setTitle(R.string.my_following);
+                    if (userId == userInfo.getUserId())
+                        mToolbar.setTitle(R.string.my_following);
+                    else
+                        mToolbar.setTitle(R.string.other_following);
                     break;
                 case MY_FOLLOWERS:
-                    mToolbar.setTitle(R.string.my_followers);
+                    if (userId == userInfo.getUserId())
+                        mToolbar.setTitle(R.string.my_followers);
+                    else
+                        mToolbar.setTitle(R.string.my_followers);
                     break;
             }
         }
@@ -184,9 +202,12 @@ public class UserinfoActivity extends BaseActivity {
             @Override
             public void onNext(UserPosts userPosts) {
                 adapter.addAllData(userPosts.getUserPosts());
+                for (OneSimplePost post : userPosts.getUserPosts()) {
+                    PostDetailDao.insertPostDetail(post);
+                }
             }
         };
-        JxnuGoNetMethod.getInstance().getUserPosts(userPostsSubscriber, auth, userInfo.getUserId());
+        JxnuGoNetMethod.getInstance().getUserPosts(userPostsSubscriber, auth, userId);
     }
 
     private void loadCollectionData(final PostCollectionAdapter adapter) {
@@ -204,9 +225,12 @@ public class UserinfoActivity extends BaseActivity {
             @Override
             public void onNext(CollectionPosts collectionPosts) {
                 adapter.addAllData(collectionPosts.getCollectionPost());
+                for (OneSimplePost post : collectionPosts.getCollectionPost()) {
+                    PostDetailDao.insertPostDetail(post);
+                }
             }
         };
-        JxnuGoNetMethod.getInstance().getCollectionPosts(collectionPostsSubscriber, auth, userInfo.getUserId());
+        JxnuGoNetMethod.getInstance().getCollectionPosts(collectionPostsSubscriber, auth, userId);
     }
 
     private void loadFollowersData(final FollowerFollowingAdapter adapter) {
@@ -226,7 +250,7 @@ public class UserinfoActivity extends BaseActivity {
                 adapter.addAllData(userFollowers.getFollowers());
             }
         };
-        JxnuGoNetMethod.getInstance().getUserFollowers(followersSubscriber, auth, userInfo.getUserId());
+        JxnuGoNetMethod.getInstance().getUserFollowers(followersSubscriber, auth, userId);
     }
 
     private void loadFollowedData(final FollowerFollowingAdapter adapter) {
@@ -246,6 +270,6 @@ public class UserinfoActivity extends BaseActivity {
                 adapter.addAllData(userFollowed.getFollowed());
             }
         };
-        JxnuGoNetMethod.getInstance().getUserFollowed(followedSubscirber, auth, userInfo.getUserId());
+        JxnuGoNetMethod.getInstance().getUserFollowed(followedSubscirber, auth, userId);
     }
 }

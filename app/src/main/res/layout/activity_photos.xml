@@ -1,8 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<market.zy.com.myapplication.ui.support.PhotosViewPager xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/photos_viewpager"
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:background="@android:color/black"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-</market.zy.com.myapplication.ui.support.PhotosViewPager>
+    <ImageView
+        android:id="@+id/photos_close"
+        android:padding="4dp"
+        android:src="@mipmap/ic_close_white_24dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <market.zy.com.myapplication.ui.support.PhotosViewPager
+        android:id="@+id/photos_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </market.zy.com.myapplication.ui.support.PhotosViewPager>
+
+</LinearLayout>

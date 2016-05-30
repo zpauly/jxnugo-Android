@@ -19,6 +19,8 @@ import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.amend.AmendActivity;
+import market.zy.com.myapplication.db.user.OtherInfoDao;
+import market.zy.com.myapplication.db.user.OtherInfoModel;
 import market.zy.com.myapplication.db.user.UserInfoModel;
 import market.zy.com.myapplication.db.user.UserInfoDao;
 
@@ -64,20 +66,6 @@ public class UserBottomSheet extends BottomSheetDialogFragment {
                 dialog.dismiss();
             }
         });
-        mToolbar.inflateMenu(R.menu.personal_bottom_toolbar_menu);
-        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.personal_bottom_edit :
-                        Intent editIntent = new Intent();
-                        editIntent.setClass(getActivity(), AmendActivity.class);
-                        startActivity(editIntent);
-                        break;
-                }
-                return true;
-            }
-        });
 
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) ((View) mView.getParent()).getLayoutParams();
         CoordinatorLayout.Behavior behavior = params.getBehavior();
@@ -105,7 +93,25 @@ public class UserBottomSheet extends BottomSheetDialogFragment {
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }
 
-        loadUserInfo();
+        if (((UserActivity) getActivity()).getPerson() == UserActivity.OTHERS) {
+            loadOtherInfo();
+        } else {
+            loadUserInfo();
+            mToolbar.inflateMenu(R.menu.personal_bottom_toolbar_menu);
+            mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    switch (item.getItemId()) {
+                        case R.id.personal_bottom_edit :
+                            Intent editIntent = new Intent();
+                            editIntent.setClass(getActivity(), AmendActivity.class);
+                            startActivity(editIntent);
+                            break;
+                    }
+                    return true;
+                }
+            });
+        }
     }
 
     private void loadUserInfo() {
@@ -120,5 +126,20 @@ public class UserBottomSheet extends BottomSheetDialogFragment {
         mPhoneText.setText(userInfo.getContactMe());
         mSexText.setText(userInfo.getSex());
         mTagText.setText(userInfo.getAbout_me());
+    }
+
+    private void loadOtherInfo() {
+        int otherId = ((UserActivity) getActivity()).getOtherId();
+        OtherInfoModel otherInfoModel = OtherInfoDao.queryOtherInfoByUserId(otherId).get(0);
+        Glide.with(this)
+                .load(otherInfoModel.getAvatar())
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .crossFade()
+                .centerCrop()
+                .into(mAvatar);
+        mLocationText.setText(otherInfoModel.getLocation());
+        mPhoneText.setText(otherInfoModel.getContactMe());
+        mSexText.setText(otherInfoModel.getSex());
+        mTagText.setText(otherInfoModel.getAbout_me());
     }
 }

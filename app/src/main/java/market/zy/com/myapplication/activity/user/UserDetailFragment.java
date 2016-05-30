@@ -79,11 +79,13 @@ public class UserDetailFragment extends BaseFragment {
                     }
                 }
             });
+            mRecyclerView.setAdapter(new PersonalAdapter(getContext(), false, otherId));
+        } else {
+            mRecyclerView.setAdapter(new PersonalAdapter(getContext(), true, userInfo.getUserId()));
         }
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), 1));
-        mRecyclerView.setAdapter(new PersonalAdapter(getContext()));
 
         return mView;
     }

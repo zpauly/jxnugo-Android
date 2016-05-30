@@ -22,9 +22,13 @@
     <string name="exit_after_backpressed">再按一次后退键退出</string>
 
     <string name="my_following">我的关注</string>
+    <string name="other_following">TA的关注</string>
     <string name="my_followers">关注我的人</string>
+    <string name="other_followers">关注TA的人</string>
     <string name="my_post">我的帖子</string>
+    <string name="other_post">TA的帖子</string>
     <string name="my_collection">我的收藏</string>
+    <string name="other_collection">TA的收藏</string>
     <string name="contact">联系方式</string>
     <string name="qq">QQ</string>
     <string name="email">电子邮件</string>
@@ -36,7 +40,10 @@
     <string name="login_or_registe">（ 登录 / 注册 ）</string>
     <string name="username_or_password_error">账号或密码错误</string>
 
-    <string name="trade_list">交易列表</string>
+    <string name="trade_list">淘二手</string>
+    <string name="education_assistant">教务助手</string>
+    <string name="campus_bbs">校园BBS</string>
+    <string name="developing">正在开发中</string>
     <string name="exit_current_user">注销</string>
     <string name="user_info">个人详情</string>
     <string name="user_manage">账号设置</string>

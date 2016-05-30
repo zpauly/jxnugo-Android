@@ -93,6 +93,9 @@ public class PostDetailsActivity extends BaseActivity {
     @Bind(R.id.post_good_location)
     protected TextView mPostGoodLocation;
 
+    @Bind(R.id.post_good_contact)
+    protected TextView mPostGoodContact;
+
     @Bind(R.id.post_good_details)
     protected TextView mPostGoodDetails;
 
@@ -353,6 +356,7 @@ public class PostDetailsActivity extends BaseActivity {
         mPostGoodDetails.setText(postDetail.getBody());
         mPostGoodQuality.setText(postDetail.getGoodsQuality());
         mPostGoodLocation.setText(postDetail.getGoodsLocation());
+        mPostGoodContact.setText(postDetail.getContact());
         Glide.with(this)
                 .load(postDetail.getPostUserAvatar())
                 .crossFade()

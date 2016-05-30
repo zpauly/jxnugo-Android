@@ -3,6 +3,7 @@ package market.zy.com.myapplication.ui.material;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
@@ -86,6 +87,24 @@ public class MaterialDrawerActivity extends BaseActivity {
                                 return false;
                             }
                         }),
+                        new PrimaryDrawerItem()
+                                .withName(R.string.education_assistant).withIcon(GoogleMaterial.Icon.gmd_assistant)
+                                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                                    @Override
+                                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                                        showSnackbarTipShort(getCurrentFocus(), R.string.developing);
+                                        return true;
+                                    }
+                                }),
+                        new PrimaryDrawerItem()
+                                .withName(R.string.campus_bbs).withIcon(GoogleMaterial.Icon.gmd_forum)
+                                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                                    @Override
+                                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                                        showSnackbarTipShort(getCurrentFocus(), R.string.developing);
+                                        return true;
+                                    }
+                                }),
                         new DividerDrawerItem(),
                         new SecondaryDrawerItem()
                                 .withName(R.string.exit_current_user)
