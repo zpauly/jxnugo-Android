@@ -164,7 +164,6 @@
 
                 <android.support.v7.widget.RecyclerView
                     android:layout_marginTop="36dp"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
                     android:id="@+id/post_good_photos_recyclerview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />

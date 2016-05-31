@@ -19,11 +19,10 @@ import market.zy.com.myapplication.Constants;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.post.PostDetailsActivity;
 import market.zy.com.myapplication.activity.trade.TradeActivity;
-import market.zy.com.myapplication.activity.viewholder.ClassifyLabelViewHolder;
 import market.zy.com.myapplication.activity.viewholder.ClassifyLayoutViewHolder;
 import market.zy.com.myapplication.activity.viewholder.LoadMoreViewHolder;
 import market.zy.com.myapplication.activity.viewholder.TradeListViewHolder;
-import market.zy.com.myapplication.adapter.OnItemClickListener;
+import market.zy.com.myapplication.listener.OnItemClickListener;
 import market.zy.com.myapplication.entity.post.OneSimplePost;
 import market.zy.com.myapplication.utils.SPUtil;
 

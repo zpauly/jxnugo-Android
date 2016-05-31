@@ -10,23 +10,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.Toast;
-
-import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseFragment;
-import market.zy.com.myapplication.adapter.OnItemClickListener;
-import market.zy.com.myapplication.adapter.recyclerviewAdapter.ClassifyLabelAdapter;
 import market.zy.com.myapplication.adapter.recyclerviewAdapter.TradeListAdapter;
 import market.zy.com.myapplication.db.post.PhotosDao;
 import market.zy.com.myapplication.db.post.PostDetailDao;
 import market.zy.com.myapplication.entity.post.OnePagePost;
 import market.zy.com.myapplication.entity.post.OneSimplePost;
 import market.zy.com.myapplication.entity.post.PhotoKey;
+import market.zy.com.myapplication.entity.post.search.SearchKeyWords;
+import market.zy.com.myapplication.listener.OnItemClickListener;
+import market.zy.com.myapplication.listener.OnSearchListener;
 import market.zy.com.myapplication.network.JxnuGoNetMethod;
+import market.zy.com.myapplication.utils.AuthUtil;
+import market.zy.com.myapplication.utils.SPUtil;
 import rx.Subscriber;
 
 /**
@@ -55,10 +55,12 @@ public class TradeFragment extends BaseFragment {
     private int postIdToLoad = 1;
     private int tagSelected = -1;
     private boolean hasMore = true;
+    private String next;
 
     private Subscriber<OnePagePost> newSubscriber;
     private Subscriber<OnePagePost> moreSubscriber;
     private Subscriber<OnePagePost> tagSubscriber;
+    private Subscriber<OnePagePost> searchSubscriber;
 
     @Nullable
     @Override
@@ -98,6 +100,9 @@ public class TradeFragment extends BaseFragment {
         if (tagSubscriber != null) {
             tagSubscriber.unsubscribe();
         }
+        if (searchSubscriber != null) {
+            searchSubscriber.unsubscribe();
+        }
     }
 
     private void initView() {
@@ -105,6 +110,7 @@ public class TradeFragment extends BaseFragment {
         setUpRefreshLayout();
         setUpRecyclerView();
         setImageClick();
+        setUpSearch();
     }
 
     private void setUpRefreshLayout() {
@@ -230,27 +236,27 @@ public class TradeFragment extends BaseFragment {
         });
     }
 
-    private void setUpSearchView() {
-        MaterialSearchView searchView = ((TradeActivity) getActivity()).mSearchView;
-        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+    private void setUpSearch() {
+        ((TradeActivity) getActivity()).setOnSearchListener(new OnSearchListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
+            public boolean onTextSubmit(String query) {
+                mSwipeRefreshLayout.setRefreshing(true);
+                searchNewData(query);
+                return true;
+            }
+
+            @Override
+            public boolean onTextChange(String newText) {
                 return false;
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
-        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
-            @Override
-            public void onSearchViewShown() {
+            public void onShown() {
 
             }
 
             @Override
-            public void onSearchViewClosed() {
+            public void onClosed() {
 
             }
         });
@@ -287,6 +293,7 @@ public class TradeFragment extends BaseFragment {
                 if (onePagePost.getNext() == null) {
                     hasMore = false;
                 } else {
+                    next = onePagePost.getNext();
                     hasMore = true;
                 }
             }
@@ -323,6 +330,7 @@ public class TradeFragment extends BaseFragment {
                 if (onePagePost.getNext() == null) {
                     hasMore = false;
                 } else {
+                    next = onePagePost.getNext();
                     hasMore = true;
                 }
             }
@@ -362,6 +370,7 @@ public class TradeFragment extends BaseFragment {
                 if (onePagePost.getNext() == null) {
                     hasMore = false;
                 } else {
+                    next = onePagePost.getNext();
                     hasMore = true;
                 }
             }
@@ -397,10 +406,85 @@ public class TradeFragment extends BaseFragment {
                 if (onePagePost.getNext() == null) {
                     hasMore = false;
                 } else {
+                    next = onePagePost.getNext();
                     hasMore = true;
                 }
             }
         };
         JxnuGoNetMethod.getInstance().getPostsByTag(tagSubscriber, tagSelected, ++postIdToLoad);
+    }
+
+    private void searchNewData(String query) {
+        searchSubscriber = new Subscriber<OnePagePost>() {
+            @Override
+            public void onCompleted() {
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                mSwipeRefreshLayout.setRefreshing(false);
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(OnePagePost onePagePost) {
+                PhotosDao.deletePhotoBean();
+                PostDetailDao.deletePostDetail();
+                if (onePagePost.getPosts() == null) {
+                    return;
+                }
+                for (OneSimplePost post : onePagePost.getPosts()) {
+                    PostDetailDao.insertPostDetail(post);
+                    for (PhotoKey key : post.getPhotos()) {
+                        PhotosDao.insertPhotos(key, post.getPostId());
+                    }
+                }
+                adapter.clearData();
+                adapter.addAllData(onePagePost.getPosts());
+                if (onePagePost.getNext() == null) {
+                    hasMore = false;
+                } else {
+                    next = onePagePost.getNext();
+                    hasMore = true;
+                }
+            }
+        };
+        if (SPUtil.getInstance(getContext()) == null) {
+            showSnackbarTipShort(getView(), R.string.please_login);
+            return;
+        }
+        String auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(getContext()).getCurrentUsername()
+                , SPUtil.getInstance(getContext()).getCurrentPassword());
+        SearchKeyWords keyWords = new SearchKeyWords();
+        keyWords.setKeyWords(query);
+        JxnuGoNetMethod.getInstance().searchPosts(searchSubscriber, auth, keyWords);
+    }
+
+    private void searchMoreData() {
+        searchSubscriber = new Subscriber<OnePagePost>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(OnePagePost onePagePost) {
+
+            }
+        };
+        if (SPUtil.getInstance(getContext()) == null) {
+            showSnackbarTipShort(getView(), R.string.please_login);
+            return;
+        }
+        String auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(getContext()).getCurrentUsername()
+                , SPUtil.getInstance(getContext()).getCurrentPassword());
+        SearchKeyWords keyWords = new SearchKeyWords();
+        JxnuGoNetMethod.getInstance().searchPosts(searchSubscriber, auth, keyWords);
     }
 }

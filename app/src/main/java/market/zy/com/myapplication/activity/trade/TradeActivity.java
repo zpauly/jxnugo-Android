@@ -27,6 +27,7 @@ import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.NoInternetFragment;
 import market.zy.com.myapplication.activity.classify.ClassifyActivity;
 import market.zy.com.myapplication.activity.publish.PublishGoodsActivity;
+import market.zy.com.myapplication.listener.OnSearchListener;
 import market.zy.com.myapplication.ui.material.MaterialDrawerActivity;
 import market.zy.com.myapplication.utils.MonitorUtil;
 
@@ -41,7 +42,7 @@ public class TradeActivity extends MaterialDrawerActivity {
     protected Toolbar mToolbar;
 
     @Bind(R.id.search_view)
-    public MaterialSearchView mSearchView;
+    protected MaterialSearchView mSearchView;
 
     private Fragment mTradeFragment;
 
@@ -50,6 +51,8 @@ public class TradeActivity extends MaterialDrawerActivity {
 
     private FragmentManager mMainFM;
     private FragmentTransaction mMainFT;
+
+    private OnSearchListener onSearchListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,10 @@ public class TradeActivity extends MaterialDrawerActivity {
 
         setupWindowEnterFadeAnimations();
         setupWindowExitFadeAnimations();
+    }
+
+    public void setOnSearchListener(OnSearchListener listener) {
+        onSearchListener = listener;
     }
 
     private void initView() {
@@ -87,6 +94,38 @@ public class TradeActivity extends MaterialDrawerActivity {
 
     private void setUpSearchView() {
         mSearchView.setVoiceSearch(true);
+        mSearchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if (onSearchListener != null) {
+                    return onSearchListener.onTextSubmit(query);
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (onSearchListener != null) {
+                    return onSearchListener.onTextChange(newText);
+                }
+                return false;
+            }
+        });
+        mSearchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown() {
+                if (onSearchListener != null) {
+                    onSearchListener.onShown();
+                }
+            }
+
+            @Override
+            public void onSearchViewClosed() {
+                if (onSearchListener != null) {
+                    onSearchListener.onClosed();
+                }
+            }
+        });
     }
 
     private void setUpToolbar() {

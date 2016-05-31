@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.viewholder.ClassifyLabelViewHolder;
-import market.zy.com.myapplication.adapter.OnItemClickListener;
+import market.zy.com.myapplication.listener.OnItemClickListener;
 
 /**
  * Created by zpauly on 16-5-31.
