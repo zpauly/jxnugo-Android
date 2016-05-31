@@ -12,10 +12,14 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.BaseFragment;
+import market.zy.com.myapplication.adapter.OnItemClickListener;
+import market.zy.com.myapplication.adapter.recyclerviewAdapter.ClassifyLabelAdapter;
 import market.zy.com.myapplication.adapter.recyclerviewAdapter.TradeListAdapter;
 import market.zy.com.myapplication.db.post.PhotosDao;
 import market.zy.com.myapplication.db.post.PostDetailDao;
@@ -49,9 +53,12 @@ public class TradeFragment extends BaseFragment {
     private TradeListAdapter adapter;
 
     private int postIdToLoad = 1;
+    private int tagSelected = -1;
+    private boolean hasMore = true;
 
     private Subscriber<OnePagePost> newSubscriber;
     private Subscriber<OnePagePost> moreSubscriber;
+    private Subscriber<OnePagePost> tagSubscriber;
 
     @Nullable
     @Override
@@ -88,6 +95,9 @@ public class TradeFragment extends BaseFragment {
             newSubscriber.unsubscribe();
         if (moreSubscriber != null)
             moreSubscriber.unsubscribe();
+        if (tagSubscriber != null) {
+            tagSubscriber.unsubscribe();
+        }
     }
 
     private void initView() {
@@ -107,7 +117,11 @@ public class TradeFragment extends BaseFragment {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                loadNewData();
+                if (tagSelected != -1) {
+                    loadNewDataByTag();
+                } else {
+                    loadNewData();
+                }
             }
         });
     }
@@ -117,6 +131,43 @@ public class TradeFragment extends BaseFragment {
         manager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(manager);
         mRecyclerView.setAdapter(adapter);
+        adapter.setOnLabelItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                switch (position) {
+                    case 0 :
+                        tagSelected = 0;
+                        mSwipeRefreshLayout.setRefreshing(true);
+                        loadNewDataByTag();
+                        break;
+                    case 1 :
+                        tagSelected = 1;
+                        mSwipeRefreshLayout.setRefreshing(true);
+                        loadNewDataByTag();
+                        break;
+                    case 2 :
+                        tagSelected = 2;
+                        mSwipeRefreshLayout.setRefreshing(true);
+                        loadNewDataByTag();
+                        break;
+                    case 3 :
+                        tagSelected = 3;
+                        mSwipeRefreshLayout.setRefreshing(true);
+                        loadNewDataByTag();
+                        break;
+                    case 4 :
+                        tagSelected = 4;
+                        mSwipeRefreshLayout.setRefreshing(true);
+                        loadNewDataByTag();
+                        break;
+                    case 5 :
+                        tagSelected = -1;
+                        mSwipeRefreshLayout.setRefreshing(true);
+                        loadNewData();
+                        break;
+                }
+            }
+        });
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -132,12 +183,16 @@ public class TradeFragment extends BaseFragment {
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 int lastVisiableItemPosition = manager.findLastCompletelyVisibleItemPosition();
-                if (lastVisiableItemPosition == adapter.getItemCount() - 2) {
+                if (lastVisiableItemPosition == adapter.getItemCount() - 2 && hasMore) {
                     adapter.setShowLoadMore(true);
                 } else if (lastVisiableItemPosition == adapter.getItemCount() - 1
-                        && adapter.isShowingLoadMore()) {
+                        && adapter.isShowingLoadMore() && hasMore) {
                     adapter.setShowLoadMore(true);
-                    loadMoreData();
+                    if (tagSelected != -1) {
+                        loadMoreDataByTag();
+                    } else {
+                        loadMoreData();
+                    }
                 } else {
                     adapter.setShowLoadMore(false);
                 }
@@ -175,9 +230,33 @@ public class TradeFragment extends BaseFragment {
         });
     }
 
+    private void setUpSearchView() {
+        MaterialSearchView searchView = ((TradeActivity) getActivity()).mSearchView;
+        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown() {
+
+            }
+
+            @Override
+            public void onSearchViewClosed() {
+
+            }
+        });
+    }
+
     private void loadNewData() {
-        PhotosDao.deletePhotoBean();
-        PostDetailDao.deletePostDetail();
         newSubscriber = new Subscriber<OnePagePost>() {
             @Override
             public void onCompleted() {
@@ -192,6 +271,11 @@ public class TradeFragment extends BaseFragment {
 
             @Override
             public void onNext(OnePagePost onePagePost) {
+                PhotosDao.deletePhotoBean();
+                PostDetailDao.deletePostDetail();
+                if (onePagePost.getPosts() == null) {
+                    return;
+                }
                 for (OneSimplePost post : onePagePost.getPosts()) {
                     PostDetailDao.insertPostDetail(post);
                     for (PhotoKey key : post.getPhotos()) {
@@ -200,6 +284,11 @@ public class TradeFragment extends BaseFragment {
                 }
                 adapter.clearData();
                 adapter.addAllData(onePagePost.getPosts());
+                if (onePagePost.getNext() == null) {
+                    hasMore = false;
+                } else {
+                    hasMore = true;
+                }
             }
         };
         postIdToLoad = 1;
@@ -221,6 +310,9 @@ public class TradeFragment extends BaseFragment {
 
             @Override
             public void onNext(OnePagePost onePagePost) {
+                if (onePagePost.getPosts() == null) {
+                    return;
+                }
                 for (OneSimplePost post : onePagePost.getPosts()) {
                     PostDetailDao.insertPostDetail(post);
                     for (PhotoKey key : post.getPhotos()) {
@@ -228,9 +320,87 @@ public class TradeFragment extends BaseFragment {
                     }
                 }
                 adapter.addAllData(onePagePost.getPosts());
+                if (onePagePost.getNext() == null) {
+                    hasMore = false;
+                } else {
+                    hasMore = true;
+                }
             }
         };
         JxnuGoNetMethod.getInstance()
                 .getOnePagePosts(moreSubscriber, ++postIdToLoad);
+    }
+
+    private void loadNewDataByTag() {
+        tagSubscriber = new Subscriber<OnePagePost>() {
+            @Override
+            public void onCompleted() {
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                mSwipeRefreshLayout.setRefreshing(false);
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(OnePagePost onePagePost) {
+                PhotosDao.deletePhotoBean();
+                PostDetailDao.deletePostDetail();
+                if (onePagePost.getPosts() == null) {
+                    return;
+                }
+                for (OneSimplePost post : onePagePost.getPosts()) {
+                    PostDetailDao.insertPostDetail(post);
+                    for (PhotoKey key : post.getPhotos()) {
+                        PhotosDao.insertPhotos(key, post.getPostId());
+                    }
+                }
+                adapter.clearData();
+                adapter.addAllData(onePagePost.getPosts());
+                if (onePagePost.getNext() == null) {
+                    hasMore = false;
+                } else {
+                    hasMore = true;
+                }
+            }
+        };
+        postIdToLoad = 1;
+        JxnuGoNetMethod.getInstance().getPostsByTag(tagSubscriber, tagSelected, postIdToLoad);
+    }
+
+    private void loadMoreDataByTag() {
+        tagSubscriber = new Subscriber<OnePagePost>() {
+            @Override
+            public void onCompleted() {
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(OnePagePost onePagePost) {
+                if (onePagePost.getPosts() == null) {
+                    return;
+                }
+                for (OneSimplePost post : onePagePost.getPosts()) {
+                    PostDetailDao.insertPostDetail(post);
+                    for (PhotoKey key : post.getPhotos()) {
+                        PhotosDao.insertPhotos(key, post.getPostId());
+                    }
+                }
+                adapter.addAllData(onePagePost.getPosts());
+                if (onePagePost.getNext() == null) {
+                    hasMore = false;
+                } else {
+                    hasMore = true;
+                }
+            }
+        };
+        JxnuGoNetMethod.getInstance().getPostsByTag(tagSubscriber, tagSelected, ++postIdToLoad);
     }
 }

@@ -48,7 +48,7 @@
     <string name="user_info">个人详情</string>
     <string name="user_manage">账号设置</string>
 
-    <string name="add_shopping_card">加入购物车</string>
+    <string name="add_shopping_card">收藏该帖</string>
     <string name="call_seller">与卖家联系</string>
     <string name="connect_ways">联系方式</string>
     <string name="phone_or_qq">手机、QQ等</string>
@@ -66,6 +66,7 @@
         <item>图书音像</item>
         <item>其它</item>
     </string-array>
+    <string name="all">全部</string>
     <string name="quality">成色</string>
     <string name="num">数量</string>
     <string name="new_or_old">新旧程度</string>

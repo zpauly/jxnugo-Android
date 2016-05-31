@@ -2,6 +2,8 @@ package market.zy.com.myapplication.adapter.recyclerviewAdapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +19,13 @@ import market.zy.com.myapplication.Constants;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.activity.post.PostDetailsActivity;
 import market.zy.com.myapplication.activity.trade.TradeActivity;
+import market.zy.com.myapplication.activity.viewholder.ClassifyLabelViewHolder;
+import market.zy.com.myapplication.activity.viewholder.ClassifyLayoutViewHolder;
 import market.zy.com.myapplication.activity.viewholder.LoadMoreViewHolder;
 import market.zy.com.myapplication.activity.viewholder.TradeListViewHolder;
+import market.zy.com.myapplication.adapter.OnItemClickListener;
 import market.zy.com.myapplication.entity.post.OneSimplePost;
+import market.zy.com.myapplication.utils.SPUtil;
 
 /**
  * Created by zpauly on 2016/3/12.
@@ -33,8 +39,14 @@ public class TradeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     private boolean showLoadMore = false;
 
+    private OnItemClickListener onItemClickListener;
+
     public TradeListAdapter(Context context) {
         mContext = context;
+    }
+
+    public void setOnLabelItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 
     public void addData(OneSimplePost post) {
@@ -63,6 +75,8 @@ public class TradeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public int getItemViewType(int position) {
+        if (position == 0)
+            return 0;
         if (position == getItemCount() - 1)
             return -1;
         else
@@ -71,6 +85,12 @@ public class TradeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == 0) {
+            mView = LayoutInflater.from(mContext)
+                    .inflate(R.layout.classify_label_layout, parent, false);
+            ClassifyLayoutViewHolder viewHolder = new ClassifyLayoutViewHolder(mView);
+            return viewHolder;
+        }
         if (viewType == -1) {
             mView = LayoutInflater.from(mContext)
                     .inflate(R.layout.loadmore_layout, parent, false);
@@ -85,7 +105,22 @@ public class TradeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
+        if (position == 0) {
+            ClassifyLabelAdapter adapter = new ClassifyLabelAdapter(mContext);
+            ClassifyLayoutViewHolder viewHolder = (ClassifyLayoutViewHolder) holder;
+            viewHolder.mClassifyRecyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
+            viewHolder.mClassifyRecyclerView.setAdapter(adapter);
+            adapter.setOnItemClickListener(new OnItemClickListener() {
+                @Override
+                public void onItemClick(View view, int position) {
+                    if (onItemClickListener != null) {
+                        onItemClickListener.onItemClick(view, position);
+                    }
+                }
+            });
+            return;
+        }
         if (position == getItemCount() - 1){
             LoadMoreViewHolder viewHolder = (LoadMoreViewHolder) holder;
             viewHolder.mCircleProgressBar.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -98,37 +133,42 @@ public class TradeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             }
             return;
         }
+        final int pos = position - 1;
         TradeListViewHolder viewHolder = (TradeListViewHolder) holder;
         Glide.with(mContext)
                 .load(Constants.PIC_BASE_URL +
-                        mData.get(position).getPhotos().get(0).getKey())
+                        mData.get(pos).getPhotos().get(0).getKey())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .crossFade()
                 .centerCrop()
                 .into(viewHolder.mImageView);
         Glide.with(mContext)
-                .load(mData.get(position).getPostUserAvatar())
+                .load(mData.get(pos).getPostUserAvatar())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .crossFade()
                 .centerCrop()
                 .into(viewHolder.mAvatar);
-        viewHolder.mUsername.setText(mData.get(position).getPostNickName());
-        viewHolder.mGoodname.setText(mData.get(position).getGoodsName());
-        viewHolder.mTime.setText(mData.get(position).getTimestamp());
+        viewHolder.mUsername.setText(mData.get(pos).getPostNickName());
+        viewHolder.mGoodname.setText(mData.get(pos).getGoodsName());
+        viewHolder.mTime.setText(mData.get(pos).getTimestamp());
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent postDetailsIntent = new Intent();
-                postDetailsIntent.putExtra(TradeActivity.POST_ID, mData.get(position).getPostId());
-                postDetailsIntent.putExtra(TradeActivity.POST_COVER, mData.get(position).getPhotos().get(0).getKey());
-                postDetailsIntent.setClass(mContext, PostDetailsActivity.class);
-                mContext.startActivity(postDetailsIntent);
+                if (SPUtil.getInstance(mContext).getCurrentUsername() == null) {
+                    Snackbar.make(holder.itemView, R.string.please_login, Snackbar.LENGTH_SHORT).show();
+                } else {
+                    Intent postDetailsIntent = new Intent();
+                    postDetailsIntent.putExtra(TradeActivity.POST_ID, mData.get(pos).getPostId());
+                    postDetailsIntent.putExtra(TradeActivity.POST_COVER, mData.get(pos).getPhotos().get(0).getKey());
+                    postDetailsIntent.setClass(mContext, PostDetailsActivity.class);
+                    mContext.startActivity(postDetailsIntent);
+                }
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return mData.size() + 1;
+        return mData.size() + 2;
     }
 }

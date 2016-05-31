@@ -16,6 +16,7 @@ import market.zy.com.myapplication.entity.post.delete.DeletePost;
 import market.zy.com.myapplication.entity.post.delete.DeleteStates;
 import market.zy.com.myapplication.entity.post.publish.NewPost;
 import market.zy.com.myapplication.entity.post.publish.PublishStates;
+import market.zy.com.myapplication.entity.post.search.SearchKeyWords;
 import market.zy.com.myapplication.entity.post.user.UserPosts;
 import market.zy.com.myapplication.entity.user.UserBasicInfo;
 import market.zy.com.myapplication.entity.user.amend.AmendStates;
@@ -202,6 +203,20 @@ public class JxnuGoNetMethod {
 
     public void deletePost(Observer<DeleteStates> observer, String auth, DeletePost post) {
         service.deletePost(auth, post)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
+
+    public void getPostsByTag(Observer<OnePagePost> observer, int tagId, int pageId) {
+        service.getPostsByTag(tagId, pageId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
+
+    public void searchPosts(Observer<OnePagePost> observer, String auth, SearchKeyWords keyWords) {
+        service.searchPosts(auth, keyWords)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);

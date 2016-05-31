@@ -14,4 +14,5 @@
     <dimen name="cardview_toolbar_spacer">32dp</dimen>
     <dimen name="toolbar_height">56dp</dimen>
     <dimen name="personal_bottom_peek_height">376dp</dimen>
+    <dimen name="label_height">36dp</dimen>
 </resources>

@@ -41,7 +41,7 @@ public class TradeActivity extends MaterialDrawerActivity {
     protected Toolbar mToolbar;
 
     @Bind(R.id.search_view)
-    protected MaterialSearchView mSearchView;
+    public MaterialSearchView mSearchView;
 
     private Fragment mTradeFragment;
 
@@ -87,29 +87,6 @@ public class TradeActivity extends MaterialDrawerActivity {
 
     private void setUpSearchView() {
         mSearchView.setVoiceSearch(true);
-        mSearchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-
-                return false;
-            }
-        });
-        mSearchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
-            @Override
-            public void onSearchViewShown() {
-
-            }
-
-            @Override
-            public void onSearchViewClosed() {
-
-            }
-        });
     }
 
     private void setUpToolbar() {

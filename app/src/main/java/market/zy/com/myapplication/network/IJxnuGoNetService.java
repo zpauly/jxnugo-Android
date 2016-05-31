@@ -15,6 +15,7 @@ import market.zy.com.myapplication.entity.post.delete.DeletePost;
 import market.zy.com.myapplication.entity.post.delete.DeleteStates;
 import market.zy.com.myapplication.entity.post.publish.NewPost;
 import market.zy.com.myapplication.entity.post.publish.PublishStates;
+import market.zy.com.myapplication.entity.post.search.SearchKeyWords;
 import market.zy.com.myapplication.entity.post.user.UserPosts;
 import market.zy.com.myapplication.entity.user.UserBasicInfo;
 import market.zy.com.myapplication.entity.user.amend.AmendStates;
@@ -211,4 +212,16 @@ public interface IJxnuGoNetService {
      */
     @POST("delete_post")
     Observable<DeleteStates> deletePost(@Header("Authorization") String auth, @Body DeletePost post);
+
+    /**
+     * 根据物品标签查询相关的帖子
+     * @param tagId
+     * @param pageId
+     * @return
+     */
+    @GET("post_category/{tag}")
+    Observable<OnePagePost> getPostsByTag(@Path("tag") int tagId, @Query("page") int pageId);
+
+    @POST("query_post")
+    Observable<OnePagePost> searchPosts(@Header("Authorization") String auth, @Body SearchKeyWords keyWords);
 }
