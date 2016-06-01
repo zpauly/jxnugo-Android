@@ -93,9 +93,9 @@ public class LoginFragment extends BaseFragment {
     }
 
     private void unsubscribe() {
-        if (loginSubscriber != null)
+        if (loginSubscriber != null || !loginSubscriber.isUnsubscribed())
             loginSubscriber.unsubscribe();
-        if (userinfoSubscriber != null)
+        if (userinfoSubscriber != null || !userinfoSubscriber.isUnsubscribed())
             userinfoSubscriber.unsubscribe();
     }
 

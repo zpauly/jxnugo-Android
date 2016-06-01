@@ -68,7 +68,7 @@ public class RegisteFragment extends BaseFragment {
     }
 
     private void unsubscribe() {
-        if (registeSubscriber != null) {
+        if (registeSubscriber != null || !registeSubscriber.isUnsubscribed()) {
             registeSubscriber.unsubscribe();
         }
     }

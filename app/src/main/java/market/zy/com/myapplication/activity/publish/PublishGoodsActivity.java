@@ -203,10 +203,10 @@ public class PublishGoodsActivity extends BaseActivity {
     }
 
     private void unsubscribe() {
-        if (uploadSubscriber != null) {
+        if (uploadSubscriber != null || !uploadSubscriber.isUnsubscribed()) {
             uploadSubscriber.unsubscribe();
         }
-        if (tokenSubscriber != null) {
+        if (tokenSubscriber != null || !tokenSubscriber.isUnsubscribed()) {
             tokenSubscriber.unsubscribe();
         }
     }

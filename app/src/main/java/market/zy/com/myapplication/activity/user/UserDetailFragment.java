@@ -97,13 +97,13 @@ public class UserDetailFragment extends BaseFragment {
     }
 
     private void unsubscribe() {
-        if (followSubscriber != null) {
+        if (followSubscriber != null || !followSubscriber.isUnsubscribed()) {
             followSubscriber.unsubscribe();
         }
-        if (unfollowSubscriber != null) {
+        if (unfollowSubscriber != null || !unfollowSubscriber.isUnsubscribed()) {
             unfollowSubscriber.unsubscribe();
         }
-        if (judgeFollowSubscriber != null) {
+        if (judgeFollowSubscriber != null || !judgeFollowSubscriber.isUnsubscribed()) {
             judgeFollowSubscriber.unsubscribe();
         }
     }

@@ -112,10 +112,10 @@ public class AmendActivity extends BaseActivity {
     }
 
     private void unsubscribe() {
-        if (amendSubscriber != null) {
+        if (amendSubscriber != null || !amendSubscriber.isUnsubscribed()) {
             amendSubscriber.unsubscribe();
         }
-        if (tokenSubscriber != null) {
+        if (tokenSubscriber != null || !tokenSubscriber.isUnsubscribed()) {
             tokenSubscriber.unsubscribe();
         }
     }

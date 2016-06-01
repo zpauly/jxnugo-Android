@@ -183,17 +183,17 @@ public class PostDetailsActivity extends BaseActivity {
     }
 
     private void unsubscribe() {
-        if (subscriber != null)
+        if (subscriber != null || !subscriber.isUnsubscribed())
             subscriber.unsubscribe();
         if (observable != null)
             observable.unsubscribeOn(Schedulers.immediate());
-        if (judgeCollectSubscriber != null) {
+        if (judgeCollectSubscriber != null || !judgeCollectSubscriber.isUnsubscribed()) {
             judgeCollectSubscriber.unsubscribe();
         }
-        if (collectSubscriber != null) {
+        if (collectSubscriber != null || !collectSubscriber.isUnsubscribed()) {
             collectSubscriber.unsubscribe();
         }
-        if (uncollectSubsriber != null) {
+        if (uncollectSubsriber != null || !uncollectSubsriber.isUnsubscribed()) {
             uncollectSubsriber.unsubscribe();
         }
     }
