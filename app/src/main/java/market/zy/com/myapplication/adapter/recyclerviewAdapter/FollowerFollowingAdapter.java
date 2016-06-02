@@ -13,9 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import market.zy.com.myapplication.R;
-import market.zy.com.myapplication.activity.user.UserActivity;
-import market.zy.com.myapplication.activity.userinfo.UserinfoActivity;
-import market.zy.com.myapplication.activity.viewholder.FollowerFollowingViewHolder;
+import market.zy.com.myapplication.view.user.UserActivity;
+import market.zy.com.myapplication.view.viewholder.FollowerFollowingViewHolder;
 import market.zy.com.myapplication.db.user.OtherInfoDao;
 import market.zy.com.myapplication.entity.user.UserBasicInfo;
 import market.zy.com.myapplication.entity.user.follow.Follower;

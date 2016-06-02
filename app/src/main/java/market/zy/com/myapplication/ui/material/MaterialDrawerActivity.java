@@ -3,7 +3,6 @@ package market.zy.com.myapplication.ui.material;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
@@ -21,9 +20,9 @@ import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 import market.zy.com.myapplication.Constants;
 import market.zy.com.myapplication.R;
-import market.zy.com.myapplication.activity.BaseActivity;
-import market.zy.com.myapplication.activity.trade.TradeActivity;
-import market.zy.com.myapplication.activity.user.UserActivity;
+import market.zy.com.myapplication.base.BaseActivity;
+import market.zy.com.myapplication.view.trade.TradeActivity;
+import market.zy.com.myapplication.view.user.UserActivity;
 import market.zy.com.myapplication.db.user.UserInfoDao;
 import market.zy.com.myapplication.utils.ImageUtil;
 import market.zy.com.myapplication.utils.SPUtil;

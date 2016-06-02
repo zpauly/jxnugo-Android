@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import market.zy.com.myapplication.R;
-import market.zy.com.myapplication.activity.viewholder.CommentsViewHolder;
+import market.zy.com.myapplication.view.viewholder.CommentsViewHolder;
 import market.zy.com.myapplication.entity.post.comments.Comment;
 
 /**

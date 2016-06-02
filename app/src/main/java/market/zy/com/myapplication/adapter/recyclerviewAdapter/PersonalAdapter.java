@@ -8,8 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import market.zy.com.myapplication.R;
-import market.zy.com.myapplication.activity.userinfo.UserinfoActivity;
-import market.zy.com.myapplication.activity.viewholder.PersonalViewHolder;
+import market.zy.com.myapplication.view.userinfo.UserinfoActivity;
+import market.zy.com.myapplication.view.viewholder.PersonalViewHolder;
 
 /**
  * Created by zpauly on 2016/3/11.

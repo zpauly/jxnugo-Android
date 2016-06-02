@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".activity.trade.TradeActivity">
+        <activity android:name=".view.trade.TradeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,15 +26,15 @@
                 android:value=".ui.activity.SearchResultActivity"/>
         </activity>
 
-        <activity android:name=".activity.usermanager.UserManagerActivity"/>
-        <activity android:name=".activity.user.UserActivity"/>
-        <activity android:name=".activity.comments.CommentsActivity"/>
-        <activity android:name=".activity.classify.ClassifyActivity"/>
-        <activity android:name=".activity.publish.PublishGoodsActivity"/>
-        <activity android:name=".activity.post.PostDetailsActivity"/>
-        <activity android:name=".activity.photos.PhotoActivity"/>
-        <activity android:name=".activity.amend.AmendActivity"/>
-        <activity android:name=".activity.userinfo.UserinfoActivity"/>
+        <activity android:name=".view.usermanager.UserManagerActivity"/>
+        <activity android:name=".view.user.UserActivity"/>
+        <activity android:name=".view.comments.CommentsActivity"/>
+        <activity android:name=".view.classify.ClassifyActivity"/>
+        <activity android:name=".view.publish.PublishGoodsActivity"/>
+        <activity android:name=".view.post.PostDetailsActivity"/>
+        <activity android:name=".view.photos.PhotoActivity"/>
+        <activity android:name=".view.amend.AmendActivity"/>
+        <activity android:name=".view.userinfo.UserinfoActivity"/>
 
         <activity android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
             android:configChanges="keyboardHidden|orientation"

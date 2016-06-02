@@ -15,10 +15,10 @@ import java.util.List;
 
 import market.zy.com.myapplication.Constants;
 import market.zy.com.myapplication.R;
-import market.zy.com.myapplication.activity.post.PostDetailsActivity;
-import market.zy.com.myapplication.activity.photos.PhotoActivity;
-import market.zy.com.myapplication.activity.trade.TradeActivity;
-import market.zy.com.myapplication.activity.viewholder.HorizontalPhotosViewHolder;
+import market.zy.com.myapplication.view.post.PostDetailsActivity;
+import market.zy.com.myapplication.view.photos.PhotoActivity;
+import market.zy.com.myapplication.view.trade.TradeActivity;
+import market.zy.com.myapplication.view.viewholder.HorizontalPhotosViewHolder;
 import market.zy.com.myapplication.db.post.PhotoModel;
 
 /**

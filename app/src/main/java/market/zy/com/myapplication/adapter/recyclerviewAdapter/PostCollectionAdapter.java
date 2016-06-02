@@ -15,9 +15,9 @@ import java.util.List;
 
 import market.zy.com.myapplication.Constants;
 import market.zy.com.myapplication.R;
-import market.zy.com.myapplication.activity.post.PostDetailsActivity;
-import market.zy.com.myapplication.activity.trade.TradeActivity;
-import market.zy.com.myapplication.activity.viewholder.PostCollectionViewHolder;
+import market.zy.com.myapplication.view.post.PostDetailsActivity;
+import market.zy.com.myapplication.view.trade.TradeActivity;
+import market.zy.com.myapplication.view.viewholder.PostCollectionViewHolder;
 import market.zy.com.myapplication.entity.post.OneSimplePost;
 
 /**
