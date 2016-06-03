@@ -88,16 +88,16 @@ public class UserinfoActivity extends BaseActivity {
     }
 
     private void unsubscribe() {
-        if (collectionPostsSubscriber != null || !collectionPostsSubscriber.isUnsubscribed()) {
+        if (collectionPostsSubscriber != null) {
             collectionPostsSubscriber.unsubscribe();
         }
-        if (userPostsSubscriber != null || !userPostsSubscriber.isUnsubscribed()) {
+        if (userPostsSubscriber != null) {
             userPostsSubscriber.unsubscribe();
         }
-        if (followedSubscirber != null || !followedSubscirber.isUnsubscribed()) {
+        if (followedSubscirber != null) {
             followedSubscirber.unsubscribe();
         }
-        if (followersSubscriber != null || !followersSubscriber.isUnsubscribed()) {
+        if (followersSubscriber != null) {
             followersSubscriber.unsubscribe();
         }
     }

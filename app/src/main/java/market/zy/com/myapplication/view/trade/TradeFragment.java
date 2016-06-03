@@ -93,14 +93,14 @@ public class TradeFragment extends BaseFragment {
     }
 
     private void unsubscribe() {
-        if (newSubscriber != null || !newSubscriber.isUnsubscribed())
+        if (newSubscriber != null)
             newSubscriber.unsubscribe();
-        if (moreSubscriber != null || !moreSubscriber.isUnsubscribed())
+        if (moreSubscriber != null)
             moreSubscriber.unsubscribe();
-        if (tagSubscriber != null || !tagSubscriber.isUnsubscribed()) {
+        if (tagSubscriber != null) {
             tagSubscriber.unsubscribe();
         }
-        if (searchSubscriber != null || !searchSubscriber.isUnsubscribed()) {
+        if (searchSubscriber != null) {
             searchSubscriber.unsubscribe();
         }
     }

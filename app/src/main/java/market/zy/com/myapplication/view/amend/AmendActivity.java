@@ -35,7 +35,7 @@ import market.zy.com.myapplication.engine.qiniu.UploadImages;
 import market.zy.com.myapplication.entity.qiniu.QiniuUploadToken;
 import market.zy.com.myapplication.entity.user.UserBasicInfo;
 import market.zy.com.myapplication.entity.user.amend.AmendStates;
-import market.zy.com.myapplication.entity.user.amend.AmendUseInfo;
+import market.zy.com.myapplication.entity.user.amend.AmendUserInfo;
 import market.zy.com.myapplication.network.JxnuGoNetMethod;
 import market.zy.com.myapplication.network.qiniu.upload.OnUploadListener;
 import market.zy.com.myapplication.network.qiniu.uploadtoken.TokenMethod;
@@ -47,8 +47,10 @@ import rx.Subscriber;
 /**
  * Created by zpauly on 16-5-22.
  */
-public class AmendActivity extends BaseActivity {
+public class AmendActivity extends BaseActivity implements AmendContract.View {
     private static final int SELECT_PICTURE = 1;
+
+    private AmendContract.Presenter mPresenter;
 
     @Bind(R.id.amend_appbar)
     protected AppBarLayout mAppbarLayout;
@@ -84,7 +86,7 @@ public class AmendActivity extends BaseActivity {
     private String userTag;
     private String sex;
 
-    private AmendUseInfo amendUserInfo;
+    private AmendUserInfo amendUserInfo;
 
     private Subscriber<AmendStates> amendSubscriber;
     private Subscriber<QiniuUploadToken> tokenSubscriber;
@@ -107,7 +109,7 @@ public class AmendActivity extends BaseActivity {
 
     @Override
     protected void onPause() {
-        unsubscribe();
+        mPresenter.stop();
         super.onPause();
     }
 
@@ -138,6 +140,9 @@ public class AmendActivity extends BaseActivity {
     }
 
     private void initView() {
+        new AmendPresenter(this, this);
+        mPresenter.start();
+
         setUpToolbar();
 
         setUpButton();
@@ -214,7 +219,7 @@ public class AmendActivity extends BaseActivity {
     }
 
     private void amend(final String key) {
-        amendSubscriber = new Subscriber<AmendStates>() {
+        /*amendSubscriber = new Subscriber<AmendStates>() {
             @Override
             public void onCompleted() {
                 uploadDialog.dismiss();
@@ -254,7 +259,8 @@ public class AmendActivity extends BaseActivity {
         getTextContent(key);
         String auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(this).getCurrentUsername()
                 , SPUtil.getInstance(this).getCurrentPassword());
-        JxnuGoNetMethod.getInstance().amendUserInfo(amendSubscriber, auth, amendUserInfo);
+        JxnuGoNetMethod.getInstance().amendUserInfo(amendSubscriber, auth, amendUserInfo);*/
+        mPresenter.amend();
     }
 
     private void setUpButton() {
@@ -300,7 +306,7 @@ public class AmendActivity extends BaseActivity {
     }
 
     private void uploadAvatar() {
-        tokenSubscriber = new Subscriber<QiniuUploadToken>() {
+        /*tokenSubscriber = new Subscriber<QiniuUploadToken>() {
             @Override
             public void onCompleted() {
                 UploadImages.getInstance().uploadImages(avatarPath, token
@@ -340,15 +346,15 @@ public class AmendActivity extends BaseActivity {
                 token = qiniuUploadToken.getUptoken();
             }
         };
-        TokenMethod.getInstance().getUploadToken(tokenSubscriber);
+        TokenMethod.getInstance().getUploadToken(tokenSubscriber);*/
     }
 
-    private void getTextContent(String avatar) {
+    /*private void getTextContent(String avatar) {
         nickname = mUsername.getText().toString();
         userTag = mUserTag.getText().toString();
         contract = mContract.getText().toString();
         location = mLocation.getText().toString();
-        amendUserInfo = new AmendUseInfo();
+        amendUserInfo = new AmendUserInfo();
         amendUserInfo.setAvatar(avatar);
         amendUserInfo.setAbout_me(userTag);
         amendUserInfo.setContact(contract);
@@ -356,6 +362,36 @@ public class AmendActivity extends BaseActivity {
         amendUserInfo.setName(nickname);
         amendUserInfo.setSex(sex);
         amendUserInfo.setUserId(userInfo.getUserId());
+    }*/
+
+    @Override
+    public AmendUserInfo getText(String avatar) {
+        nickname = mUsername.getText().toString();
+        userTag = mUserTag.getText().toString();
+        contract = mContract.getText().toString();
+        location = mLocation.getText().toString();
+        amendUserInfo = new AmendUserInfo();
+        amendUserInfo.setAvatar(avatar);
+        amendUserInfo.setAbout_me(userTag);
+        amendUserInfo.setContact(contract);
+        amendUserInfo.setLocation(location);
+        amendUserInfo.setName(nickname);
+        amendUserInfo.setSex(sex);
+        amendUserInfo.setUserId(userInfo.getUserId());
+        return amendUserInfo;
+    }
+
+    @Override
+    public void showUploadError(View view, int stringRes) {
+        uploadDialog.dismiss();
+        showSnackbarTipShort(view, stringRes);
+    }
+
+    @Override
+    public void showUploadSuccess(View view, int stringRes) {
+        showSnackbarTipShort(view, stringRes);
+        uploadDialog.dismiss();
+        finish();
     }
 
     private void startPicSelect() {
@@ -364,5 +400,10 @@ public class AmendActivity extends BaseActivity {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent,
                 "Select Picture"), SELECT_PICTURE);
+    }
+
+    @Override
+    public void setPresenter(AmendContract.Presenter presenter) {
+        mPresenter = presenter;
     }
 }

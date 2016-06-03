@@ -2,6 +2,7 @@ package market.zy.com.myapplication.view.usermanager.login;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -16,8 +17,12 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.base.BaseFragment;
+import market.zy.com.myapplication.db.user.UserInfoDao;
 import market.zy.com.myapplication.entity.user.UserBasicInfo;
 import market.zy.com.myapplication.entity.user.login.LoginTokenSuccess;
+import market.zy.com.myapplication.network.JxnuGoNetMethod;
+import market.zy.com.myapplication.utils.AuthUtil;
+import market.zy.com.myapplication.utils.SPUtil;
 import rx.Subscriber;
 
 /**
@@ -66,13 +71,13 @@ public class LoginFragment extends BaseFragment implements LoginContract.View {
 
     @Override
     public void onStop() {
-        mPresenter.stop();
+        /*mPresenter.stop();*/
         super.onPause();
     }
 
     private void initView() {
-        new LoginPresenter(this, getContext());
-        mPresenter.start();
+        /*new LoginPresenter(this, getContext());
+        mPresenter.start();*/
 
         mButton.setEnabled(false);
 
@@ -135,8 +140,8 @@ public class LoginFragment extends BaseFragment implements LoginContract.View {
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.login(mEditText, mPasswordEditText);
-                /*loginSubscriber = new Subscriber<LoginTokenSuccess>() {
+                /*mPresenter.login(mEditText, mPasswordEditText);*/
+                loginSubscriber = new Subscriber<LoginTokenSuccess>() {
                     @Override
                     public void onCompleted() {
                         loadUserInfo();
@@ -159,12 +164,12 @@ public class LoginFragment extends BaseFragment implements LoginContract.View {
                 String password = mPasswordEditText.getText().toString();
                 String auth = AuthUtil.getAuthFromUsernameAndPassword(username, password);
                 JxnuGoNetMethod.getInstance()
-                        .login(loginSubscriber, auth, username, password);*/
+                        .login(loginSubscriber, auth, username, password);
             }
         });
     }
 
-    /*private void loadUserInfo() {
+    private void loadUserInfo() {
         userinfoSubscriber = new Subscriber<UserBasicInfo>() {
             @Override
             public void onCompleted() {
@@ -185,7 +190,7 @@ public class LoginFragment extends BaseFragment implements LoginContract.View {
         String auth = AuthUtil.getAuthFromUsernameAndPassword(sp.getCurrentUsername(), sp.getCurrentPassword());
         JxnuGoNetMethod.getInstance()
                 .getUserInfo(userinfoSubscriber, auth, sp.getCurrentUserId());
-    }*/
+    }
 
     /*private void setQQLogin() {
         listener = new LoginUiListener();

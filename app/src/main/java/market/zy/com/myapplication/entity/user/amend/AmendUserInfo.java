@@ -3,7 +3,7 @@ package market.zy.com.myapplication.entity.user.amend;
 /**
  * Created by zpauly on 16-5-22.
  */
-public class AmendUseInfo {
+public class AmendUserInfo {
     /**
      * userId : 17
      * name : haha

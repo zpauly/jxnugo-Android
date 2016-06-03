@@ -27,7 +27,9 @@ import rx.Subscriber;
 /**
  * Created by zpauly on 2016/3/8.
  */
-public class RegisteFragment extends BaseFragment {
+public class RegisteFragment extends BaseFragment implements RegisteContract.View {
+    private RegisteContract.Presenter mPresenter;
+
     @Bind(R.id.registe_username)
     protected EditText mRegisteUsername;
 
@@ -66,13 +68,16 @@ public class RegisteFragment extends BaseFragment {
     }
 
     private void unsubscribe() {
-        if (registeSubscriber != null || !registeSubscriber.isUnsubscribed()) {
+        if (registeSubscriber != null) {
             registeSubscriber.unsubscribe();
         }
     }
 
     private void initView(View view) {
         ButterKnife.bind(this, view);
+
+        new RegistePresenter(this, getContext());
+        mPresenter.start();
 
         registeButton.setEnabled(false);
 
@@ -107,7 +112,7 @@ public class RegisteFragment extends BaseFragment {
     }
 
     private void registe() {
-        RegisterInfo info = new RegisterInfo();
+        /*RegisterInfo info = new RegisterInfo();
         info.setUserName(mRegisteUsername.getText().toString());
         info.setUserEmail(mRegisteEmail.getText().toString());
         info.setPassWord(mRegistePassword.getText().toString());
@@ -129,7 +134,8 @@ public class RegisteFragment extends BaseFragment {
 
             }
         };
-        JxnuGoNetMethod.getInstance().registe(registeSubscriber, info);
+        JxnuGoNetMethod.getInstance().registe(registeSubscriber, info);*/
+        mPresenter.registe(mRegisteUsername, mRegistePassword, mRegisteEmail);
     }
 
     private boolean verifyEmail(EditText emailEt) {
@@ -144,6 +150,21 @@ public class RegisteFragment extends BaseFragment {
             emailEt.setText("");
             return false;
         }
+    }
+
+    @Override
+    public void showUploadError(View view, int stringRes) {
+        showSnackbarTipShort(view, stringRes);
+    }
+
+    @Override
+    public void showRegisteSuccess(View view, int stringRes) {
+        showSnackbarTipShort(view, stringRes);
+    }
+
+    @Override
+    public void setPresenter(RegisteContract.Presenter presenter) {
+        mPresenter = presenter;
     }
 
     private class Watcher implements TextWatcher {

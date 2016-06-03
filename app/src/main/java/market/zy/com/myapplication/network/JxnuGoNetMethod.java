@@ -20,7 +20,7 @@ import market.zy.com.myapplication.entity.post.search.SearchKeyWords;
 import market.zy.com.myapplication.entity.post.user.UserPosts;
 import market.zy.com.myapplication.entity.user.UserBasicInfo;
 import market.zy.com.myapplication.entity.user.amend.AmendStates;
-import market.zy.com.myapplication.entity.user.amend.AmendUseInfo;
+import market.zy.com.myapplication.entity.user.amend.AmendUserInfo;
 import market.zy.com.myapplication.entity.user.follow.Follow;
 import market.zy.com.myapplication.entity.user.follow.FollowStates;
 import market.zy.com.myapplication.entity.user.follow.JudgeFollow;
@@ -94,7 +94,7 @@ public class JxnuGoNetMethod {
                 .subscribe(observer);
     }
 
-    public void amendUserInfo(Observer<AmendStates> observer, String auth, AmendUseInfo amendUseInfo) {
+    public void amendUserInfo(Observer<AmendStates> observer, String auth, AmendUserInfo amendUseInfo) {
         service.amendUsetInfo(auth, amendUseInfo)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

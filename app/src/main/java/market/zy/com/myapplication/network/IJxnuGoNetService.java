@@ -19,7 +19,7 @@ import market.zy.com.myapplication.entity.post.search.SearchKeyWords;
 import market.zy.com.myapplication.entity.post.user.UserPosts;
 import market.zy.com.myapplication.entity.user.UserBasicInfo;
 import market.zy.com.myapplication.entity.user.amend.AmendStates;
-import market.zy.com.myapplication.entity.user.amend.AmendUseInfo;
+import market.zy.com.myapplication.entity.user.amend.AmendUserInfo;
 import market.zy.com.myapplication.entity.user.follow.Follow;
 import market.zy.com.myapplication.entity.user.follow.FollowStates;
 import market.zy.com.myapplication.entity.user.follow.JudgeFollow;
@@ -77,7 +77,7 @@ public interface IJxnuGoNetService {
      * @return
      */
     @POST("update_userInfo")
-    Observable<AmendStates> amendUsetInfo(@Header("Authorization") String auth, @Body AmendUseInfo amendUseInfo);
+    Observable<AmendStates> amendUsetInfo(@Header("Authorization") String auth, @Body AmendUserInfo amendUseInfo);
 
     /**
      * 获取某个帖子的评论
