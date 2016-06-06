@@ -1,6 +1,4 @@
-package market.zy.com.myapplication.engine.qiniu;
-
-import java.io.IOException;
+package market.zy.com.myapplication.utils.qiniu;
 
 import market.zy.com.myapplication.network.qiniu.upload.IFileUploadService;
 import market.zy.com.myapplication.network.qiniu.upload.OnUploadListener;

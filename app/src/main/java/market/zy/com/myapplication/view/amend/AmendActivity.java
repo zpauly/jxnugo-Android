@@ -19,29 +19,16 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.qiniu.android.http.ResponseInfo;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
-import market.zy.com.myapplication.Constants;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.base.BaseActivity;
-import market.zy.com.myapplication.db.user.UserInfoDao;
-import market.zy.com.myapplication.engine.qiniu.UploadImages;
 import market.zy.com.myapplication.entity.qiniu.QiniuUploadToken;
-import market.zy.com.myapplication.entity.user.UserBasicInfo;
 import market.zy.com.myapplication.entity.user.amend.AmendStates;
 import market.zy.com.myapplication.entity.user.amend.AmendUserInfo;
-import market.zy.com.myapplication.network.JxnuGoNetMethod;
-import market.zy.com.myapplication.network.qiniu.upload.OnUploadListener;
-import market.zy.com.myapplication.network.qiniu.uploadtoken.TokenMethod;
-import market.zy.com.myapplication.utils.AuthUtil;
 import market.zy.com.myapplication.utils.PhotoUtil;
-import market.zy.com.myapplication.utils.SPUtil;
 import rx.Subscriber;
 
 /**

@@ -14,7 +14,7 @@ import market.zy.com.myapplication.Constants;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.db.user.UserInfoDao;
 import market.zy.com.myapplication.db.user.UserInfoModel;
-import market.zy.com.myapplication.engine.qiniu.UploadImages;
+import market.zy.com.myapplication.utils.qiniu.UploadImages;
 import market.zy.com.myapplication.entity.qiniu.QiniuUploadToken;
 import market.zy.com.myapplication.entity.user.UserBasicInfo;
 import market.zy.com.myapplication.entity.user.amend.AmendStates;

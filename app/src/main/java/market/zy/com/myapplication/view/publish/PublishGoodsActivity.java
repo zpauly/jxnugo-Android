@@ -34,7 +34,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.base.BaseActivity;
-import market.zy.com.myapplication.engine.qiniu.UploadImages;
+import market.zy.com.myapplication.utils.qiniu.UploadImages;
 import market.zy.com.myapplication.entity.post.PhotoKey;
 import market.zy.com.myapplication.entity.post.publish.NewPost;
 import market.zy.com.myapplication.entity.post.publish.PublishStates;
@@ -50,7 +50,9 @@ import rx.Subscriber;
 /**
  * Created by zpauly on 16-3-27.
  */
-public class PublishGoodsActivity extends BaseActivity {
+public class PublishGoodsActivity extends BaseActivity implements PublishGoodsContract.View {
+    private PublishGoodsContract.Presenter mPresenter;
+
     private static final int SELECT_PICTURE = 1;
 
     @Bind(R.id.publish_goods_toolbar)
@@ -130,12 +132,6 @@ public class PublishGoodsActivity extends BaseActivity {
     private int imageCount = 0;
     private List<String> selectedImagePath = new ArrayList<>();
     private boolean isCoverImage;
-    private boolean isButtonsHide;
-
-
-    private Subscriber<QiniuUploadToken> tokenSubscriber;
-    private Subscriber<PublishStates> uploadSubscriber;
-    private List<PhotoKey> imageKeys = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,14 +146,8 @@ public class PublishGoodsActivity extends BaseActivity {
 
     @Override
     protected void onPause() {
-        unsubscribe();
+        mPresenter.stop();
         super.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        unsubscribe();
-        super.onDestroy();
     }
 
     @Override
@@ -202,18 +192,8 @@ public class PublishGoodsActivity extends BaseActivity {
         }
     }
 
-    private void unsubscribe() {
-        if (uploadSubscriber != null) {
-            uploadSubscriber.unsubscribe();
-        }
-        if (tokenSubscriber != null) {
-            tokenSubscriber.unsubscribe();
-        }
-    }
-
     private void initView() {
         isCoverImage = true;
-        isButtonsHide = true;
         addingLayout = mAddLayout;
 
         setUpToolbar();
@@ -290,7 +270,6 @@ public class PublishGoodsActivity extends BaseActivity {
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                getText();
                                 upload();
                             }
                         })
@@ -382,86 +361,10 @@ public class PublishGoodsActivity extends BaseActivity {
                 .content(R.string.please_wait)
                 .progress(true, 0)
                 .build();
-        for (final String path : selectedImagePath) {
-            tokenSubscriber = new Subscriber<QiniuUploadToken>() {
-                @Override
-                public void onCompleted() {
-
-                }
-
-                @Override
-                public void onError(Throwable e) {
-
-                }
-
-                @Override
-                public void onNext(QiniuUploadToken qiniuUploadToken) {
-                    UploadImages.getInstance().uploadImages(path, qiniuUploadToken.getUptoken()
-                            , new OnUploadListener() {
-                                @Override
-                                public void onCompleted(String key, ResponseInfo info, JSONObject response) {
-                                    if (info.isOK()) {
-                                        PhotoKey photoKey = new PhotoKey();
-                                        photoKey.setKey(key);
-                                        imageKeys.add(photoKey);
-                                        if (imageKeys.size() == selectedImagePath.size()) {
-                                            uploadOthers();
-                                        }
-                                    } else {
-                                        uploadDialog.dismiss();
-                                        showSnackbarTipShort(getCurrentFocus(), R.string.error_upload);
-                                    }
-                                }
-
-                                @Override
-                                public void onProcessing(String key, double percent) {
-
-                                }
-
-                                @Override
-                                public boolean onCancelled() {
-                                    return false;
-                                }
-                            });
-                }
-            };
-            TokenMethod.getInstance().getUploadToken(tokenSubscriber);
+        int total = selectedImagePath.size();
+        for (String path : selectedImagePath) {
+            mPresenter.uploadImages(path, total);
         }
-    }
-
-    private void uploadOthers() {
-        NewPost newPost = new NewPost();
-        newPost.setGoodsName(title);
-        newPost.setBody(content);
-        newPost.setGoodsPrice(price);
-        newPost.setPhotos(imageKeys);
-        newPost.setContact(contract);
-        newPost.setGoodsBuyTime(buyTime);
-        newPost.setGoodsLocation(location);
-        newPost.setGoodsQuality(quality);
-        newPost.setGoodsNum(num);
-        newPost.setGoodsTag(goodTag);
-        newPost.setUserId(String.valueOf(SPUtil.getInstance(this).getCurrentUserId()));
-        uploadSubscriber = new Subscriber<PublishStates>() {
-            @Override
-            public void onCompleted() {
-                uploadDialog.dismiss();
-                showSnackbarTipShort(getCurrentFocus(), R.string.upload_successly);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(PublishStates publishSuccess) {
-
-            }
-        };
-        String auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(this).getCurrentUsername()
-                ,SPUtil.getInstance(this).getCurrentPassword());
-        JxnuGoNetMethod.getInstance().publishNewPost(uploadSubscriber, auth, newPost);
     }
 
     private boolean isContentCompleted() {
@@ -477,5 +380,43 @@ public class PublishGoodsActivity extends BaseActivity {
         } else {
             return true;
         }
+    }
+
+    @Override
+    public void completeImagesUpload() {
+        uploadDialog.dismiss();
+    }
+
+    @Override
+    public void showUploadFail() {
+        showSnackbarTipShort(getCurrentFocus(), R.string.error_upload);
+    }
+
+    @Override
+    public void showUploadSuccess() {
+        showSnackbarTipShort(getCurrentFocus(), R.string.upload_successly);
+    }
+
+    @Override
+    public NewPost createNewPost(List<PhotoKey> imageKeys) {
+        NewPost newPost = new NewPost();
+        getText();
+        newPost.setGoodsName(title);
+        newPost.setBody(content);
+        newPost.setGoodsPrice(price);
+        newPost.setPhotos(imageKeys);
+        newPost.setContact(contract);
+        newPost.setGoodsBuyTime(buyTime);
+        newPost.setGoodsLocation(location);
+        newPost.setGoodsQuality(quality);
+        newPost.setGoodsNum(num);
+        newPost.setGoodsTag(goodTag);
+        newPost.setUserId(String.valueOf(userInfo.getUserId()));
+        return newPost;
+    }
+
+    @Override
+    public void setPresenter(PublishGoodsContract.Presenter presenter) {
+        mPresenter = presenter;
     }
 }

@@ -73,13 +73,6 @@ public class TradeFragment extends BaseFragment {
         return mView;
     }
 
-    /*@Override
-    public void onResume() {
-        super.onResume();
-        mSwipeRefreshLayout.setRefreshing(true);
-        loadNewData();
-    }*/
-
     @Override
     public void onPause() {
         unsubscribe();
