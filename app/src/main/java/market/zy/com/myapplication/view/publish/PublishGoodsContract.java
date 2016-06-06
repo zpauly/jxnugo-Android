@@ -8,7 +8,7 @@ import market.zy.com.myapplication.entity.post.PhotoKey;
 import market.zy.com.myapplication.entity.post.publish.NewPost;
 
 /**
- * Created by root on 16-6-6.
+ * Created by zpauly on 16-6-6.
  */
 public class PublishGoodsContract {
     interface Presenter extends BasePresenter {

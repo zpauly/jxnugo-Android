@@ -56,7 +56,9 @@ import rx.schedulers.Schedulers;
 /**
  * Created by zpauly on 16-5-20.
  */
-public class PostDetailsActivity extends BaseActivity {
+public class PostDetailsActivity extends BaseActivity implements PostDetailContract.View {
+    private PostDetailContract.Presenter mPresenter;
+
     public static String CURRENT_PHOTO = "CURRENT_PHOTO";
 
     @Bind(R.id.post_header_image)
@@ -150,8 +152,7 @@ public class PostDetailsActivity extends BaseActivity {
 
         setOnBackTwiceToTrue();
 
-        auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(this).getCurrentUsername()
-                , SPUtil.getInstance(this).getCurrentPassword());
+        getPostId();
 
         initViews();
     }
@@ -165,34 +166,13 @@ public class PostDetailsActivity extends BaseActivity {
 
     @Override
     protected void onPause() {
-        unsubscribe();
+        mPresenter.stop();
         super.onPause();
     }
 
-    @Override
-    protected void onDestroy() {
-        unsubscribe();
-        super.onDestroy();
-    }
-
-    private void unsubscribe() {
-        if (subscriber != null)
-            subscriber.unsubscribe();
-        if (observable != null)
-            observable.unsubscribeOn(Schedulers.immediate());
-        if (judgeCollectSubscriber != null) {
-            judgeCollectSubscriber.unsubscribe();
-        }
-        if (collectSubscriber != null) {
-            collectSubscriber.unsubscribe();
-        }
-        if (uncollectSubsriber != null) {
-            uncollectSubsriber.unsubscribe();
-        }
-    }
-
     private void initViews() {
-        getPostId();
+        new PostDetailPresenter(this, this, postId);
+        mPresenter.start();
 
         setUpToolbar();
 
@@ -293,51 +273,11 @@ public class PostDetailsActivity extends BaseActivity {
     }
 
     private void loadCommentData() {
-        subscriber = new Subscriber<AllComments>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(AllComments allComments) {
-                mCommentsAdapter.swapData(allComments.getComments());
-            }
-        };
-        JxnuGoNetMethod.getInstance().getAllComments(subscriber, auth, postId);
+        mPresenter.loadCommentsData();
     }
 
     private void loadPhotosData() {
-        observable = Observable.create(new Observable.OnSubscribe<List<PhotoModel>>() {
-
-            @Override
-            public void call(Subscriber<? super List<PhotoModel>> subscriber) {
-                subscriber.onNext(PhotosDao.queryPhoto(postId));
-            }
-        });
-        observable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<PhotoModel>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        
-                    }
-
-                    @Override
-                    public void onNext(List<PhotoModel> photoKeys) {
-                        mPhotosAdapter.swapData(photoKeys);
-                    }
-                });
+        mPresenter.loadPhotosData();
     }
 
     private void loadPostData() {
@@ -367,101 +307,71 @@ public class PostDetailsActivity extends BaseActivity {
     }
 
     private void isPostCollected() {
-        judgeCollectSubscriber = new Subscriber<JudgeCollectStates>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(JudgeCollectStates judgeCollectSuccess) {
-                if (judgeCollectSuccess.getCollectInfo() == 0) {
-                    mPostDetailAddShopping.setImageResource(R.drawable.ic_favorite_border_black_24dp);
-                    isCollected = false;
-                } else if (judgeCollectSuccess.getCollectInfo() == 1) {
-                    mPostDetailAddShopping.setImageResource(R.drawable.ic_favorite_black_24dp);
-                    isCollected = true;
-                }
-            }
-        };
-        JudgeCollectPost post = new JudgeCollectPost();
-        post.setPostId(postId);
-        post.setUserId(userInfo.getUserId());
-        JxnuGoNetMethod.getInstance().judgeCollectPost(judgeCollectSubscriber, auth, post);
+        mPresenter.isPostCollected();
     }
 
     private void collect() {
-        collectSubscriber = new Subscriber<CollectStates>() {
-            @Override
-            public void onCompleted() {
-                showSnackbarTipShort(getCurrentFocus(), R.string.collected_true);
-                isPostCollected();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onNext(CollectStates collectSuccess) {
-
-            }
-        };
-        CollectPost post = new CollectPost();
-        post.setPostId(postId);
-        post.setUserId(userInfo.getUserId());
-        JxnuGoNetMethod.getInstance().collectOnePost(collectSubscriber, auth, post);
+        mPresenter.collect();
     }
 
     private void uncollect() {
-        uncollectSubsriber = new Subscriber<UncollectStates>() {
-            @Override
-            public void onCompleted() {
-                showSnackbarTipShort(getCurrentFocus(), R.string.collected_false);
-                isPostCollected();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onNext(UncollectStates uncollectSuccess) {
-
-            }
-        };
-        UncollectPost post = new UncollectPost();
-        post.setUserId(userInfo.getUserId());
-        post.setPostId(postId);
-        JxnuGoNetMethod.getInstance().uncollectPost(uncollectSubsriber, auth, post);
+        mPresenter.uncollect();
     }
 
     private void loadPublisherInfo() {
-        publisheraSubscriber = new Subscriber<UserBasicInfo>() {
-            @Override
-            public void onCompleted() {
+        mPresenter.loadPublisherInfo();
+    }
 
-            }
+    @Override
+    public void swapCommentsData(AllComments allComments) {
+        mCommentsAdapter.swapData(allComments.getComments());
+    }
 
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
+    @Override
+    public void swapPhotosData(List<PhotoModel> photoKeys) {
+        mPhotosAdapter.swapData(photoKeys);
+    }
 
-            @Override
-            public void onNext(UserBasicInfo userBasicInfo) {
-                OtherInfoDao.insertOtherInfo(userBasicInfo);
-            }
-        };
-        String str[] = postDetail.getAuthor().split("/");
-        int followId = Integer.parseInt(str[str.length - 1]);
-        JxnuGoNetMethod.getInstance().getUserInfo(publisheraSubscriber, auth, followId);
+    @Override
+    public void judgeCollectStates(JudgeCollectStates judgeCollectStates) {
+        if (judgeCollectStates.getCollectInfo() == 0) {
+            mPostDetailAddShopping.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+            isCollected = false;
+        } else if (judgeCollectStates.getCollectInfo() == 1) {
+            mPostDetailAddShopping.setImageResource(R.drawable.ic_favorite_black_24dp);
+            isCollected = true;
+        }
+    }
+
+    @Override
+    public void collectSuccess() {
+        showSnackbarTipShort(getCurrentFocus(), R.string.collected_true);
+        isPostCollected();
+    }
+
+    @Override
+    public void collectFail() {
+
+    }
+
+    @Override
+    public void uncollectSuccess() {
+        showSnackbarTipShort(getCurrentFocus(), R.string.collected_false);
+        isPostCollected();
+    }
+
+    @Override
+    public void uncollectFail() {
+
+    }
+
+    @Override
+    public void insertPublisher(UserBasicInfo userBasicInfo) {
+        OtherInfoDao.insertOtherInfo(userBasicInfo);
+    }
+
+    @Override
+    public void setPresenter(PostDetailContract.Presenter presenter) {
+        mPresenter = presenter;
     }
 }

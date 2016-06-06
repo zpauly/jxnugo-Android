@@ -24,7 +24,7 @@ import market.zy.com.myapplication.utils.qiniu.UploadImages;
 import rx.Subscriber;
 
 /**
- * Created by root on 16-6-6.
+ * Created by zpauly on 16-6-6.
  */
 public class PublishGoodsPresenter implements PublishGoodsContract.Presenter {
     private PublishGoodsContract.View mPublishGoodsView;
