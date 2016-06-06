@@ -29,7 +29,9 @@ import rx.Subscriber;
 /**
  * Created by zpauly on 16-5-25.
  */
-public class UserinfoActivity extends BaseActivity {
+public class UserInfoActivity extends BaseActivity implements UserInfoContract.View {
+    private UserInfoContract.Presenter mPresenter;
+
     public static final String USERINFO_PAGE = "USERINFO_PAGE";
     public static final String USER_ID = "USER_ID";
 
@@ -53,13 +55,6 @@ public class UserinfoActivity extends BaseActivity {
 
     private RecyclerView.Adapter mAdapter;
 
-    private String auth;
-
-    private Subscriber<CollectionPosts> collectionPostsSubscriber;
-    private Subscriber<UserPosts> userPostsSubscriber;
-    private Subscriber<UserFollowed> followedSubscirber;
-    private Subscriber<UserFollowers> followersSubscriber;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,29 +72,8 @@ public class UserinfoActivity extends BaseActivity {
 
     @Override
     protected void onPause() {
-        unsubscribe();
+        mPresenter.stop();
         super.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        unsubscribe();
-        super.onDestroy();
-    }
-
-    private void unsubscribe() {
-        if (collectionPostsSubscriber != null) {
-            collectionPostsSubscriber.unsubscribe();
-        }
-        if (userPostsSubscriber != null) {
-            userPostsSubscriber.unsubscribe();
-        }
-        if (followedSubscirber != null) {
-            followedSubscirber.unsubscribe();
-        }
-        if (followersSubscriber != null) {
-            followersSubscriber.unsubscribe();
-        }
     }
 
     @Override
@@ -109,8 +83,8 @@ public class UserinfoActivity extends BaseActivity {
     }
 
     private void initViews() {
-        auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(this).getCurrentUsername()
-                ,SPUtil.getInstance(this).getCurrentPassword());
+        new UserInfoPresenter(this, this, userId);
+        mPresenter.start();
 
         setUpToolbar();
 
@@ -187,88 +161,23 @@ public class UserinfoActivity extends BaseActivity {
     }
 
     private void loadPostsData(final PostCollectionAdapter adapter) {
-        userPostsSubscriber = new Subscriber<UserPosts>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onNext(UserPosts userPosts) {
-                adapter.addAllData(userPosts.getUserPosts());
-                for (OneSimplePost post : userPosts.getUserPosts()) {
-                    PostDetailDao.insertPostDetail(post);
-                }
-            }
-        };
-        JxnuGoNetMethod.getInstance().getUserPosts(userPostsSubscriber, auth, userId);
+        mPresenter.loadPostsData(adapter);
     }
 
     private void loadCollectionData(final PostCollectionAdapter adapter) {
-        collectionPostsSubscriber = new Subscriber<CollectionPosts>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onNext(CollectionPosts collectionPosts) {
-                adapter.addAllData(collectionPosts.getCollectionPost());
-                for (OneSimplePost post : collectionPosts.getCollectionPost()) {
-                    PostDetailDao.insertPostDetail(post);
-                }
-            }
-        };
-        JxnuGoNetMethod.getInstance().getCollectionPosts(collectionPostsSubscriber, auth, userId);
+        mPresenter.loadCollectionData(adapter);
     }
 
     private void loadFollowersData(final FollowerFollowingAdapter adapter) {
-        followersSubscriber = new Subscriber<UserFollowers>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(UserFollowers userFollowers) {
-                adapter.addAllData(userFollowers.getFollowers());
-            }
-        };
-        JxnuGoNetMethod.getInstance().getUserFollowers(followersSubscriber, auth, userId);
+        mPresenter.loadFollowersData(adapter);
     }
 
     private void loadFollowedData(final FollowerFollowingAdapter adapter) {
-        followedSubscirber = new Subscriber<UserFollowed>() {
-            @Override
-            public void onCompleted() {
+        mPresenter.loadFollowedData(adapter);
+    }
 
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(UserFollowed userFollowed) {
-                adapter.addAllData(userFollowed.getFollowed());
-            }
-        };
-        JxnuGoNetMethod.getInstance().getUserFollowed(followedSubscirber, auth, userId);
+    @Override
+    public void setPresenter(UserInfoContract.Presenter presenter) {
+        mPresenter = presenter;
     }
 }

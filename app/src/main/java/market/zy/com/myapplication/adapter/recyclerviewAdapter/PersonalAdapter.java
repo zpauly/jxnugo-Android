@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import market.zy.com.myapplication.R;
-import market.zy.com.myapplication.view.userinfo.UserinfoActivity;
+import market.zy.com.myapplication.view.userinfo.UserInfoActivity;
 import market.zy.com.myapplication.view.viewholder.PersonalViewHolder;
 
 /**
@@ -39,7 +39,7 @@ public class PersonalAdapter extends RecyclerView.Adapter<PersonalViewHolder> {
     @Override
     public void onBindViewHolder(PersonalViewHolder holder, int position) {
         final Intent intent = new Intent();
-        intent.setClass(mContext, UserinfoActivity.class);
+        intent.setClass(mContext, UserInfoActivity.class);
         if (isSelf == true) {
             switch (position) {
                 case 0:
@@ -48,7 +48,7 @@ public class PersonalAdapter extends RecyclerView.Adapter<PersonalViewHolder> {
                     holder.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            intent.putExtra(UserinfoActivity.USERINFO_PAGE, UserinfoActivity.MY_POST);
+                            intent.putExtra(UserInfoActivity.USERINFO_PAGE, UserInfoActivity.MY_POST);
                             mContext.startActivity(intent);
                         }
                     });
@@ -59,7 +59,7 @@ public class PersonalAdapter extends RecyclerView.Adapter<PersonalViewHolder> {
                     holder.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            intent.putExtra(UserinfoActivity.USERINFO_PAGE, UserinfoActivity.MY_COLLECTION);
+                            intent.putExtra(UserInfoActivity.USERINFO_PAGE, UserInfoActivity.MY_COLLECTION);
                             mContext.startActivity(intent);
                         }
                     });
@@ -70,7 +70,7 @@ public class PersonalAdapter extends RecyclerView.Adapter<PersonalViewHolder> {
                     holder.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            intent.putExtra(UserinfoActivity.USERINFO_PAGE, UserinfoActivity.MY_FOLLOWING);
+                            intent.putExtra(UserInfoActivity.USERINFO_PAGE, UserInfoActivity.MY_FOLLOWING);
                             mContext.startActivity(intent);
                         }
                     });
@@ -81,7 +81,7 @@ public class PersonalAdapter extends RecyclerView.Adapter<PersonalViewHolder> {
                     holder.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            intent.putExtra(UserinfoActivity.USERINFO_PAGE, UserinfoActivity.MY_FOLLOWERS);
+                            intent.putExtra(UserInfoActivity.USERINFO_PAGE, UserInfoActivity.MY_FOLLOWERS);
                             mContext.startActivity(intent);
                         }
                     });
@@ -97,8 +97,8 @@ public class PersonalAdapter extends RecyclerView.Adapter<PersonalViewHolder> {
                     holder.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            intent.putExtra(UserinfoActivity.USERINFO_PAGE, UserinfoActivity.MY_POST);
-                            intent.putExtra(UserinfoActivity.USER_ID, userId);
+                            intent.putExtra(UserInfoActivity.USERINFO_PAGE, UserInfoActivity.MY_POST);
+                            intent.putExtra(UserInfoActivity.USER_ID, userId);
                             mContext.startActivity(intent);
                         }
                     });
@@ -109,8 +109,8 @@ public class PersonalAdapter extends RecyclerView.Adapter<PersonalViewHolder> {
                     holder.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            intent.putExtra(UserinfoActivity.USERINFO_PAGE, UserinfoActivity.MY_COLLECTION);
-                            intent.putExtra(UserinfoActivity.USER_ID, userId);
+                            intent.putExtra(UserInfoActivity.USERINFO_PAGE, UserInfoActivity.MY_COLLECTION);
+                            intent.putExtra(UserInfoActivity.USER_ID, userId);
                             mContext.startActivity(intent);
                         }
                     });
@@ -121,8 +121,8 @@ public class PersonalAdapter extends RecyclerView.Adapter<PersonalViewHolder> {
                     holder.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            intent.putExtra(UserinfoActivity.USERINFO_PAGE, UserinfoActivity.MY_FOLLOWING);
-                            intent.putExtra(UserinfoActivity.USER_ID, userId);
+                            intent.putExtra(UserInfoActivity.USERINFO_PAGE, UserInfoActivity.MY_FOLLOWING);
+                            intent.putExtra(UserInfoActivity.USER_ID, userId);
                             mContext.startActivity(intent);
                         }
                     });
@@ -133,8 +133,8 @@ public class PersonalAdapter extends RecyclerView.Adapter<PersonalViewHolder> {
                     holder.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            intent.putExtra(UserinfoActivity.USERINFO_PAGE, UserinfoActivity.MY_FOLLOWERS);
-                            intent.putExtra(UserinfoActivity.USER_ID, userId);
+                            intent.putExtra(UserInfoActivity.USERINFO_PAGE, UserInfoActivity.MY_FOLLOWERS);
+                            intent.putExtra(UserInfoActivity.USER_ID, userId);
                             mContext.startActivity(intent);
                         }
                     });
