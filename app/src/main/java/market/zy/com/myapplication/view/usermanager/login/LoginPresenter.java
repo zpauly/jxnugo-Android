@@ -43,7 +43,7 @@ public class LoginPresenter implements LoginContract.Presenter {
 
             @Override
             public void onError(Throwable e) {
-
+                e.printStackTrace();
             }
 
             @Override
@@ -68,6 +68,7 @@ public class LoginPresenter implements LoginContract.Presenter {
 
             @Override
             public void onError(Throwable e) {
+                e.printStackTrace();
                 mLoginView.inputError(view, R.string.username_or_password_error);
             }
 

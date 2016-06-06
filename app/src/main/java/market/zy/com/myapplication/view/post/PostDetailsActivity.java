@@ -345,7 +345,7 @@ public class PostDetailsActivity extends BaseActivity {
         mPostGoodName.setText(postDetail.getGoodsName());
         mPostGoodBuyTime.setText(postDetail.getGoodsBuyTime());
         mPostSellerName.setText(postDetail.getPostNickName());
-        mPostGoodPrice.setText(mPostGoodPrice.getText().toString() + "   " + postDetail.getGoodsPrice());
+        mPostGoodPrice.setText(mPostGoodPrice.getText().toString() + postDetail.getGoodsPrice());
         mPostGoodDetails.setText(postDetail.getBody());
         mPostGoodQuality.setText(postDetail.getGoodsQuality());
         mPostGoodLocation.setText(postDetail.getGoodsLocation());

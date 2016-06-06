@@ -32,7 +32,8 @@ import rx.Subscriber;
 /**
  * Created by zpauly on 16-5-18.
  */
-public class UserDetailFragment extends BaseFragment {
+public class UserDetailFragment extends BaseFragment implements UserDetailContract.View {
+    private UserDetailContract.Presenter mPresenter;
 
     private View mView;
 
@@ -48,13 +49,7 @@ public class UserDetailFragment extends BaseFragment {
     @Bind(R.id.personal_detail_recyclerview)
     protected RecyclerView mRecyclerView;
 
-    private boolean isFollowed = false;
-    private String auth;
     private int otherId;
-
-    private Subscriber<FollowStates> followSubscriber;
-    private Subscriber<UnfollowStates> unfollowSubscriber;
-    private Subscriber<JudgeFollowStates> judgeFollowSubscriber;
 
     @Nullable
     @Override
@@ -62,17 +57,16 @@ public class UserDetailFragment extends BaseFragment {
         mView = inflater.inflate(R.layout.personal_details_fragment, container, false);
         ButterKnife.bind(this, mView);
 
-        auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(getContext()).getCurrentUsername()
-                , SPUtil.getInstance(getContext()).getCurrentPassword());
-
         if (((UserActivity) getActivity()).getPerson() == UserActivity.OTHERS) {
             mFollowLayout.setVisibility(View.VISIBLE);
             otherId = ((UserActivity) getActivity()).getOtherId();
+            new UserDetailPresenter(this, getContext(), mFollowImage, mFollowText, otherId);
+            mPresenter.start();
             isAuthorFollowed();
             mFollowLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (isFollowed) {
+                    if (mPresenter.isFollowed()) {
                         unfollow();
                     } else {
                         follow();
@@ -92,99 +86,36 @@ public class UserDetailFragment extends BaseFragment {
 
     @Override
     public void onPause() {
-        unsubscribe();
+        if (mPresenter != null) {
+            mPresenter.stop();
+        }
         super.onPause();
     }
 
-    private void unsubscribe() {
-        if (followSubscriber != null) {
-            followSubscriber.unsubscribe();
-        }
-        if (unfollowSubscriber != null) {
-            unfollowSubscriber.unsubscribe();
-        }
-        if (judgeFollowSubscriber != null) {
-            judgeFollowSubscriber.unsubscribe();
-        }
-    }
-
     private void follow() {
-        followSubscriber = new Subscriber<FollowStates>() {
-            @Override
-            public void onCompleted() {
-                isAuthorFollowed();
-                showSnackbarTipShort(getView(), R.string.follow_true);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(FollowStates followStates) {
-
-            }
-        };
-        Follow follow = new Follow();
-        follow.setUserId(userInfo.getUserId());
-        follow.setFollowedId(otherId);
-        JxnuGoNetMethod.getInstance().followUser(followSubscriber, auth, follow);
+        mPresenter.follow();
     }
 
     private void unfollow() {
-        unfollowSubscriber = new Subscriber<UnfollowStates>() {
-            @Override
-            public void onCompleted() {
-                isAuthorFollowed();
-                showSnackbarTipShort(getView(), R.string.follow_false);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(UnfollowStates unfollowStates) {
-
-            }
-        };
-        UnFollow follow = new UnFollow();
-        follow.setUserId(userInfo.getUserId());
-        follow.setUnfollowedId(otherId);
-        JxnuGoNetMethod.getInstance().unfollowUser(unfollowSubscriber, auth, follow);
+        mPresenter.unfollow();
     }
 
     private void isAuthorFollowed() {
-        judgeFollowSubscriber = new Subscriber<JudgeFollowStates>() {
-            @Override
-            public void onCompleted() {
+        mPresenter.isAuthorFollowed();
+    }
 
-            }
+    @Override
+    public void setPresenter(UserDetailContract.Presenter presenter) {
+        mPresenter = presenter;
+    }
 
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
+    @Override
+    public void showFollowSuccess(View view, int stringRes) {
+        showSnackbarTipShort(view, stringRes);
+    }
 
-            @Override
-            public void onNext(JudgeFollowStates judgeFollowStates) {
-                if (judgeFollowStates.getJudgeInfo() == 0) {
-                    mFollowImage.setImageResource(R.drawable.ic_person_outline_black_24dp);
-                    mFollowText.setText(R.string.click_to_follow);
-                    isFollowed = false;
-                }
-                if (judgeFollowStates.getJudgeInfo() == 1) {
-                    mFollowText.setText(R.string.click_to_unfollow);
-                    mFollowImage.setImageResource(R.drawable.ic_person_black_24dp);
-                    isFollowed = true;
-                }
-            }
-        };
-        JudgeFollow follow = new JudgeFollow();
-        follow.setUserId(userInfo.getUserId());
-        follow.setFollowerId(otherId);
-        JxnuGoNetMethod.getInstance().judgeFollowUser(judgeFollowSubscriber, auth, follow);
+    @Override
+    public void showUnFollowSuccess(View view, int stringRes) {
+        showSnackbarTipShort(view, stringRes);
     }
 }

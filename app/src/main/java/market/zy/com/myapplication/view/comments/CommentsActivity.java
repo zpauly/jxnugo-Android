@@ -95,9 +95,9 @@ public class CommentsActivity extends BaseActivity {
     }
 
     private void unsubscribe() {
-        if (subscriber != null || !subscriber.isUnsubscribed())
+        if (subscriber != null)
             subscriber.unsubscribe();
-        if (newCommentSuccessSubscriber != null || !newCommentSuccessSubscriber.isUnsubscribed()) {
+        if (newCommentSuccessSubscriber != null) {
             newCommentSuccessSubscriber.unsubscribe();
         }
     }

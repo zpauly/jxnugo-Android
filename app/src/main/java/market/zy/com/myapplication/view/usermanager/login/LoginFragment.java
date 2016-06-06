@@ -2,7 +2,6 @@ package market.zy.com.myapplication.view.usermanager.login;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -17,20 +16,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.base.BaseFragment;
-import market.zy.com.myapplication.db.user.UserInfoDao;
-import market.zy.com.myapplication.entity.user.UserBasicInfo;
-import market.zy.com.myapplication.entity.user.login.LoginTokenSuccess;
-import market.zy.com.myapplication.network.JxnuGoNetMethod;
-import market.zy.com.myapplication.utils.AuthUtil;
-import market.zy.com.myapplication.utils.SPUtil;
-import rx.Subscriber;
 
 /**
  * Created by zpauly on 2016/3/8.
  */
 public class LoginFragment extends BaseFragment implements LoginContract.View {
-    /*private static final int QQ_BUTTON = 1;
-    private static final int SINA_BUTTON = 2;*/
     private LoginContract.Presenter mPresenter;
 
     @Bind(R.id.login_username)
@@ -41,24 +31,6 @@ public class LoginFragment extends BaseFragment implements LoginContract.View {
 
     @Bind(R.id.confirm_to_login)
     protected Button mButton;
-
-    /*@Bind(R.id.qq_login_button)
-    protected ImageButton mQQLoginButton;
-
-    @Bind(R.id.sina_login_button)
-    protected LoginButton mSinaLoginButton;
-
-
-    private static Tencent mTencent;
-    private IUiListener listener;
-
-    private AuthInfo mAuthInfo;
-
-    private int clickedButton;*/
-
-
-    private Subscriber<LoginTokenSuccess> loginSubscriber;
-    private Subscriber<UserBasicInfo> userinfoSubscriber;
 
     @Nullable
     @Override
@@ -71,23 +43,19 @@ public class LoginFragment extends BaseFragment implements LoginContract.View {
 
     @Override
     public void onStop() {
-        /*mPresenter.stop();*/
+        mPresenter.stop();
         super.onPause();
     }
 
     private void initView() {
-        /*new LoginPresenter(this, getContext());
-        mPresenter.start();*/
+        new LoginPresenter(this, getContext());
+        mPresenter.start();
 
         mButton.setEnabled(false);
 
         setTextListener();
 
         setLoginButton();
-
-        /*setQQLogin();
-
-        setSinaLogin();*/
     }
 
     private void setTextListener() {
@@ -98,12 +66,12 @@ public class LoginFragment extends BaseFragment implements LoginContract.View {
 
     @Override
     public void inputError(View view, int stringRes) {
-
+        showSnackbarTipShort(view, stringRes);
     }
 
     @Override
     public void completeLogin() {
-
+        getActivity().finish();
     }
 
     @Override
@@ -140,121 +108,8 @@ public class LoginFragment extends BaseFragment implements LoginContract.View {
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*mPresenter.login(mEditText, mPasswordEditText);*/
-                loginSubscriber = new Subscriber<LoginTokenSuccess>() {
-                    @Override
-                    public void onCompleted() {
-                        loadUserInfo();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Snackbar.make(getView(), R.string.username_or_password_error, Snackbar.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onNext(LoginTokenSuccess loginTokenSuccess) {
-                        SPUtil sp = SPUtil.getInstance(getContext());
-                        sp.putCurrentUsername(mEditText.getText().toString());
-                        sp.putCurrentPassword(mPasswordEditText.getText().toString());
-                        sp.putCurrentUserId(loginTokenSuccess.getUserId());
-                    }
-                };
-                String username = mEditText.getText().toString();
-                String password = mPasswordEditText.getText().toString();
-                String auth = AuthUtil.getAuthFromUsernameAndPassword(username, password);
-                JxnuGoNetMethod.getInstance()
-                        .login(loginSubscriber, auth, username, password);
+                mPresenter.login(mEditText, mPasswordEditText);
             }
         });
     }
-
-    private void loadUserInfo() {
-        userinfoSubscriber = new Subscriber<UserBasicInfo>() {
-            @Override
-            public void onCompleted() {
-                getActivity().finish();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Snackbar.make(getView(), R.string.username_or_password_error, Snackbar.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onNext(UserBasicInfo info) {
-                UserInfoDao.insertUserInfo(info);
-            }
-        };
-        SPUtil sp = SPUtil.getInstance(getContext());
-        String auth = AuthUtil.getAuthFromUsernameAndPassword(sp.getCurrentUsername(), sp.getCurrentPassword());
-        JxnuGoNetMethod.getInstance()
-                .getUserInfo(userinfoSubscriber, auth, sp.getCurrentUserId());
-    }
-
-    /*private void setQQLogin() {
-        listener = new LoginUiListener();
-        if (mTencent == null) {
-            mTencent = Tencent.createInstance(AppConstants.APP_ID, getContext().getApplicationContext());
-        }
-
-        mQQLoginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clickedButton = QQ_BUTTON;
-                if (mTencent != null) {
-                    if (!mTencent.isSessionValid())
-                    {
-                        mTencent.login(LoginFragment.this, AppConstants.SCPOE_ALL, listener);
-                    }
-                }
-            }
-        });
-    }
-
-    private void setSinaLogin() {
-        mAuthInfo = new AuthInfo(getActivity()
-                , Constants.APP_KEY
-                , Constants.REDIRECT_URL
-                , Constants.SCOPE);
-
-        mSinaLoginButton.setWeiboAuthInfo(mAuthInfo, new WeiboAuthListener() {
-            @Override
-            public void onComplete(Bundle bundle) {
-                clickedButton = SINA_BUTTON;
-                Oauth2AccessToken mAccessToken = Oauth2AccessToken.parseAccessToken(bundle);
-                if (mAccessToken.isSessionValid()) {
-                    AccessTokenKeeper.writeAccessToken(getContext().getApplicationContext(), mAccessToken);
-                }
-            }
-
-            @Override
-            public void onWeiboException(WeiboException e) {
-                clickedButton = SINA_BUTTON;
-            }
-
-            @Override
-            public void onCancel() {
-                clickedButton = SINA_BUTTON;
-            }
-        });
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (clickedButton) {
-            case QQ_BUTTON :
-                if (mQQLoginButton != null) {
-                    mTencent.onActivityResult(requestCode, resultCode, data);
-                }
-                break;
-            case SINA_BUTTON :
-                if (mSinaLoginButton != null) {
-                    mSinaLoginButton.onActivityResult(requestCode, resultCode, data);
-                }
-                break;
-            default:
-                break;
-        }
-    }*/
 }

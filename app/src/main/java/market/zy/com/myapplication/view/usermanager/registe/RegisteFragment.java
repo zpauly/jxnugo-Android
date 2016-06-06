@@ -19,10 +19,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.base.BaseFragment;
-import market.zy.com.myapplication.entity.user.registe.RegisteStates;
-import market.zy.com.myapplication.entity.user.registe.RegisterInfo;
-import market.zy.com.myapplication.network.JxnuGoNetMethod;
-import rx.Subscriber;
 
 /**
  * Created by zpauly on 2016/3/8.
@@ -45,37 +41,22 @@ public class RegisteFragment extends BaseFragment implements RegisteContract.Vie
     @Bind(R.id.confirm)
     protected Button registeButton;
 
-    private Subscriber<RegisteStates> registeSubscriber;
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_register, container, false);
-        initView(view);
+        ButterKnife.bind(this, view);
+        initView();
         return view;
     }
 
     @Override
     public void onPause() {
-        unsubscribe();
+        mPresenter.stop();
         super.onPause();
     }
 
-    @Override
-    public void onDestroy() {
-        unsubscribe();
-        super.onDestroy();
-    }
-
-    private void unsubscribe() {
-        if (registeSubscriber != null) {
-            registeSubscriber.unsubscribe();
-        }
-    }
-
-    private void initView(View view) {
-        ButterKnife.bind(this, view);
-
+    private void initView() {
         new RegistePresenter(this, getContext());
         mPresenter.start();
 
@@ -112,29 +93,6 @@ public class RegisteFragment extends BaseFragment implements RegisteContract.Vie
     }
 
     private void registe() {
-        /*RegisterInfo info = new RegisterInfo();
-        info.setUserName(mRegisteUsername.getText().toString());
-        info.setUserEmail(mRegisteEmail.getText().toString());
-        info.setPassWord(mRegistePassword.getText().toString());
-
-        registeSubscriber = new Subscriber<RegisteStates>() {
-            @Override
-            public void onCompleted() {
-                showSnackbarTipShort(mRegisteUsername, R.string.registe_success);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                showSnackbarTipShort(mRegisteUsername, R.string.error_upload);
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onNext(RegisteStates registeSuccess) {
-
-            }
-        };
-        JxnuGoNetMethod.getInstance().registe(registeSubscriber, info);*/
         mPresenter.registe(mRegisteUsername, mRegistePassword, mRegisteEmail);
     }
 
