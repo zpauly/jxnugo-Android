@@ -1,10 +1,7 @@
 package market.zy.com.myapplication.view.user;
 
 import android.content.Context;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.db.user.UserInfoDao;
 import market.zy.com.myapplication.db.user.UserInfoModel;
 import market.zy.com.myapplication.entity.user.follow.Follow;
@@ -29,22 +26,15 @@ public class UserDetailPresenter implements UserDetailContract.Presenter {
     private UserInfoModel userInfo;
     private String auth;
 
-    private ImageView mFollowImageView;
-    private TextView mFollowTextView;
-
     private Subscriber<FollowStates> followSubscriber;
     private Subscriber<UnfollowStates> unfollowSubscriber;
     private Subscriber<JudgeFollowStates> judgeFollowSubscriber;
 
     private int otherId;
-    private boolean isFollowed;
 
-    public UserDetailPresenter(UserDetailContract.View view, Context context
-            , ImageView mFollowImage, TextView mFollowText, int otherId) {
+    public UserDetailPresenter(UserDetailContract.View view, Context context, int otherId) {
         mUserDetailView = view;
         mContext = context;
-        mFollowImageView = mFollowImage;
-        mFollowTextView = mFollowText;
         this.otherId = otherId;
         mUserDetailView.setPresenter(this);
     }
@@ -81,8 +71,7 @@ public class UserDetailPresenter implements UserDetailContract.Presenter {
         followSubscriber = new Subscriber<FollowStates>() {
             @Override
             public void onCompleted() {
-                isAuthorFollowed();
-                mUserDetailView.showFollowSuccess(mFollowImageView, R.string.follow_true);
+
             }
 
             @Override
@@ -106,8 +95,7 @@ public class UserDetailPresenter implements UserDetailContract.Presenter {
         unfollowSubscriber = new Subscriber<UnfollowStates>() {
             @Override
             public void onCompleted() {
-                isAuthorFollowed();
-                mUserDetailView.showFollowSuccess(mFollowImageView, R.string.follow_false);
+
             }
 
             @Override
@@ -141,26 +129,12 @@ public class UserDetailPresenter implements UserDetailContract.Presenter {
 
             @Override
             public void onNext(JudgeFollowStates judgeFollowStates) {
-                if (judgeFollowStates.getJudgeInfo() == 0) {
-                    mFollowImageView.setImageResource(R.drawable.ic_person_outline_black_24dp);
-                    mFollowTextView.setText(R.string.click_to_follow);
-                    isFollowed = false;
-                }
-                if (judgeFollowStates.getJudgeInfo() == 1) {
-                    mFollowTextView.setText(R.string.click_to_unfollow);
-                    mFollowImageView.setImageResource(R.drawable.ic_person_black_24dp);
-                    isFollowed = true;
-                }
+
             }
         };
         JudgeFollow follow = new JudgeFollow();
         follow.setUserId(userInfo.getUserId());
         follow.setFollowerId(otherId);
         netMethod.judgeFollowUser(judgeFollowSubscriber, auth, follow);
-    }
-
-    @Override
-    public boolean isFollowed() {
-        return isFollowed;
     }
 }

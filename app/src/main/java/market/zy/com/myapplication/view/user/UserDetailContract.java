@@ -4,6 +4,7 @@ import android.view.View;
 
 import market.zy.com.myapplication.base.BasePresenter;
 import market.zy.com.myapplication.base.BaseView;
+import market.zy.com.myapplication.entity.user.follow.JudgeFollowStates;
 
 /**
  * Created by zpauly on 16-6-4.
@@ -15,13 +16,13 @@ public class UserDetailContract {
         void unfollow();
 
         void isAuthorFollowed();
-
-        boolean isFollowed();
     }
 
     interface View extends BaseView<Presenter> {
-        void showFollowSuccess(android.view.View view, int stringRes);
+        void setFollowState(JudgeFollowStates judgeFollowStates);
 
-        void showUnFollowSuccess(android.view.View view, int stringRes);
+        void unfollowSuccess();
+
+        void followSuccess();
     }
 }

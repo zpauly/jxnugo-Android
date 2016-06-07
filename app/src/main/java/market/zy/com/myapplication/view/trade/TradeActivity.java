@@ -25,7 +25,6 @@ import butterknife.ButterKnife;
 import market.zy.com.myapplication.Constants;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.view.NoInternetFragment;
-import market.zy.com.myapplication.view.classify.ClassifyActivity;
 import market.zy.com.myapplication.view.publish.PublishGoodsActivity;
 import market.zy.com.myapplication.listener.OnSearchListener;
 import market.zy.com.myapplication.ui.material.MaterialDrawerActivity;
@@ -164,9 +163,7 @@ public class TradeActivity extends MaterialDrawerActivity {
                         startActivity(publish);
                         break;
                     case 2 :
-                        Intent classify = new Intent();
-                        classify.setClass(TradeActivity.this, ClassifyActivity.class);
-                        startActivity(classify);
+
                         break;
                     default:
                         break;

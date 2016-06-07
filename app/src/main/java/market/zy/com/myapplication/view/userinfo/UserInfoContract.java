@@ -1,25 +1,33 @@
 package market.zy.com.myapplication.view.userinfo;
 
-import market.zy.com.myapplication.adapter.recyclerviewAdapter.FollowerFollowingAdapter;
-import market.zy.com.myapplication.adapter.recyclerviewAdapter.PostCollectionAdapter;
 import market.zy.com.myapplication.base.BasePresenter;
 import market.zy.com.myapplication.base.BaseView;
+import market.zy.com.myapplication.entity.post.collection.CollectionPosts;
+import market.zy.com.myapplication.entity.post.user.UserPosts;
+import market.zy.com.myapplication.entity.user.follow.UserFollowed;
+import market.zy.com.myapplication.entity.user.follow.UserFollowers;
 
 /**
  * Created by zpauly on 16-6-6.
  */
 public class UserInfoContract {
     interface Presenter extends BasePresenter {
-        void loadPostsData(PostCollectionAdapter adapter);
+        void loadPostsData();
 
-        void loadCollectionData(PostCollectionAdapter adapter);
+        void loadCollectionData();
 
-        void loadFollowersData(FollowerFollowingAdapter adapter);
+        void loadFollowersData();
 
-        void loadFollowedData(FollowerFollowingAdapter adapter);
+        void loadFollowedData();
     }
 
     interface View extends BaseView<Presenter> {
+        void addAllCollectionData(CollectionPosts collectionPosts);
 
+        void addAllPostsData(UserPosts userPosts);
+
+        void addAllFollowersData(UserFollowers userFollowers);
+
+        void addAllFollowedData(UserFollowed userFollowed);
     }
 }

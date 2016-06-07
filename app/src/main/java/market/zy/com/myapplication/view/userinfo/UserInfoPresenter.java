@@ -2,12 +2,8 @@ package market.zy.com.myapplication.view.userinfo;
 
 import android.content.Context;
 
-import market.zy.com.myapplication.adapter.recyclerviewAdapter.FollowerFollowingAdapter;
-import market.zy.com.myapplication.adapter.recyclerviewAdapter.PostCollectionAdapter;
-import market.zy.com.myapplication.db.post.PostDetailDao;
 import market.zy.com.myapplication.db.user.UserInfoDao;
 import market.zy.com.myapplication.db.user.UserInfoModel;
-import market.zy.com.myapplication.entity.post.OneSimplePost;
 import market.zy.com.myapplication.entity.post.collection.CollectionPosts;
 import market.zy.com.myapplication.entity.post.user.UserPosts;
 import market.zy.com.myapplication.entity.user.follow.UserFollowed;
@@ -75,7 +71,7 @@ public class UserInfoPresenter implements UserInfoContract.Presenter {
     }
 
     @Override
-    public void loadPostsData(final PostCollectionAdapter adapter) {
+    public void loadPostsData() {
         userPostsSubscriber = new Subscriber<UserPosts>() {
             @Override
             public void onCompleted() {
@@ -89,17 +85,14 @@ public class UserInfoPresenter implements UserInfoContract.Presenter {
 
             @Override
             public void onNext(UserPosts userPosts) {
-                adapter.addAllData(userPosts.getUserPosts());
-                for (OneSimplePost post : userPosts.getUserPosts()) {
-                    PostDetailDao.insertPostDetail(post);
-                }
+                mUserinfoView.addAllPostsData(userPosts);
             }
         };
         JxnuGoNetMethod.getInstance().getUserPosts(userPostsSubscriber, auth, userId);
     }
 
     @Override
-    public void loadCollectionData(final PostCollectionAdapter adapter) {
+    public void loadCollectionData() {
         collectionPostsSubscriber = new Subscriber<CollectionPosts>() {
             @Override
             public void onCompleted() {
@@ -113,17 +106,14 @@ public class UserInfoPresenter implements UserInfoContract.Presenter {
 
             @Override
             public void onNext(CollectionPosts collectionPosts) {
-                adapter.addAllData(collectionPosts.getCollectionPost());
-                for (OneSimplePost post : collectionPosts.getCollectionPost()) {
-                    PostDetailDao.insertPostDetail(post);
-                }
+                mUserinfoView.addAllCollectionData(collectionPosts);
             }
         };
         JxnuGoNetMethod.getInstance().getCollectionPosts(collectionPostsSubscriber, auth, userId);
     }
 
     @Override
-    public void loadFollowersData(final FollowerFollowingAdapter adapter) {
+    public void loadFollowersData() {
         followersSubscriber = new Subscriber<UserFollowers>() {
             @Override
             public void onCompleted() {
@@ -137,14 +127,14 @@ public class UserInfoPresenter implements UserInfoContract.Presenter {
 
             @Override
             public void onNext(UserFollowers userFollowers) {
-                adapter.addAllData(userFollowers.getFollowers());
+                mUserinfoView.addAllFollowersData(userFollowers);
             }
         };
         JxnuGoNetMethod.getInstance().getUserFollowers(followersSubscriber, auth, userId);
     }
 
     @Override
-    public void loadFollowedData(final FollowerFollowingAdapter adapter) {
+    public void loadFollowedData() {
         followedSubscirber = new Subscriber<UserFollowed>() {
             @Override
             public void onCompleted() {
@@ -158,7 +148,7 @@ public class UserInfoPresenter implements UserInfoContract.Presenter {
 
             @Override
             public void onNext(UserFollowed userFollowed) {
-                adapter.addAllData(userFollowed.getFollowed());
+                mUserinfoView.addAllFollowedData(userFollowed);
             }
         };
         JxnuGoNetMethod.getInstance().getUserFollowed(followedSubscirber, auth, userId);

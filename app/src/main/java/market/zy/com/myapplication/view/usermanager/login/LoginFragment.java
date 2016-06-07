@@ -16,6 +16,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.base.BaseFragment;
+import market.zy.com.myapplication.entity.user.login.LoginTokenSuccess;
+import market.zy.com.myapplication.utils.SPUtil;
 
 /**
  * Created by zpauly on 2016/3/8.
@@ -65,13 +67,21 @@ public class LoginFragment extends BaseFragment implements LoginContract.View {
     }
 
     @Override
-    public void inputError(View view, int stringRes) {
-        showSnackbarTipShort(view, stringRes);
+    public void inputError() {
+        showSnackbarTipShort(getView(), R.string.username_or_password_error);
     }
 
     @Override
     public void completeLogin() {
         getActivity().finish();
+    }
+
+    @Override
+    public void insertCurrentUserIntoSP(LoginTokenSuccess loginTokenSuccess) {
+        SPUtil sp = SPUtil.getInstance(getContext());
+        sp.putCurrentUsername(mEditText.getText().toString());
+        sp.putCurrentPassword(mPasswordEditText.getText().toString());
+        sp.putCurrentUserId(loginTokenSuccess.getUserId());
     }
 
     @Override

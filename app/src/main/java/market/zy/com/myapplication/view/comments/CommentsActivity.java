@@ -34,7 +34,9 @@ import rx.Subscriber;
 /**
  * Created by zpauly on 16-5-10.
  */
-public class CommentsActivity extends BaseActivity {
+public class CommentsActivity extends BaseActivity implements CommentsContract.View {
+    private CommentsContract.Presenter mPresenter;
+
     @Bind(R.id.comments_toolbar)
     protected Toolbar mToolbar;
 
@@ -78,28 +80,16 @@ public class CommentsActivity extends BaseActivity {
 
     @Override
     protected void onPause() {
-        unsubscribe();
+        mPresenter.stop();
         super.onPause();
     }
 
-    @Override
-    protected void onDestroy() {
-        unsubscribe();
-        super.onDestroy();
-    }
-
     private void initView() {
+        new CommentsPresenter(this, this);
+        mPresenter.start();
         setUpToolbar();
         setUpRecyclerView();
         setUpButton();
-    }
-
-    private void unsubscribe() {
-        if (subscriber != null)
-            subscriber.unsubscribe();
-        if (newCommentSuccessSubscriber != null) {
-            newCommentSuccessSubscriber.unsubscribe();
-        }
     }
 
     private void setUpToolbar() {
@@ -155,28 +145,7 @@ public class CommentsActivity extends BaseActivity {
         newComment.setBody(mAddCommentEditText.getText().toString());
         newComment.setPostId(postId);
         newComment.setUserId(userInfo.getUserId());
-        newCommentSuccessSubscriber = new Subscriber<NewCommentStates>() {
-            @Override
-            public void onCompleted() {
-                uploadDialog.dismiss();
-                showSnackbarTipShort(getCurrentFocus(), R.string.upload_successly);
-                initView();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                uploadDialog.dismiss();
-                showSnackbarTipShort(getCurrentFocus(), R.string.error_upload);
-            }
-
-            @Override
-            public void onNext(NewCommentStates newCommentSuccess) {
-
-            }
-        };
-        String auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(this).getCurrentUsername()
-                ,SPUtil.getInstance(this).getCurrentPassword());
-        JxnuGoNetMethod.getInstance().addNewComments(newCommentSuccessSubscriber, auth, newComment);
+        mPresenter.putNewComment(newComment);
     }
 
     private void setUpRecyclerView() {
@@ -213,29 +182,34 @@ public class CommentsActivity extends BaseActivity {
     }
 
     private void loadCommentData() {
-        subscriber = new Subscriber<AllComments>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(AllComments allComments) {
-                mRAdapter.clearData();
-                mRAdapter.addAllData(allComments.getComments());
-            }
-        };
-        String auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(this).getCurrentUsername()
-                ,SPUtil.getInstance(this).getCurrentPassword());
-        JxnuGoNetMethod.getInstance().getAllComments(subscriber, auth, postId);
+        mPresenter.loadCommentData(postId);
     }
 
     private void getPostId() {
         postId = getIntent().getIntExtra(TradeActivity.POST_ID, -1);
+    }
+
+    @Override
+    public void setPresenter(CommentsContract.Presenter presenter) {
+        mPresenter = presenter;
+    }
+
+    @Override
+    public void putNewCommentSuccess() {
+        uploadDialog.dismiss();
+        showSnackbarTipShort(getCurrentFocus(), R.string.upload_successly);
+        initView();
+    }
+
+    @Override
+    public void putNewCommentFail() {
+        uploadDialog.dismiss();
+        showSnackbarTipShort(getCurrentFocus(), R.string.error_upload);
+    }
+
+    @Override
+    public void addComments(AllComments allComments) {
+        mRAdapter.clearData();
+        mRAdapter.addAllData(allComments.getComments());
     }
 }

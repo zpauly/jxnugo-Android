@@ -1,10 +1,8 @@
 package market.zy.com.myapplication.view.usermanager.login;
 
 import android.content.Context;
-import android.view.View;
 import android.widget.EditText;
 
-import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.db.user.UserInfoDao;
 import market.zy.com.myapplication.entity.user.UserBasicInfo;
 import market.zy.com.myapplication.entity.user.login.LoginTokenSuccess;
@@ -24,6 +22,7 @@ public class LoginPresenter implements LoginContract.Presenter {
     private Subscriber<UserBasicInfo> userinfoSubscriber;
 
     private JxnuGoNetMethod netMethod;
+    private String auth;
 
     public LoginPresenter(LoginContract.View loginView, Context context) {
         mContext = context;
@@ -32,13 +31,13 @@ public class LoginPresenter implements LoginContract.Presenter {
     }
 
     @Override
-    public void login(final EditText usernameEt, EditText passwordEt) {
-        final String username = usernameEt.getText().toString();
-        final String password = passwordEt.getText().toString();
+    public void login(EditText usernameEt, EditText passwordEt) {
+        String username = usernameEt.getText().toString();
+        String password = passwordEt.getText().toString();
         loginSubscriber = new Subscriber<LoginTokenSuccess>() {
             @Override
             public void onCompleted() {
-                loadUserInfo(usernameEt);
+                loadUserInfo();
             }
 
             @Override
@@ -48,10 +47,7 @@ public class LoginPresenter implements LoginContract.Presenter {
 
             @Override
             public void onNext(LoginTokenSuccess loginTokenSuccess) {
-                SPUtil sp = SPUtil.getInstance(mContext);
-                sp.putCurrentUsername(username);
-                sp.putCurrentPassword(password);
-                sp.putCurrentUserId(loginTokenSuccess.getUserId());
+                mLoginView.insertCurrentUserIntoSP(loginTokenSuccess);
             }
         };
         String auth = AuthUtil.getAuthFromUsernameAndPassword(username, password);
@@ -59,7 +55,7 @@ public class LoginPresenter implements LoginContract.Presenter {
     }
 
     @Override
-    public void loadUserInfo(final View view) {
+    public void loadUserInfo() {
         userinfoSubscriber = new Subscriber<UserBasicInfo>() {
             @Override
             public void onCompleted() {
@@ -69,7 +65,7 @@ public class LoginPresenter implements LoginContract.Presenter {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                mLoginView.inputError(view, R.string.username_or_password_error);
+                mLoginView.inputError();
             }
 
             @Override
@@ -77,21 +73,25 @@ public class LoginPresenter implements LoginContract.Presenter {
                 UserInfoDao.insertUserInfo(info);
             }
         };
-        SPUtil sp = SPUtil.getInstance(mContext);
-        String auth = AuthUtil.getAuthFromUsernameAndPassword(sp.getCurrentUsername(), sp.getCurrentPassword());
-        netMethod.getUserInfo(userinfoSubscriber, auth, sp.getCurrentUserId());
+        netMethod.getUserInfo(userinfoSubscriber, auth, SPUtil.getInstance(mContext).getCurrentUserId());
     }
 
     @Override
     public void start() {
         netMethod = JxnuGoNetMethod.getInstance();
+        auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(mContext).getCurrentUsername()
+                , SPUtil.getInstance(mContext).getCurrentPassword());
     }
 
     @Override
     public void stop() {
-        if (loginSubscriber != null || !loginSubscriber.isUnsubscribed())
-            loginSubscriber.unsubscribe();
-        if (userinfoSubscriber != null || !userinfoSubscriber.isUnsubscribed())
-            userinfoSubscriber.unsubscribe();
+        if (loginSubscriber != null)
+            if (loginSubscriber.isUnsubscribed()) {
+                loginSubscriber.unsubscribe();
+            }
+        if (userinfoSubscriber != null)
+            if (userinfoSubscriber.isUnsubscribed()) {
+                userinfoSubscriber.unsubscribe();
+            }
     }
 }

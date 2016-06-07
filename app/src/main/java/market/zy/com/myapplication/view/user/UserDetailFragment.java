@@ -50,6 +50,7 @@ public class UserDetailFragment extends BaseFragment implements UserDetailContra
     protected RecyclerView mRecyclerView;
 
     private int otherId;
+    private boolean isFollowed = false;
 
     @Nullable
     @Override
@@ -60,13 +61,13 @@ public class UserDetailFragment extends BaseFragment implements UserDetailContra
         if (((UserActivity) getActivity()).getPerson() == UserActivity.OTHERS) {
             mFollowLayout.setVisibility(View.VISIBLE);
             otherId = ((UserActivity) getActivity()).getOtherId();
-            new UserDetailPresenter(this, getContext(), mFollowImage, mFollowText, otherId);
+            new UserDetailPresenter(this, getContext(), otherId);
             mPresenter.start();
             isAuthorFollowed();
             mFollowLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mPresenter.isFollowed()) {
+                    if (isFollowed) {
                         unfollow();
                     } else {
                         follow();
@@ -110,12 +111,28 @@ public class UserDetailFragment extends BaseFragment implements UserDetailContra
     }
 
     @Override
-    public void showFollowSuccess(View view, int stringRes) {
-        showSnackbarTipShort(view, stringRes);
+    public void setFollowState(JudgeFollowStates judgeFollowStates) {
+        if (judgeFollowStates.getJudgeInfo() == 0) {
+            mFollowImage.setImageResource(R.drawable.ic_person_outline_black_24dp);
+            mFollowText.setText(R.string.click_to_follow);
+            isFollowed = false;
+        }
+        if (judgeFollowStates.getJudgeInfo() == 1) {
+            mFollowText.setText(R.string.click_to_unfollow);
+            mFollowImage.setImageResource(R.drawable.ic_person_black_24dp);
+            isFollowed = true;
+        }
     }
 
     @Override
-    public void showUnFollowSuccess(View view, int stringRes) {
-        showSnackbarTipShort(view, stringRes);
+    public void unfollowSuccess() {
+        isAuthorFollowed();
+        showSnackbarTipShort(getView(), R.string.follow_false);
+    }
+
+    @Override
+    public void followSuccess() {
+        isAuthorFollowed();
+        showSnackbarTipShort(getView(), R.string.follow_true);
     }
 }

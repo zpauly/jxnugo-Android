@@ -12,19 +12,15 @@ import android.view.View;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import market.zy.com.myapplication.R;
-import market.zy.com.myapplication.base.BaseActivity;
 import market.zy.com.myapplication.adapter.recyclerviewAdapter.FollowerFollowingAdapter;
 import market.zy.com.myapplication.adapter.recyclerviewAdapter.PostCollectionAdapter;
+import market.zy.com.myapplication.base.BaseActivity;
 import market.zy.com.myapplication.db.post.PostDetailDao;
 import market.zy.com.myapplication.entity.post.OneSimplePost;
 import market.zy.com.myapplication.entity.post.collection.CollectionPosts;
 import market.zy.com.myapplication.entity.post.user.UserPosts;
 import market.zy.com.myapplication.entity.user.follow.UserFollowed;
 import market.zy.com.myapplication.entity.user.follow.UserFollowers;
-import market.zy.com.myapplication.network.JxnuGoNetMethod;
-import market.zy.com.myapplication.utils.AuthUtil;
-import market.zy.com.myapplication.utils.SPUtil;
-import rx.Subscriber;
 
 /**
  * Created by zpauly on 16-5-25.
@@ -140,44 +136,70 @@ public class UserInfoActivity extends BaseActivity implements UserInfoContract.V
             case MY_POST :
                 mAdapter = new PostCollectionAdapter(this);
                 mRecyclerView.setAdapter(mAdapter);
-                loadPostsData((PostCollectionAdapter) mAdapter);
+                loadPostsData();
                 break;
             case MY_COLLECTION :
                 mAdapter = new PostCollectionAdapter(this);
                 mRecyclerView.setAdapter(mAdapter);
-                loadCollectionData((PostCollectionAdapter) mAdapter);
+                loadCollectionData();
                 break;
             case MY_FOLLOWING :
                 mAdapter = new FollowerFollowingAdapter(this);
                 mRecyclerView.setAdapter(mAdapter);
-                loadFollowedData((FollowerFollowingAdapter) mAdapter);
+                loadFollowedData();
                 break;
             case MY_FOLLOWERS :
                 mAdapter = new FollowerFollowingAdapter(this);
                 mRecyclerView.setAdapter(mAdapter);
-                loadFollowersData((FollowerFollowingAdapter) mAdapter);
+                loadFollowersData();
                 break;
         }
     }
 
-    private void loadPostsData(final PostCollectionAdapter adapter) {
-        mPresenter.loadPostsData(adapter);
+    private void loadPostsData() {
+        mPresenter.loadPostsData();
     }
 
-    private void loadCollectionData(final PostCollectionAdapter adapter) {
-        mPresenter.loadCollectionData(adapter);
+    private void loadCollectionData() {
+        mPresenter.loadCollectionData();
     }
 
-    private void loadFollowersData(final FollowerFollowingAdapter adapter) {
-        mPresenter.loadFollowersData(adapter);
+    private void loadFollowersData() {
+        mPresenter.loadFollowersData();
     }
 
-    private void loadFollowedData(final FollowerFollowingAdapter adapter) {
-        mPresenter.loadFollowedData(adapter);
+    private void loadFollowedData() {
+        mPresenter.loadFollowedData();
     }
 
     @Override
     public void setPresenter(UserInfoContract.Presenter presenter) {
         mPresenter = presenter;
+    }
+
+    @Override
+    public void addAllCollectionData(CollectionPosts collectionPosts) {
+        ((PostCollectionAdapter) mAdapter).addAllData(collectionPosts.getCollectionPost());
+        for (OneSimplePost post : collectionPosts.getCollectionPost()) {
+            PostDetailDao.insertPostDetail(post);
+        }
+    }
+
+    @Override
+    public void addAllPostsData(UserPosts userPosts) {
+        ((PostCollectionAdapter) mAdapter).addAllData(userPosts.getUserPosts());
+        for (OneSimplePost post : userPosts.getUserPosts()) {
+            PostDetailDao.insertPostDetail(post);
+        }
+    }
+
+    @Override
+    public void addAllFollowersData(UserFollowers userFollowers) {
+        ((FollowerFollowingAdapter) mAdapter).addAllData(userFollowers.getFollowers());
+    }
+
+    @Override
+    public void addAllFollowedData(UserFollowed userFollowed) {
+        ((FollowerFollowingAdapter) mAdapter).addAllData(userFollowed.getFollowed());
     }
 }
