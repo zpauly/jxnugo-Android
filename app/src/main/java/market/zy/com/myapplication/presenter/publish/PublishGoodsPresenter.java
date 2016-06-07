@@ -1,4 +1,4 @@
-package market.zy.com.myapplication.view.publish;
+package market.zy.com.myapplication.presenter.publish;
 
 import android.content.Context;
 

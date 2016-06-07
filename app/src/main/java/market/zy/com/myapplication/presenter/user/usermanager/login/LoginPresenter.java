@@ -1,4 +1,4 @@
-package market.zy.com.myapplication.view.usermanager.login;
+package market.zy.com.myapplication.presenter.user.usermanager.login;
 
 import android.content.Context;
 import android.widget.EditText;

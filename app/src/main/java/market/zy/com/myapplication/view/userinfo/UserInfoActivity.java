@@ -21,6 +21,8 @@ import market.zy.com.myapplication.entity.post.collection.CollectionPosts;
 import market.zy.com.myapplication.entity.post.user.UserPosts;
 import market.zy.com.myapplication.entity.user.follow.UserFollowed;
 import market.zy.com.myapplication.entity.user.follow.UserFollowers;
+import market.zy.com.myapplication.presenter.user.userinfo.UserInfoContract;
+import market.zy.com.myapplication.presenter.user.userinfo.UserInfoPresenter;
 
 /**
  * Created by zpauly on 16-5-25.

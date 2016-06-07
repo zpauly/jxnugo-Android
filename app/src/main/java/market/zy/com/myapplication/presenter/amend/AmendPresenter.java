@@ -1,17 +1,11 @@
-package market.zy.com.myapplication.view.amend;
+package market.zy.com.myapplication.presenter.amend;
 
 import android.content.Context;
-import android.support.v7.widget.AppCompatSpinner;
-import android.widget.EditText;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.qiniu.android.http.ResponseInfo;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import market.zy.com.myapplication.Constants;
-import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.db.user.UserInfoDao;
 import market.zy.com.myapplication.db.user.UserInfoModel;
 import market.zy.com.myapplication.utils.qiniu.UploadImages;

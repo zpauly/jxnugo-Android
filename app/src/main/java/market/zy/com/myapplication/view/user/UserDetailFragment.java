@@ -15,19 +15,12 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import market.zy.com.myapplication.R;
-import market.zy.com.myapplication.base.BaseFragment;
 import market.zy.com.myapplication.adapter.recyclerviewAdapter.PersonalAdapter;
-import market.zy.com.myapplication.entity.user.follow.Follow;
-import market.zy.com.myapplication.entity.user.follow.FollowStates;
-import market.zy.com.myapplication.entity.user.follow.JudgeFollow;
+import market.zy.com.myapplication.base.BaseFragment;
 import market.zy.com.myapplication.entity.user.follow.JudgeFollowStates;
-import market.zy.com.myapplication.entity.user.follow.UnFollow;
-import market.zy.com.myapplication.entity.user.follow.UnfollowStates;
-import market.zy.com.myapplication.network.JxnuGoNetMethod;
+import market.zy.com.myapplication.presenter.user.UserDetailContract;
+import market.zy.com.myapplication.presenter.user.UserDetailPresenter;
 import market.zy.com.myapplication.ui.support.DividerItemDecoration;
-import market.zy.com.myapplication.utils.AuthUtil;
-import market.zy.com.myapplication.utils.SPUtil;
-import rx.Subscriber;
 
 /**
  * Created by zpauly on 16-5-18.

@@ -1,12 +1,7 @@
-package market.zy.com.myapplication.view.post;
+package market.zy.com.myapplication.presenter.post;
 
 import android.content.Context;
 
-import com.google.gson.JsonNull;
-
-import java.util.List;
-
-import market.zy.com.myapplication.db.post.PhotoModel;
 import market.zy.com.myapplication.db.post.PhotosDao;
 import market.zy.com.myapplication.db.post.PostDetailDao;
 import market.zy.com.myapplication.db.post.PostDetailModel;
@@ -23,7 +18,6 @@ import market.zy.com.myapplication.entity.user.UserBasicInfo;
 import market.zy.com.myapplication.network.JxnuGoNetMethod;
 import market.zy.com.myapplication.utils.AuthUtil;
 import market.zy.com.myapplication.utils.SPUtil;
-import rx.Observable;
 import rx.Subscriber;
 
 /**

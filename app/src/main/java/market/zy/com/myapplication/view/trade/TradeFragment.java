@@ -25,6 +25,7 @@ import market.zy.com.myapplication.entity.post.search.SearchKeyWords;
 import market.zy.com.myapplication.listener.OnItemClickListener;
 import market.zy.com.myapplication.listener.OnSearchListener;
 import market.zy.com.myapplication.network.JxnuGoNetMethod;
+import market.zy.com.myapplication.presenter.trade.TradeContract;
 import market.zy.com.myapplication.utils.AuthUtil;
 import market.zy.com.myapplication.utils.SPUtil;
 import rx.Subscriber;
@@ -32,7 +33,9 @@ import rx.Subscriber;
 /**
  * Created by zpauly on 16-5-19.
  */
-public class TradeFragment extends BaseFragment {
+public class TradeFragment extends BaseFragment implements TradeContract.View {
+    private TradeContract.Presenter mPresenter;
+
     private View mView;
 
     @Bind(R.id.trade_refresh_layout)
@@ -256,202 +259,23 @@ public class TradeFragment extends BaseFragment {
     }
 
     private void loadNewData() {
-        newSubscriber = new Subscriber<OnePagePost>() {
-            @Override
-            public void onCompleted() {
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                mSwipeRefreshLayout.setRefreshing(false);
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onNext(OnePagePost onePagePost) {
-                PhotosDao.deletePhotoBean();
-                PostDetailDao.deletePostDetail();
-                if (onePagePost.getPosts() == null) {
-                    return;
-                }
-                for (OneSimplePost post : onePagePost.getPosts()) {
-                    PostDetailDao.insertPostDetail(post);
-                    for (PhotoKey key : post.getPhotos()) {
-                        PhotosDao.insertPhotos(key, post.getPostId());
-                    }
-                }
-                adapter.clearData();
-                adapter.addAllData(onePagePost.getPosts());
-                if (onePagePost.getNext() == null) {
-                    hasMore = false;
-                } else {
-                    next = onePagePost.getNext();
-                    hasMore = true;
-                }
-            }
-        };
-        postIdToLoad = 1;
-        JxnuGoNetMethod.getInstance()
-                .getOnePagePosts(newSubscriber, postIdToLoad);
+        mPresenter.loadNewData();
     }
 
     private void loadMoreData() {
-        moreSubscriber = new Subscriber<OnePagePost>() {
-            @Override
-            public void onCompleted() {
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onNext(OnePagePost onePagePost) {
-                if (onePagePost.getPosts() == null) {
-                    return;
-                }
-                for (OneSimplePost post : onePagePost.getPosts()) {
-                    PostDetailDao.insertPostDetail(post);
-                    for (PhotoKey key : post.getPhotos()) {
-                        PhotosDao.insertPhotos(key, post.getPostId());
-                    }
-                }
-                adapter.addAllData(onePagePost.getPosts());
-                if (onePagePost.getNext() == null) {
-                    hasMore = false;
-                } else {
-                    next = onePagePost.getNext();
-                    hasMore = true;
-                }
-            }
-        };
-        JxnuGoNetMethod.getInstance()
-                .getOnePagePosts(moreSubscriber, ++postIdToLoad);
+        mPresenter.loadMoreData();
     }
 
     private void loadNewDataByTag() {
-        tagSubscriber = new Subscriber<OnePagePost>() {
-            @Override
-            public void onCompleted() {
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                mSwipeRefreshLayout.setRefreshing(false);
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onNext(OnePagePost onePagePost) {
-                PhotosDao.deletePhotoBean();
-                PostDetailDao.deletePostDetail();
-                if (onePagePost.getPosts() == null) {
-                    return;
-                }
-                for (OneSimplePost post : onePagePost.getPosts()) {
-                    PostDetailDao.insertPostDetail(post);
-                    for (PhotoKey key : post.getPhotos()) {
-                        PhotosDao.insertPhotos(key, post.getPostId());
-                    }
-                }
-                adapter.clearData();
-                adapter.addAllData(onePagePost.getPosts());
-                if (onePagePost.getNext() == null) {
-                    hasMore = false;
-                } else {
-                    next = onePagePost.getNext();
-                    hasMore = true;
-                }
-            }
-        };
-        postIdToLoad = 1;
-        JxnuGoNetMethod.getInstance().getPostsByTag(tagSubscriber, tagSelected, postIdToLoad);
+        mPresenter.loadNewDataByTag(tagSelected);
     }
 
     private void loadMoreDataByTag() {
-        tagSubscriber = new Subscriber<OnePagePost>() {
-            @Override
-            public void onCompleted() {
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onNext(OnePagePost onePagePost) {
-                if (onePagePost.getPosts() == null) {
-                    return;
-                }
-                for (OneSimplePost post : onePagePost.getPosts()) {
-                    PostDetailDao.insertPostDetail(post);
-                    for (PhotoKey key : post.getPhotos()) {
-                        PhotosDao.insertPhotos(key, post.getPostId());
-                    }
-                }
-                adapter.addAllData(onePagePost.getPosts());
-                if (onePagePost.getNext() == null) {
-                    hasMore = false;
-                } else {
-                    next = onePagePost.getNext();
-                    hasMore = true;
-                }
-            }
-        };
-        JxnuGoNetMethod.getInstance().getPostsByTag(tagSubscriber, tagSelected, ++postIdToLoad);
+        mPresenter.loadMoreDataByTag(tagSelected);
     }
 
     private void searchNewData(String query) {
-        searchSubscriber = new Subscriber<OnePagePost>() {
-            @Override
-            public void onCompleted() {
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                mSwipeRefreshLayout.setRefreshing(false);
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onNext(OnePagePost onePagePost) {
-                PhotosDao.deletePhotoBean();
-                PostDetailDao.deletePostDetail();
-                if (onePagePost.getPosts() == null) {
-                    return;
-                }
-                for (OneSimplePost post : onePagePost.getPosts()) {
-                    PostDetailDao.insertPostDetail(post);
-                    for (PhotoKey key : post.getPhotos()) {
-                        PhotosDao.insertPhotos(key, post.getPostId());
-                    }
-                }
-                adapter.clearData();
-                adapter.addAllData(onePagePost.getPosts());
-                if (onePagePost.getNext() == null) {
-                    hasMore = false;
-                } else {
-                    next = onePagePost.getNext();
-                    hasMore = true;
-                }
-            }
-        };
-        if (SPUtil.getInstance(getContext()) == null) {
-            showSnackbarTipShort(getView(), R.string.please_login);
-            return;
-        }
-        String auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(getContext()).getCurrentUsername()
-                , SPUtil.getInstance(getContext()).getCurrentPassword());
-        SearchKeyWords keyWords = new SearchKeyWords();
-        keyWords.setKeyWords(query);
-        JxnuGoNetMethod.getInstance().searchPosts(searchSubscriber, auth, keyWords);
+        mPresenter.searchNewData(query);
     }
 
     private void searchMoreData() {
@@ -479,5 +303,134 @@ public class TradeFragment extends BaseFragment {
                 , SPUtil.getInstance(getContext()).getCurrentPassword());
         SearchKeyWords keyWords = new SearchKeyWords();
         JxnuGoNetMethod.getInstance().searchPosts(searchSubscriber, auth, keyWords);
+    }
+
+    @Override
+    public void addNewData(OnePagePost onePagePost) {
+        PhotosDao.deletePhotoBean();
+        PostDetailDao.deletePostDetail();
+        if (onePagePost.getPosts() == null) {
+            return;
+        }
+        for (OneSimplePost post : onePagePost.getPosts()) {
+            PostDetailDao.insertPostDetail(post);
+            for (PhotoKey key : post.getPhotos()) {
+                PhotosDao.insertPhotos(key, post.getPostId());
+            }
+        }
+        adapter.clearData();
+        adapter.addAllData(onePagePost.getPosts());
+        if (onePagePost.getNext() == null) {
+            hasMore = false;
+        } else {
+            next = onePagePost.getNext();
+            hasMore = true;
+        }
+    }
+
+    @Override
+    public void addMoreData(OnePagePost onePagePost) {
+        if (onePagePost.getPosts() == null) {
+            return;
+        }
+        for (OneSimplePost post : onePagePost.getPosts()) {
+            PostDetailDao.insertPostDetail(post);
+            for (PhotoKey key : post.getPhotos()) {
+                PhotosDao.insertPhotos(key, post.getPostId());
+            }
+        }
+        adapter.addAllData(onePagePost.getPosts());
+        if (onePagePost.getNext() == null) {
+            hasMore = false;
+        } else {
+            next = onePagePost.getNext();
+            hasMore = true;
+        }
+    }
+
+    @Override
+    public void addTagNewData(OnePagePost onePagePost) {
+        PhotosDao.deletePhotoBean();
+        PostDetailDao.deletePostDetail();
+        if (onePagePost.getPosts() == null) {
+            return;
+        }
+        for (OneSimplePost post : onePagePost.getPosts()) {
+            PostDetailDao.insertPostDetail(post);
+            for (PhotoKey key : post.getPhotos()) {
+                PhotosDao.insertPhotos(key, post.getPostId());
+            }
+        }
+        adapter.clearData();
+        adapter.addAllData(onePagePost.getPosts());
+        if (onePagePost.getNext() == null) {
+            hasMore = false;
+        } else {
+            next = onePagePost.getNext();
+            hasMore = true;
+        }
+    }
+
+    @Override
+    public void addTagMoreData(OnePagePost onePagePost) {
+        if (onePagePost.getPosts() == null) {
+            return;
+        }
+        for (OneSimplePost post : onePagePost.getPosts()) {
+            PostDetailDao.insertPostDetail(post);
+            for (PhotoKey key : post.getPhotos()) {
+                PhotosDao.insertPhotos(key, post.getPostId());
+            }
+        }
+        adapter.addAllData(onePagePost.getPosts());
+        if (onePagePost.getNext() == null) {
+            hasMore = false;
+        } else {
+            next = onePagePost.getNext();
+            hasMore = true;
+        }
+    }
+
+    @Override
+    public void addSearchNewData(OnePagePost onePagePost) {
+        PhotosDao.deletePhotoBean();
+        PostDetailDao.deletePostDetail();
+        if (onePagePost.getPosts() == null) {
+            return;
+        }
+        for (OneSimplePost post : onePagePost.getPosts()) {
+            PostDetailDao.insertPostDetail(post);
+            for (PhotoKey key : post.getPhotos()) {
+                PhotosDao.insertPhotos(key, post.getPostId());
+            }
+        }
+        adapter.clearData();
+        adapter.addAllData(onePagePost.getPosts());
+        if (onePagePost.getNext() == null) {
+            hasMore = false;
+        } else {
+            next = onePagePost.getNext();
+            hasMore = true;
+        }
+    }
+
+    @Override
+    public void addSearchMoreData(OnePagePost onePagePost) {
+
+    }
+
+    @Override
+    public void stopRefreshing() {
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void showPleaseLogin() {
+        showSnackbarTipShort(getView(), R.string.please_login);
+    }
+
+    @Override
+    public void setPresenter(TradeContract.Presenter presenter) {
+        mPresenter = presenter;
     }
 }

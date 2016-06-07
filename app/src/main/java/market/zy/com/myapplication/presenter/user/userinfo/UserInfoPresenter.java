@@ -1,4 +1,4 @@
-package market.zy.com.myapplication.view.userinfo;
+package market.zy.com.myapplication.presenter.user.userinfo;
 
 import android.content.Context;
 

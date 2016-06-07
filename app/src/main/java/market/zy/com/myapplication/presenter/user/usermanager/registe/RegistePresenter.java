@@ -1,4 +1,4 @@
-package market.zy.com.myapplication.view.usermanager.registe;
+package market.zy.com.myapplication.presenter.user.usermanager.registe;
 
 import android.content.Context;
 import android.widget.EditText;
@@ -7,6 +7,7 @@ import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.entity.user.registe.RegisteStates;
 import market.zy.com.myapplication.entity.user.registe.RegisterInfo;
 import market.zy.com.myapplication.network.JxnuGoNetMethod;
+import market.zy.com.myapplication.presenter.user.usermanager.registe.RegisteContract;
 import rx.Subscriber;
 
 /**

@@ -1,4 +1,4 @@
-package market.zy.com.myapplication.view.post;
+package market.zy.com.myapplication.presenter.post;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import market.zy.com.myapplication.entity.user.UserBasicInfo;
  * Created by zpauly on 16-6-6.
  */
 public class PostDetailContract {
-    interface Presenter extends BasePresenter {
+    public interface Presenter extends BasePresenter {
         void loadCommentsData();
 
         void loadPhotosData();
@@ -27,7 +27,7 @@ public class PostDetailContract {
         void loadPublisherInfo();
     }
 
-    interface View extends BaseView<Presenter> {
+    public interface View extends BaseView<Presenter> {
         void swapCommentsData(AllComments allComments);
 
         void swapPhotosData(List<PhotoModel> photoKeys);

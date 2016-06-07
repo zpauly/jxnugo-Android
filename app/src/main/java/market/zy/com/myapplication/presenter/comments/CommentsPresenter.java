@@ -1,8 +1,7 @@
-package market.zy.com.myapplication.view.comments;
+package market.zy.com.myapplication.presenter.comments;
 
 import android.content.Context;
 
-import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.db.user.UserInfoDao;
 import market.zy.com.myapplication.db.user.UserInfoModel;
 import market.zy.com.myapplication.entity.post.comments.AllComments;

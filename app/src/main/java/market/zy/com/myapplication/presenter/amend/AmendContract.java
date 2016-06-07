@@ -1,4 +1,4 @@
-package market.zy.com.myapplication.view.amend;
+package market.zy.com.myapplication.presenter.amend;
 
 import org.json.JSONObject;
 
@@ -11,7 +11,7 @@ import market.zy.com.myapplication.entity.user.amend.AmendUserInfo;
  * Created by zpauly on 16-6-3.
  */
 public interface AmendContract {
-    interface Presenter extends BasePresenter {
+    public interface Presenter extends BasePresenter {
         void setUserInfo();
 
         void amend();
@@ -19,7 +19,7 @@ public interface AmendContract {
         void uploadAvatar(String avatar);
     }
 
-    interface View extends BaseView<Presenter> {
+    public interface View extends BaseView<Presenter> {
         AmendUserInfo getText();
 
         UserBasicInfo getNewUserInfo();

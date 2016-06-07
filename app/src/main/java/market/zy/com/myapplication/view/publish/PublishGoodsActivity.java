@@ -21,9 +21,6 @@ import android.widget.LinearLayout;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
-import com.qiniu.android.http.ResponseInfo;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,18 +31,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.base.BaseActivity;
-import market.zy.com.myapplication.utils.qiniu.UploadImages;
+import market.zy.com.myapplication.presenter.publish.PublishGoodsContract;
 import market.zy.com.myapplication.entity.post.PhotoKey;
 import market.zy.com.myapplication.entity.post.publish.NewPost;
-import market.zy.com.myapplication.entity.post.publish.PublishStates;
-import market.zy.com.myapplication.entity.qiniu.QiniuUploadToken;
-import market.zy.com.myapplication.network.JxnuGoNetMethod;
-import market.zy.com.myapplication.network.qiniu.upload.OnUploadListener;
-import market.zy.com.myapplication.network.qiniu.uploadtoken.TokenMethod;
-import market.zy.com.myapplication.utils.AuthUtil;
 import market.zy.com.myapplication.utils.PhotoUtil;
-import market.zy.com.myapplication.utils.SPUtil;
-import rx.Subscriber;
 
 /**
  * Created by zpauly on 16-3-27.

@@ -27,31 +27,24 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import market.zy.com.myapplication.Constants;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.base.BaseActivity;
+import market.zy.com.myapplication.presenter.post.PostDetailContract;
+import market.zy.com.myapplication.presenter.post.PostDetailPresenter;
 import market.zy.com.myapplication.view.comments.CommentsActivity;
 import market.zy.com.myapplication.view.trade.TradeActivity;
 import market.zy.com.myapplication.view.user.UserActivity;
 import market.zy.com.myapplication.adapter.recyclerviewAdapter.PostDetailCommentsAdapter;
 import market.zy.com.myapplication.adapter.recyclerviewAdapter.PostDetailPhotosAdapter;
 import market.zy.com.myapplication.db.post.PhotoModel;
-import market.zy.com.myapplication.db.post.PhotosDao;
 import market.zy.com.myapplication.db.post.PostDetailModel;
 import market.zy.com.myapplication.db.post.PostDetailDao;
 import market.zy.com.myapplication.db.user.OtherInfoDao;
-import market.zy.com.myapplication.entity.post.collection.CollectPost;
 import market.zy.com.myapplication.entity.post.collection.CollectStates;
-import market.zy.com.myapplication.entity.post.collection.JudgeCollectPost;
 import market.zy.com.myapplication.entity.post.collection.JudgeCollectStates;
-import market.zy.com.myapplication.entity.post.collection.UncollectPost;
 import market.zy.com.myapplication.entity.post.collection.UncollectStates;
 import market.zy.com.myapplication.entity.post.comments.AllComments;
 import market.zy.com.myapplication.entity.user.UserBasicInfo;
-import market.zy.com.myapplication.network.JxnuGoNetMethod;
-import market.zy.com.myapplication.utils.AuthUtil;
-import market.zy.com.myapplication.utils.SPUtil;
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by zpauly on 16-5-20.

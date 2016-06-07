@@ -1,4 +1,4 @@
-package market.zy.com.myapplication.view.userinfo;
+package market.zy.com.myapplication.presenter.user.userinfo;
 
 import market.zy.com.myapplication.base.BasePresenter;
 import market.zy.com.myapplication.base.BaseView;
@@ -11,7 +11,7 @@ import market.zy.com.myapplication.entity.user.follow.UserFollowers;
  * Created by zpauly on 16-6-6.
  */
 public class UserInfoContract {
-    interface Presenter extends BasePresenter {
+    public interface Presenter extends BasePresenter {
         void loadPostsData();
 
         void loadCollectionData();
@@ -21,7 +21,7 @@ public class UserInfoContract {
         void loadFollowedData();
     }
 
-    interface View extends BaseView<Presenter> {
+    public interface View extends BaseView<Presenter> {
         void addAllCollectionData(CollectionPosts collectionPosts);
 
         void addAllPostsData(UserPosts userPosts);

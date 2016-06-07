@@ -20,15 +20,14 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.base.BaseActivity;
+import market.zy.com.myapplication.presenter.comments.CommentsContract;
+import market.zy.com.myapplication.presenter.comments.CommentsPresenter;
 import market.zy.com.myapplication.view.trade.TradeActivity;
 import market.zy.com.myapplication.adapter.recyclerviewAdapter.CommentsAdapter;
 import market.zy.com.myapplication.entity.post.comments.AllComments;
 import market.zy.com.myapplication.entity.post.comments.NewComment;
 import market.zy.com.myapplication.entity.post.comments.NewCommentStates;
-import market.zy.com.myapplication.network.JxnuGoNetMethod;
 import market.zy.com.myapplication.ui.support.DividerItemDecoration;
-import market.zy.com.myapplication.utils.AuthUtil;
-import market.zy.com.myapplication.utils.SPUtil;
 import rx.Subscriber;
 
 /**

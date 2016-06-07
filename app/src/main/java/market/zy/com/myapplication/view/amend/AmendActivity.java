@@ -29,12 +29,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import market.zy.com.myapplication.Constants;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.base.BaseActivity;
-import market.zy.com.myapplication.entity.qiniu.QiniuUploadToken;
 import market.zy.com.myapplication.entity.user.UserBasicInfo;
-import market.zy.com.myapplication.entity.user.amend.AmendStates;
 import market.zy.com.myapplication.entity.user.amend.AmendUserInfo;
+import market.zy.com.myapplication.presenter.amend.AmendContract;
+import market.zy.com.myapplication.presenter.amend.AmendPresenter;
 import market.zy.com.myapplication.utils.PhotoUtil;
-import rx.Subscriber;
 
 /**
  * Created by zpauly on 16-5-22.
