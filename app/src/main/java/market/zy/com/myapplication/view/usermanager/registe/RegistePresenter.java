@@ -60,7 +60,10 @@ public class RegistePresenter implements RegisteContract.Presenter {
 
     @Override
     public void stop() {
-        if (registeSubscriber == null || !registeSubscriber.isUnsubscribed())
-            registeSubscriber.unsubscribe();
+        if (registeSubscriber == null) {
+            if (registeSubscriber.isUnsubscribed()) {
+                registeSubscriber.unsubscribe();
+            }
+        }
     }
 }

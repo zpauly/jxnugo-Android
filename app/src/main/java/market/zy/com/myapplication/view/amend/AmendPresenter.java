@@ -35,42 +35,24 @@ public class AmendPresenter implements AmendContract.Presenter {
 
     private JxnuGoNetMethod netMethod;
     private TokenMethod tokenMethod;
+    private String auth;
+    private UserInfoModel userInfo;
 
     private Subscriber<AmendStates> amendSubscriber;
     private Subscriber<QiniuUploadToken> tokenSubscriber;
 
-    private MaterialDialog confirmDialog;
-    private MaterialDialog uploadDialog;
-
     private String avatarKey;
     private String token;
-
-    private EditText mNickNameEt, mTag, mContact, mLocation, mSex;
-    private AppCompatSpinner mSexSeleter;
 
     public AmendPresenter(AmendContract.View view, Context context) {
         mAmendView = view;
         mContext = context;
+        mAmendView.setPresenter(this);
     }
 
     @Override
     public void setUserInfo() {
-        UserInfoModel userInfo = UserInfoDao.queryUserInfo();
-        UserBasicInfo info = new UserBasicInfo();
-        info.setUserId(userInfo.getUserId());
-        info.setFollowed(userInfo.getFollowed());
-        info.setFollowers(userInfo.getFollowers());
-        info.setLast_seen(userInfo.getLast_seen());
-        info.setMember_since(userInfo.getMember_since());
-        info.setPostCollectionCount(userInfo.getPostCollectionCount());
-        info.setPostCount(userInfo.getPostCount());
-        info.setUserName(userInfo.getUserName());
-        info.setName(mNickNameEt.getText().toString());
-        info.setAvatar(avatarKey);
-        info.setAbout_me(mTag.getText().toString());
-        info.setContactMe(mContact.getText().toString());
-        info.setLocation(mLocation.getText().toString());
-        info.setSex(mSex.getPrivateImeOptions());
+        UserBasicInfo info = mAmendView.getNewUserInfo();
         UserInfoDao.deleteUserInfo();
         UserInfoDao.insertUserInfo(info);
     }
@@ -81,14 +63,13 @@ public class AmendPresenter implements AmendContract.Presenter {
             @Override
             public void onCompleted() {
                 //upload successly
-                mAmendView.showUploadSuccess(mNickNameEt, R.string.upload_successly);
-
+                mAmendView.showUploadSuccess();
             }
 
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                mAmendView.showUploadError(mNickNameEt, R.string.error_upload);
+                mAmendView.showUploadError();
             }
 
             @Override
@@ -96,10 +77,8 @@ public class AmendPresenter implements AmendContract.Presenter {
 
             }
         };
-        AmendUserInfo amendUserInfo = mAmendView.getText(avatarKey);
-        String auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(mContext).getCurrentUsername()
-                , SPUtil.getInstance(mContext).getCurrentPassword());
-        JxnuGoNetMethod.getInstance().amendUserInfo(amendSubscriber, auth, amendUserInfo);
+        AmendUserInfo amendUserInfo = mAmendView.getText();
+        netMethod.amendUserInfo(amendSubscriber, auth, amendUserInfo);
     }
 
     @Override
@@ -112,13 +91,7 @@ public class AmendPresenter implements AmendContract.Presenter {
                             @Override
                             public void onCompleted(String key, ResponseInfo info, JSONObject response) {
                                 if (info.isOK()) {
-                                    try {
-                                        String photoKey = response.getString("key");
-                                        avatarKey = Constants.PIC_BASE_URL + photoKey;
-                                        amend();
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
+                                    mAmendView.getAvatarKey(response);
                                 } else {
                                 }
                             }
@@ -152,15 +125,22 @@ public class AmendPresenter implements AmendContract.Presenter {
     public void start() {
         netMethod = JxnuGoNetMethod.getInstance();
         tokenMethod = TokenMethod.getInstance();
+        userInfo = UserInfoDao.queryUserInfo();
+        auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(mContext).getCurrentUsername()
+                , SPUtil.getInstance(mContext).getCurrentPassword());
     }
 
     @Override
     public void stop() {
-        if (amendSubscriber != null || !amendSubscriber.isUnsubscribed()) {
-            amendSubscriber.unsubscribe();
+        if (amendSubscriber != null) {
+            if (amendSubscriber.isUnsubscribed()) {
+                amendSubscriber.unsubscribe();
+            }
         }
-        if (tokenSubscriber != null || !tokenSubscriber.isUnsubscribed()) {
-            tokenSubscriber.unsubscribe();
+        if (tokenSubscriber != null) {
+            if (tokenSubscriber.isUnsubscribed()) {
+                tokenSubscriber.unsubscribe();
+            }
         }
     }
 }

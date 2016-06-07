@@ -20,12 +20,17 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
+import market.zy.com.myapplication.Constants;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.base.BaseActivity;
 import market.zy.com.myapplication.entity.qiniu.QiniuUploadToken;
+import market.zy.com.myapplication.entity.user.UserBasicInfo;
 import market.zy.com.myapplication.entity.user.amend.AmendStates;
 import market.zy.com.myapplication.entity.user.amend.AmendUserInfo;
 import market.zy.com.myapplication.utils.PhotoUtil;
@@ -75,10 +80,10 @@ public class AmendActivity extends BaseActivity implements AmendContract.View {
 
     private AmendUserInfo amendUserInfo;
 
-    private Subscriber<AmendStates> amendSubscriber;
+    /*private Subscriber<AmendStates> amendSubscriber;
     private Subscriber<QiniuUploadToken> tokenSubscriber;
 
-    private String token;
+    private String token;*/
 
     private MaterialDialog confirmDialog;
     private MaterialDialog uploadDialog;
@@ -98,15 +103,6 @@ public class AmendActivity extends BaseActivity implements AmendContract.View {
     protected void onPause() {
         mPresenter.stop();
         super.onPause();
-    }
-
-    private void unsubscribe() {
-        if (amendSubscriber != null || !amendSubscriber.isUnsubscribed()) {
-            amendSubscriber.unsubscribe();
-        }
-        if (tokenSubscriber != null || !tokenSubscriber.isUnsubscribed()) {
-            tokenSubscriber.unsubscribe();
-        }
     }
 
     @Override
@@ -205,7 +201,7 @@ public class AmendActivity extends BaseActivity implements AmendContract.View {
         });
     }
 
-    private void amend(final String key) {
+    private void amend() {
         /*amendSubscriber = new Subscriber<AmendStates>() {
             @Override
             public void onCompleted() {
@@ -270,7 +266,7 @@ public class AmendActivity extends BaseActivity implements AmendContract.View {
                                 if (!avatarPath.equals(userInfo.getAvatar()))
                                     uploadAvatar();
                                 else
-                                    amend(userInfo.getAvatar());
+                                    amend();
                             }
                         })
                         .negativeText(R.string.no)
@@ -334,6 +330,7 @@ public class AmendActivity extends BaseActivity implements AmendContract.View {
             }
         };
         TokenMethod.getInstance().getUploadToken(tokenSubscriber);*/
+        mPresenter.uploadAvatar(avatarPath);
     }
 
     /*private void getTextContent(String avatar) {
@@ -352,13 +349,13 @@ public class AmendActivity extends BaseActivity implements AmendContract.View {
     }*/
 
     @Override
-    public AmendUserInfo getText(String avatar) {
+    public AmendUserInfo getText() {
         nickname = mUsername.getText().toString();
         userTag = mUserTag.getText().toString();
         contract = mContract.getText().toString();
         location = mLocation.getText().toString();
         amendUserInfo = new AmendUserInfo();
-        amendUserInfo.setAvatar(avatar);
+        amendUserInfo.setAvatar(avatarPath);
         amendUserInfo.setAbout_me(userTag);
         amendUserInfo.setContact(contract);
         amendUserInfo.setLocation(location);
@@ -369,16 +366,48 @@ public class AmendActivity extends BaseActivity implements AmendContract.View {
     }
 
     @Override
-    public void showUploadError(View view, int stringRes) {
-        uploadDialog.dismiss();
-        showSnackbarTipShort(view, stringRes);
+    public UserBasicInfo getNewUserInfo() {
+        UserBasicInfo info = new UserBasicInfo();
+        info.setUserId(userInfo.getUserId());
+        info.setFollowed(userInfo.getFollowed());
+        info.setFollowers(userInfo.getFollowers());
+        info.setLast_seen(userInfo.getLast_seen());
+        info.setMember_since(userInfo.getMember_since());
+        info.setPostCollectionCount(userInfo.getPostCollectionCount());
+        info.setPostCount(userInfo.getPostCount());
+        info.setUserName(userInfo.getUserName());
+        info.setName(nickname);
+        info.setAvatar(avatarPath);
+        info.setAbout_me(userTag);
+        info.setContactMe(contract);
+        info.setLocation(location);
+        info.setSex(sex);
+        return info;
     }
 
     @Override
-    public void showUploadSuccess(View view, int stringRes) {
-        showSnackbarTipShort(view, stringRes);
+    public void showUploadError() {
+        uploadDialog.dismiss();
+        showSnackbarTipShort(getCurrentFocus(), R.string.error_upload);
+    }
+
+    @Override
+    public void showUploadSuccess() {
+        mPresenter.setUserInfo();
+        showSnackbarTipShort(getCurrentFocus(), R.string.upload_successly);
         uploadDialog.dismiss();
         finish();
+    }
+
+    @Override
+    public void getAvatarKey(JSONObject response) {
+        try {
+            String photoKey = response.getString("key");
+            avatarPath = Constants.PIC_BASE_URL + photoKey;
+            amend();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void startPicSelect() {

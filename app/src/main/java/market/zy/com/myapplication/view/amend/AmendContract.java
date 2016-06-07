@@ -1,7 +1,10 @@
 package market.zy.com.myapplication.view.amend;
 
+import org.json.JSONObject;
+
 import market.zy.com.myapplication.base.BasePresenter;
 import market.zy.com.myapplication.base.BaseView;
+import market.zy.com.myapplication.entity.user.UserBasicInfo;
 import market.zy.com.myapplication.entity.user.amend.AmendUserInfo;
 
 /**
@@ -17,10 +20,14 @@ public interface AmendContract {
     }
 
     interface View extends BaseView<Presenter> {
-        AmendUserInfo getText(String avatar);
+        AmendUserInfo getText();
 
-        void showUploadError(android.view.View view, int stringRes);
+        UserBasicInfo getNewUserInfo();
 
-        void showUploadSuccess(android.view.View view, int stringRes);
+        void showUploadError();
+
+        void showUploadSuccess();
+
+        void getAvatarKey(JSONObject response);
     }
 }
