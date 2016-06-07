@@ -26,6 +26,7 @@ import market.zy.com.myapplication.listener.OnItemClickListener;
 import market.zy.com.myapplication.listener.OnSearchListener;
 import market.zy.com.myapplication.network.JxnuGoNetMethod;
 import market.zy.com.myapplication.presenter.trade.TradeContract;
+import market.zy.com.myapplication.presenter.trade.TradePresenter;
 import market.zy.com.myapplication.utils.AuthUtil;
 import market.zy.com.myapplication.utils.SPUtil;
 import rx.Subscriber;
@@ -55,14 +56,11 @@ public class TradeFragment extends BaseFragment implements TradeContract.View {
     private LinearLayoutManager manager;
     private TradeListAdapter adapter;
 
-    private int postIdToLoad = 1;
     private int tagSelected = -1;
     private boolean hasMore = true;
+
     private String next;
 
-    private Subscriber<OnePagePost> newSubscriber;
-    private Subscriber<OnePagePost> moreSubscriber;
-    private Subscriber<OnePagePost> tagSubscriber;
     private Subscriber<OnePagePost> searchSubscriber;
 
     @Nullable
@@ -78,30 +76,13 @@ public class TradeFragment extends BaseFragment implements TradeContract.View {
 
     @Override
     public void onPause() {
-        unsubscribe();
+        mPresenter.stop();
         super.onPause();
     }
 
-    @Override
-    public void onDestroy() {
-        unsubscribe();
-        super.onDestroy();
-    }
-
-    private void unsubscribe() {
-        if (newSubscriber != null)
-            newSubscriber.unsubscribe();
-        if (moreSubscriber != null)
-            moreSubscriber.unsubscribe();
-        if (tagSubscriber != null) {
-            tagSubscriber.unsubscribe();
-        }
-        if (searchSubscriber != null) {
-            searchSubscriber.unsubscribe();
-        }
-    }
-
     private void initView() {
+        new TradePresenter(this, getContext());
+        mPresenter.start();
         setUpAppbarLayout();
         setUpRefreshLayout();
         setUpRecyclerView();

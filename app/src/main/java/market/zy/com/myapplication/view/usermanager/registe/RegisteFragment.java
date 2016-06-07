@@ -19,6 +19,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.base.BaseFragment;
+import market.zy.com.myapplication.presenter.user.usermanager.registe.RegisteContract;
+import market.zy.com.myapplication.presenter.user.usermanager.registe.RegistePresenter;
 
 /**
  * Created by zpauly on 2016/3/8.

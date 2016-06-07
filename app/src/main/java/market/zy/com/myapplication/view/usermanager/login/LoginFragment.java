@@ -17,6 +17,8 @@ import butterknife.ButterKnife;
 import market.zy.com.myapplication.R;
 import market.zy.com.myapplication.base.BaseFragment;
 import market.zy.com.myapplication.entity.user.login.LoginTokenSuccess;
+import market.zy.com.myapplication.presenter.user.usermanager.login.LoginContract;
+import market.zy.com.myapplication.presenter.user.usermanager.login.LoginPresenter;
 import market.zy.com.myapplication.utils.SPUtil;
 
 /**
