@@ -43,7 +43,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <market.zy.com.myapplication.ui.support.CustomNestedScrollView
+    <com.jxnugo.ui.support.CustomNestedScrollView
         android:id="@+id/post_detail_layout"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
@@ -51,6 +51,6 @@
 
     <include layout="@layout/post_page" />
 
-    </market.zy.com.myapplication.ui.support.CustomNestedScrollView>
+    </com.jxnugo.ui.support.CustomNestedScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

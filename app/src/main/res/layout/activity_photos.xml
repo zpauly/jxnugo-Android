@@ -12,11 +12,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <market.zy.com.myapplication.ui.support.PhotosViewPager
+    <com.jxnugo.ui.support.PhotosViewPager
         android:id="@+id/photos_viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </market.zy.com.myapplication.ui.support.PhotosViewPager>
+    </com.jxnugo.ui.support.PhotosViewPager>
 
 </LinearLayout>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="market.zy.com.myapplication">
+    package="com.jxnugo">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -8,14 +8,14 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:name=".BaseApplication"
+        android:name="com.jxnugo.BaseApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_jxnu_logo"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".view.trade.TradeActivity">
+        <activity android:name="com.jxnugo.view.trade.TradeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,14 +26,14 @@
                 android:value=".ui.activity.SearchResultActivity"/>
         </activity>
 
-        <activity android:name=".view.usermanager.UserManagerActivity"/>
-        <activity android:name=".view.user.UserActivity"/>
-        <activity android:name=".view.comments.CommentsActivity"/>
-        <activity android:name=".view.publish.PublishGoodsActivity"/>
-        <activity android:name=".view.post.PostDetailsActivity"/>
-        <activity android:name=".view.photos.PhotoActivity"/>
-        <activity android:name=".view.amend.AmendActivity"/>
-        <activity android:name=".view.userinfo.UserInfoActivity"/>
+        <activity android:name="com.jxnugo.view.usermanager.UserManagerActivity"/>
+        <activity android:name="com.jxnugo.view.user.UserActivity"/>
+        <activity android:name="com.jxnugo.view.comments.CommentsActivity"/>
+        <activity android:name="com.jxnugo.view.publish.PublishGoodsActivity"/>
+        <activity android:name="com.jxnugo.view.post.PostDetailsActivity"/>
+        <activity android:name="com.jxnugo.view.photos.PhotoActivity"/>
+        <activity android:name="com.jxnugo.view.amend.AmendActivity"/>
+        <activity android:name="com.jxnugo.view.userinfo.UserInfoActivity"/>
 
         <activity android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
             android:configChanges="keyboardHidden|orientation"
