@@ -1,6 +1,7 @@
 package com.jxnugo.presenter.user.usermanager.login;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.EditText;
 
 import com.jxnugo.db.user.UserInfoDao;
@@ -15,6 +16,8 @@ import rx.Subscriber;
  * Created by zpauly on 16-6-2.
  */
 public class LoginPresenter implements LoginContract.Presenter {
+    private final String TAG = getClass().getName();
+
     private final LoginContract.View mLoginView;
     private final Context mContext;
 
@@ -50,7 +53,7 @@ public class LoginPresenter implements LoginContract.Presenter {
                 mLoginView.insertCurrentUserIntoSP(loginTokenSuccess);
             }
         };
-        String auth = AuthUtil.getAuthFromUsernameAndPassword(username, password);
+        auth = AuthUtil.getAuthFromUsernameAndPassword(username, password);
         netMethod.login(loginSubscriber, auth, username, password);
     }
 
@@ -65,6 +68,7 @@ public class LoginPresenter implements LoginContract.Presenter {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
+                Log.i(TAG, "error");
                 mLoginView.inputError();
             }
 
@@ -79,8 +83,6 @@ public class LoginPresenter implements LoginContract.Presenter {
     @Override
     public void start() {
         netMethod = JxnuGoNetMethod.getInstance();
-        auth = AuthUtil.getAuthFromUsernameAndPassword(SPUtil.getInstance(mContext).getCurrentUsername()
-                , SPUtil.getInstance(mContext).getCurrentPassword());
     }
 
     @Override

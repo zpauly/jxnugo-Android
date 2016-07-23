@@ -61,7 +61,7 @@ public interface IJxnuGoNetService {
     Observable<RegisteStates> registe(@Body RegisterInfo info);
 
     /**
-     * 请求七牛云上传token
+     * login
      * @param auth
      * @param username
      * @param password
